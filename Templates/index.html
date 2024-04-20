@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='index.css')}}">
+    <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+</head>
+<body>
+    <div id="loader">
+        <h2 class="head">Loading..
+        <h1>0%</h1>
+    </div>
+    <div class="nav">
+        <h1>STUDENT MANAGEMENT SYSTEM</h1>
+    </div>
+    {% block content%}
+    <main>
+        <div class="grab">
+            <div class="nav_menu">
+                <div class="contain">
+                    <a class="apps" href="">Home</a>
+                    <a class="apps" href="/add">Add New Student</a>
+                    <a class="apps" href="/view">Review and Edit Students</a>
+                </div>
+            </div>
+            <div class="image">
+                <img src="" alt="">
+            </div>
+        </div>
+    </main>
+    {% endblock %}
+    <footer>
+        <h2><span class="right">~Made by Rudra</span><span>❤️</span><span class="right">Saha~</span></h2>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>

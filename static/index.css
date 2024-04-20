@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Holtwood+One+SC&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap');
+@font-face{
+    font-family: 'CanvasNera';
+    src: url('./CavasNeraFree.ttf');
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+#loader{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background: #1a1a1a;
+    z-index: 99;
+    display: grid;
+    place-items: center;
+    & .head{
+        font-size: 4rem;
+        font-family: "CanvasNera";
+        color: #bcbcc4;
+        text-transform: uppercase;
+    }
+}
+#loader h1{
+    font-family: "CanvasNera", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 8rem;
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    color: #bcbcc4;
+}
+
+
+
