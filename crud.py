@@ -73,6 +73,19 @@ def view_user(id):
             age = round(age, 1)
     return render_template("view_user.html",row = row, now_date = age,)
 
+# @app.route("/<int:id>/view_user", methods=("GET", "POST"))
+# def view_user(id):
+#     row = get_post(id)
+#     with sqlite3.connect("users.db") as con:
+#         cur = con.cursor()
+#         filename_or = row["profile_pic"]
+#         packages =  con.execute('Select date(dob) FROM users WHERE id = ?', (id,)).fetchone()
+#         for dob in packages:
+#             dob = datetime.strptime(dob, '%Y-%m-%d')
+#             age = (datetime.today() - dob).days/365
+#             age = round(age, 1)
+#     return render_template("view_user.html",row = row, now_date = age,)
+
 @app.route("/<int:id>/resize_user", methods=("GET", "POST"))
 def resize_user(id):
     row = get_post(id)
@@ -103,7 +116,8 @@ def edit_user(id):
             '''
             cur.execute(query,(name,email,gender,contact,dob,id))
             con.commit()
-            return redirect(url_for('index'))
+            msg = "Updated Successfully!!"
+            return render_template("success.html" , msg = msg)
     return render_template('edit_user.html', user = user)
 
 @app.route('/<int:id>/delete_user', methods=("GET", "POST"))
@@ -113,7 +127,7 @@ def delete_user(id):
         cur = con.cursor() 
         con.execute('DELETE FROM users WHERE id = ?', (id,))
         con.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('delete_user'))
     
 
 if __name__ == "__main__":
