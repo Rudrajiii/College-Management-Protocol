@@ -35,6 +35,7 @@
               <th>Gender</th>
               <th>Number</th>
               <th>DOB</th>
+              <th>Enrollment_no</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -47,6 +48,7 @@
               <td>{{row["gender"]}}</td>
               <td>{{row["contact"]}}</td>
               <td>{{row["dob"]}}</td>
+              <td>{{row["Enrollment_no"]}}</td>
               <td id="cenntteerr" align="center">
                 <a
                   href="{{ url_for('view_user', id=row['id']) }}"

@@ -18,7 +18,7 @@
   </head>
   <body>
     <section class="contact-from pt-4">
-      <div class="container" style="border: 2px solid;">
+      <div class="container" style="border: 2px solid">
         <div class="row mt-5">
           <div class="col-md-7 mx-auto">
             <div class="form-wrapper">
@@ -26,7 +26,8 @@
               <div class="row">
                 <img
                   src="/static/Uploads/{{row['profile_pic']}}"
-                  class="col-md-3 mb-2" alt=""
+                  class="col-md-3 mb-2"
+                  alt=""
                 />
                 <div class="col-md-8">
                   <h4 class="text-center">View Student</h4>
@@ -44,6 +45,9 @@
                 </div>
                 <div class="col-md-6">
                   <label>Date Of Birth :</label> {{row["dob"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Enrollment_no :</label> {{row["Enrollment_no"]}}
                 </div>
                 <div class="col-md-6">
                   <label>Email :</label> {{row["email"]}}

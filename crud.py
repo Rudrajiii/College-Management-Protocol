@@ -27,6 +27,20 @@ def index():
 def add():   
     return render_template("add.html")
 
+@app.route("/logic")
+def log():
+    enroll_array = []
+    with sqlite3.connect("users.db") as connection:
+        cur = connection.cursor()
+        cur.execute("SELECT Enrollment_no FROM users;")
+        rows = cur.fetchall()
+        for row in rows:
+            enroll_array.append(row[0])
+    print("Enrollment Numbers:")
+    for enrollment_no in enroll_array:
+        print(enrollment_no == '12023052020037')
+    return "<h1>Enrollment numbers fetched and printed in console.</h1>"
+
 @app.route("/savedetails",methods = ["POST","GET"])
 def saveDetails():
     msg = "msg"
@@ -37,11 +51,12 @@ def saveDetails():
             gender = request.form["gender"]
             contact = request.form["contact"]
             dob = request.form["dob"]
+            Enrollment_no = request.form["Enrollment_no"]
             file = request.files["profile_pic"]
             file.save(os.path.join(app.config['UPLOAD_DIR'],file.filename))
             with sqlite3.connect("users.db") as con:
                 cur = con.cursor()   
-                cur.execute("INSERT into users(name, email, gender, contact, dob, profile_pic) values (?,?,?,?,?,?)",(name,email,gender,contact,dob,file.filename))
+                cur.execute("INSERT into users(name, email, gender, contact, dob, Enrollment_no, profile_pic) values (?,?,?,?,?,?,?)",(name,email,gender,contact,dob,Enrollment_no,file.filename))
                 con.commit()
                 msg = "User successfully Added"   
         except:
@@ -73,19 +88,6 @@ def view_user(id):
             age = round(age, 1)
     return render_template("view_user.html",row = row, now_date = age,)
 
-# @app.route("/<int:id>/view_user", methods=("GET", "POST"))
-# def view_user(id):
-#     row = get_post(id)
-#     with sqlite3.connect("users.db") as con:
-#         cur = con.cursor()
-#         filename_or = row["profile_pic"]
-#         packages =  con.execute('Select date(dob) FROM users WHERE id = ?', (id,)).fetchone()
-#         for dob in packages:
-#             dob = datetime.strptime(dob, '%Y-%m-%d')
-#             age = (datetime.today() - dob).days/365
-#             age = round(age, 1)
-#     return render_template("view_user.html",row = row, now_date = age,)
-
 @app.route("/<int:id>/resize_user", methods=("GET", "POST"))
 def resize_user(id):
     row = get_post(id)
@@ -108,13 +110,14 @@ def edit_user(id):
         gender = request.form["gender"]
         contact = request.form["contact"]
         dob = request.form["dob"]
+        Enrollment_no = request.form["Enrollment_no"]
         with sqlite3.connect("users.db") as con:
             cur = con.cursor()
             query = '''
                 UPDATE users
-                SET name = ?, email = ?, gender = ?, contact = ?, dob = ? where id = ?
+                SET name = ?, email = ?, gender = ?, contact = ?, dob = ? , Enrollment_no = ? where id = ?
             '''
-            cur.execute(query,(name,email,gender,contact,dob,id))
+            cur.execute(query,(name,email,gender,contact,dob,Enrollment_no,id))
             con.commit()
             msg = "Updated Successfully!!"
             return render_template("success.html" , msg = msg)
