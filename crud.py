@@ -23,6 +23,14 @@ def get_post(id):
 def index():
     return render_template("index.html")
 
+@app.route("/student_dashBoard")
+def student():
+    return "<h1>hello from student dashboard</h1>"
+
+@app.route("/stuff_dashBoard")
+def stuff():
+    return "<h1>hello from stuff dashboard</h1>"
+
 @app.route("/add")
 def add():   
     return render_template("add.html")
