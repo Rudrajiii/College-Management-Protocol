@@ -13,15 +13,11 @@ nav{
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 .wrap-menu{
-    width: 40% !important;
+    width: 60% !important;
     display: flex;
     gap: 3vh;
 }
-#profile-image{
-    width: 50px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-}
+
 .profile-logout{
     width: 23%;
     display: flex;
@@ -44,7 +40,7 @@ nav{
     height: 350px;
     cursor: pointer;
     font-size: 1.2rem;
-    background: #d3d4d677;
+    background: #d3d4d6;
     position: absolute !important;
     z-index: 999 !important;
     top: 35%;
@@ -98,8 +94,8 @@ footer p{
     font-family: "Holtwood One SC", serif;
     font-weight: 400;
     font-style: normal;
+    white-space: nowrap;
     color: #565252d5;
-
 }
 #copyright{
     margin-top: 1.2rem;
