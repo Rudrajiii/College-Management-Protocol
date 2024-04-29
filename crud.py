@@ -7,7 +7,7 @@ from resizeimage import resizeimage
 import glob
 import sqlite3
 import os
-import csv
+# import kite
 app = Flask(__name__)
 csv_file_path = 'student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
