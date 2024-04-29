@@ -1,5 +1,5 @@
 from flask import *
-from flask import render_template
+from flask import render_template , jsonify
 from flask import request
 from PIL import Image
 from datetime import  datetime
@@ -7,8 +7,9 @@ from resizeimage import resizeimage
 import glob
 import sqlite3
 import os
-# import kite
+import csv
 app = Flask(__name__)
+csv_file_path = 'student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
 def get_post(id):
@@ -26,8 +27,19 @@ def index():
 
 @app.route("/student_dashBoard")
 def student():
-    return "<h1>hello from student dashboard</h1>"
+    student_data = read_csv(csv_file_path)
+    return render_template("student_dash_board.html" , data=student_data)
 
+def read_csv(your_csv_file):
+    with open(your_csv_file, "r") as csv_reader:
+        csv_file = csv.DictReader(csv_reader)
+        data = [row for row in csv_file]
+    return data
+
+@app.route("/access_data")
+def access_data():
+    student_data = read_csv(csv_file_path)
+    return jsonify(student_data)
 @app.route("/stuff_dashBoard")
 def stuff():
     return "<h1>hello from stuff dashboard</h1>"
