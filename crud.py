@@ -7,7 +7,6 @@ from resizeimage import resizeimage
 import glob
 import sqlite3
 import os
-# import kite
 app = Flask(__name__)
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
