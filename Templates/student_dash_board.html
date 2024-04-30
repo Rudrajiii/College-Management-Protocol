@@ -1,81 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Data Pie Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        *{margin: 0;padding: 0;box-sizing: border-box;}
-        body,html{width: 100%;height: 100%;}
-        #myChart{width: 60%;aspect-ratio: 1/1;position: absolute;}
-    </style>
-</head>
-<body>
-    <canvas id="myChart"></canvas>
-
-    <script>
-        // AJAX request to fetch JSON data from Flask route
-        fetch('/access_data')
-            .then(response => response.json())
-            .then(data => {
-                // Process the JSON data
-                // Object to store department counts
-                const departments = {};
-
-                // Process student data to count occurrences in each department
-                for (const student of data) {
-                    const department = student.department;
-                    departments[department] = (departments[department] || 0) + 1;
-                }
-
-                // Prepare data for Chart.js
-                const dataForChart = {
-                    labels: Object.keys(departments),
-                    datasets: [{
-                        data: Object.values(departments),
-                        backgroundColor: [
-                            '#ffbb99', // Orange
-                            '#99ff99', // Green
-                            '#ff99ff', // Pink
-                            '#c2c2f0', // Light blue
-                            '#f0c2c2', // Light red
-                            '#c2f0f0', // Light blue-green
-                            '#cccccc', // Light gray
-                            '#ffb3b3', // Light pink
-                            '#99ccff', // Light sky blue
-                            '#b3ffb3', // Light green
-                            '#ffcccc', // Light coral
-                            '#99e6e6', // Light cyan
-                            '#ffd966', // Light yellow
-                            '#d9b3ff', // Light purple
-                            //More color will be added in future.
-                        ],
-                    }],
-                };
-
-                // Configuration for Chart.js
-                const config = {
-                    type: 'pie',
-                    data: dataForChart,
-                    options: {
-                        responsive: true, // Maintain aspect ratio on resize
-                        plugins: {
-                            legend: {
-                                display: true, // Show department labels
-                                position: 'top', // Place legend at the top
-                            },
-                        },
-                    },
-                };
-
-                // Get canvas element
-                const ctx = document.getElementById('myChart').getContext('2d');
-
-                // Create pie chart
-                const myChart = new Chart(ctx, config);
-            })
-            .catch(error => console.error('Error fetching JSON:', error));
-    </script>
-</body>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/student_dash_board.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/student_dash_board.js') }}" defer></script>
+  </head>
+  <body>
+        <canvas id="myChart" height="500" width="500"></canvas>
+  </body>
 </html>
