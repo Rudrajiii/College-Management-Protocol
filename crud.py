@@ -1,18 +1,20 @@
-from flask import *
-from flask import render_template , jsonify
+from flask import render_template , jsonify , abort
+from data import get_data , Enrollment_logs
+from resizeimage import resizeimage
+from datetime import  datetime
 from flask import request
 from PIL import Image
-from datetime import  datetime
-from resizeimage import resizeimage
-import glob
-import random
+from flask import *
 import sqlite3
-import os
+import random
+import glob
 import csv
+import os
 app = Flask(__name__)
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
+
 def get_post(id):
     con = sqlite3.connect("users.db")
     con.row_factory = sqlite3.Row
@@ -25,6 +27,15 @@ def get_post(id):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+#!Here is a problem have to fix it later!!!
+@app.route('/login', methods=['POST'])
+def login():
+    auth = request.authorization
+    if auth and auth.username == 'admin' and auth.password == 'password':
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'error': 'Invalid credentials'}), 401
 
 @app.route("/student_dashBoard")
 def student():
@@ -46,7 +57,7 @@ def modified_csv_data():
         reader = csv.DictReader(csvfile)
         for row in reader:
             data.append(row)
-    print(data)
+    # print(data)
 # Count the number of rows and calculate the desired number of CSE entries
     total_rows = len(data)
     cse_min_count = total_rows * 0.4
@@ -93,17 +104,7 @@ def add():
 
 @app.route("/logic")
 def log():
-    enroll_array = []
-    with sqlite3.connect("users.db") as connection:
-        cur = connection.cursor()
-        cur.execute("SELECT Enrollment_no FROM users;")
-        rows = cur.fetchall()
-        for row in rows:
-            enroll_array.append(row[0])
-    print("Enrollment Numbers:")
-    for enrollment_no in enroll_array:
-        print(enrollment_no == '12023052020037')
-    return "<h1>Enrollment numbers fetched and printed in console.</h1>"
+    return Enrollment_logs()
 
 @app.route("/savedetails",methods = ["POST","GET"])
 def saveDetails():
@@ -162,7 +163,7 @@ def resize_user(id):
             with Image.open(f) as image:
                 cover = resizeimage.resize_cover(image, [200, 200])
                 cover.save('static/Uploads/' + filename_or, image.format)      
-    return render_template("index.html");
+    return render_template("index.html")
 
 @app.route("/<int:id>/edit_user", methods=("GET", "POST"))
 def edit_user(id):
@@ -196,6 +197,9 @@ def delete_user(id):
         con.commit()
         return redirect(url_for('delete_user'))
     
+@app.route('/secret')
+def secret():
+    return get_data()
 
 if __name__ == "__main__":
     app.run(debug = True)
