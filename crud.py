@@ -195,7 +195,7 @@ def delete_user(id):
         cur = con.cursor() 
         con.execute('DELETE FROM users WHERE id = ?', (id,))
         con.commit()
-        return redirect(url_for('delete_user'))
+    return render_template("index.html")
     
 @app.route('/secret')
 def secret():
