@@ -10,7 +10,7 @@ def requires_admin_auth(func):
             return jsonify({'error': 'Unauthorized access'}), 401  # Unauthorized
         return func(*args, **kwargs)
     return wrapper
-@requires_admin_auth
+# @requires_admin_auth
 def get_data():
     try:
         conn = sqlite3.connect('users.db')
@@ -24,7 +24,7 @@ def get_data():
 
         return jsonify({'error': str(e)})
     
-@requires_admin_auth
+# @requires_admin_auth
 def Enrollment_logs():
     enroll_array = []
     with sqlite3.connect("users.db") as connection:
