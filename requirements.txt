@@ -1,0 +1,5 @@
+flask
+pillow
+python-resize-image
+
+
