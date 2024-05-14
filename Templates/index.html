@@ -4,19 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Student Management System{% endblock %}</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/app.css')}}">
     <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/index.css')}}">
     <script src="{{ url_for('static', filename='javascripts/index.js') }}" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div id="loader">
+    <!-- <div id="loader">
         <h2 class="head">Loading..
         <h1>0%</h1>
-    </div>
+    </div> -->
+    <!-- ?nav bar code -->
     <div class="nav">
-        <h1>STUDENT MANAGEMENT SYSTEM</h1>
+        <div class="logo">
+            <img src="https://tse4.mm.bing.net/th?id=OIP.ageHnS8e-mHiDvTd8or35AHaCg&pid=Api&P=0&h=180" alt="Logo">
+        </div>
+        <div class="btns">
+            <button class="apply">Apply Now</button>
+            <button class="login">Login</button>
+        </div>
     </div>
     {% block content%}
-    <main>
+
+    <!-- ?Header Block Code -->
+
+    <!-- <main>
         <div class="grab">
             <div class="nav_menu">
                 <div class="contain">
@@ -31,10 +43,38 @@
                 <img src="" alt="">
             </div>
         </div>
-    </main>
+    </main> -->
+    <header>
+        <div class="subheader">
+            <h1>EDUCAVO</h1>
+            <ul>
+                <li>Home</li>
+                <li>Contact</li>
+                <li>Campous</li>
+                <li>Courses</li>
+            </ul>
+            <a href="">Menu <i class="fa-solid fa-bars"></i></a>
+        </div>
+        <div class="middleheader">
+            <h1>Persue Your Passion</h1>
+            <h1 id="university">Evucavo University</h1>
+            <h1>In India</h1>
+            <a href="/student_dashBoard" class="btn">
+                Discover More
+            </a>
+
+        </div>
+        <div class="footerheader">
+            <div class="box1 box"></div>
+            <div class="box2 box"></div>
+            <div class="box3 box"></div>
+            <div class="box4 box"></div>
+        </div>
+    </header>
+
     {% endblock %}
     <footer>
-        <h2><span class="right">~Made by Rudra</span><span>❤️</span><span class="right">Saha~</span></h2>
+        <!-- <h2><span class="right">~Made by Rudra</span><span>❤️</span><span class="right">Saha~</span></h2> -->
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

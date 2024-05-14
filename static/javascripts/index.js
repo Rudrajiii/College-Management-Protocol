@@ -23,7 +23,7 @@ timeLine.to('#loader .head',{
 timeLine.to("#loader h1",{
     delay:0.5,
     duration:1,
-    onStart:time()
+    // onStart:time()
 })
 timeLine.to("#loader",{
     top:"-100vh",
