@@ -1,0 +1,40 @@
+ <!-- 17/5/24 edit start by satyadeep -->
+
+<html>
+    <head><title>Teacher login PAGE</title></head>
+    <body>
+      </body>
+      <h1>  <Marquee height="76" bgcolor="#F000CF" behavior="alternate" scrollamount="34" id="pr" onmouseover="document.all.pr.stop () " onmouseleave="document.all.pr.start () ">teacher login Page</Marquee></h1>
+        <div>
+            <table align="right" bgcolor="#F2F4E1" cellpadding = "20" cellspacing="0">
+                <tr>
+                    <th width ="1090" height="10"></th>
+                    <th><h2><b><a href="{{url_for('index')}}">home</a></b></h2></th>
+                    <th><h2><b><a href="">Teacher Login</a></b></h2></th>
+                    <th><h2><b><a href="{{url_for('student_login')}}">Student Login</a></b></h2></th>
+                    <th><h2><b><a href="{{url_for('admin_login')}}">Admin login</a></b></h2></th>
+                </tr>
+            </table>
+        </div>
+        <table border="1" align="center" width="350" height="300">
+        <form method="post" action="">
+                <td align="center">Enrollment no.</td>
+                <td><input type="text" name="enrollment" placeholder="your enrollment no. here" required="yes"></td>
+            </tr>
+            <tr>
+                <td align="center">Username</td>
+                <td><input type="text" name="username" placeholder="your username here" required="yes"></td>
+            </tr>
+            <tr>
+                <td align="center">Password</td>
+                <td><input type="password" name="password" placeholder="your password here" required="yes"></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="submit" name="submit" value="submit"></td>
+            </tr>
+        </form>
+      </table>
+    </body>
+</html>
+
+ <!-- 17/5/24 edit end by satyadeep -->
