@@ -9,8 +9,11 @@ def admin_login_db(enrollment_no,username,password):
     # Acessing creators/admins Collection
     collection = db.creators
     admins = collection.find_one({"username": username , "enrollment_no": enrollment_no , "password": password})
+    print(admins)
     if admins == None:
         return 0
     else:
         return 1
-admin_login_db('xxxx' , "Rudra" , '123')
+admin_login_db('xxxx' , "Rudra" , '1234')
+
+
