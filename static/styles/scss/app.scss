@@ -59,7 +59,7 @@ header{
     background-position: center center;
     image-rendering: pixelated;
     filter: brightness(1.1) contrast(1) saturate(1.2);
-    backdrop-filter:blur(2px);
+    // backdrop-filter:blur(2px);
     background-size: cover;
     .subheader{
         width: 100%;
@@ -144,9 +144,16 @@ header{
             width: 250px;
             aspect-ratio: 1/1;
             // border: 2px solid blue;
+            display: grid;
+            place-items: center;
             background: #e6e2e2fe;
             border-radius: .5rem;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+            img{
+                width: 90px;
+                aspect-ratio: 1/1;
+                mix-blend-mode: multiply;
+            }
         }
     }
 }

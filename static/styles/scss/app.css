@@ -64,8 +64,6 @@ header {
   background-position: center center;
   image-rendering: pixelated;
   filter: brightness(1.1) contrast(1) saturate(1.2);
-  -webkit-backdrop-filter: blur(2px);
-          backdrop-filter: blur(2px);
   background-size: cover;
 }
 header .subheader {
@@ -147,7 +145,14 @@ header .footerheader {
 header .footerheader .box {
   width: 250px;
   aspect-ratio: 1/1;
+  display: grid;
+  place-items: center;
   background: rgba(230, 226, 226, 0.9960784314);
   border-radius: 0.5rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+header .footerheader .box img {
+  width: 90px;
+  aspect-ratio: 1/1;
+  mix-blend-mode: multiply;
 }/*# sourceMappingURL=app.css.map */
