@@ -4,12 +4,22 @@ from resizeimage import resizeimage
 from datetime import  datetime
 from flask import request
 from PIL import Image
+from functions import *
 from flask import *
 import sqlite3
 import random
 import glob
 import csv
 import os
+
+class DataStore():
+    a = None
+    b = None
+    c = None
+
+data = DataStore()
+
+
 app = Flask(__name__)
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
@@ -27,6 +37,55 @@ def get_post(id):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route('/admin_login', methods = ['POST', 'GET'])
+def admin_login():
+    if(request.method == 'POST'):
+        enrollment_no = request.form.get('enrollment')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        var1 = admin_login_db(enrollment_no,username,password)
+        if var1 == 0:
+            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
+            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
+        elif var1 == 1:
+            return f'''<h1>Login Sucessfull</h1>'''
+    return render_template("admin_login.html")
+
+
+# Route function of teacher login
+@app.route('/teacher_login', methods = ['POST', 'GET'])
+def teacher_login():
+    if(request.method == 'POST'):
+        enrollment_no = request.form.get('enrollment')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        var1 = teacher_login_db(enrollment_no,username,password)
+        if var1 == 0:
+            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
+            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
+        elif var1 == 1:
+            return f'''<h1>Login Sucessfull</h1>'''
+    return render_template("teacher_login.html")
+
+
+#Route fuction of student login
+
+@app.route('/student_login', methods = ['POST', 'GET'])
+def student_login():
+    if(request.method == 'POST'):
+        enrollment_no = request.form.get('enrollment')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        var1 = student_login_db(enrollment_no,username,password)
+        if var1 == 0:
+            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
+            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
+        elif var1 == 1:
+            return f'''<h1>Login Sucessfull</h1>'''
+    return render_template("student_login.html")
 
 #!Here is a problem have to fix it later!!!
 @app.route('/login', methods=['POST'])

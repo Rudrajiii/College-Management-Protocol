@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Holtwood+One+SC&family=Kalam:wght@300;400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Holtwood+One+SC&family=Kalam:wght@300;400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -23,6 +25,9 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
+  font-family: "Merriweather", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 .nav .logo {
   width: 13vw;
@@ -55,6 +60,10 @@
   font-weight: 600;
   background: rgba(230, 226, 226, 0.9176470588);
 }
+.nav .btns .login a {
+  text-decoration: none;
+  color: black;
+}
 
 header {
   width: 100%;
@@ -76,24 +85,32 @@ header .subheader {
 header .subheader h1 {
   color: #272626;
   background: rgba(219, 239, 240, 0.9176470588);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
   padding: 0.75rem;
   border-radius: 0.5rem;
+  font-size: 1.5rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 header .subheader ul {
   display: flex;
+  justify-content: center;
+  align-items: center;
   list-style: none;
+  margin-top: 1rem;
   gap: 2vh;
   margin-left: 4rem;
   background: rgba(219, 239, 240, 0.9176470588);
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-  padding: 1.1rem;
+  padding: 1rem;
   border-radius: 0.5rem;
 }
 header .subheader ul li {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: #272626;
-  font-weight: 700;
+  font-weight: 400 !important;
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
 }
 header .subheader a {
   text-decoration: none;
@@ -104,6 +121,10 @@ header .subheader a {
   padding: 0.78rem;
   border-radius: 0.5rem;
   font-weight: 600;
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-weight: 400 !important;
   gap: 2vh;
 }
 header .subheader a i {
@@ -115,13 +136,14 @@ header .middleheader {
   width: 100%;
   height: 46vh;
   display: flex;
-  gap: 2vh;
+  gap: 0.2vh;
   flex-direction: column;
   align-items: flex-start;
   padding: 3rem;
 }
 header .middleheader h1 {
   color: #fff;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
 }
 header .middleheader #university {
   font-size: 4rem;
@@ -134,6 +156,18 @@ header .middleheader .btn {
   font-size: 1.2rem;
   font-weight: 600;
   background: #fff;
+}
+header #for-mobile-device {
+  width: 100%;
+  height: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+}
+header #for-mobile-device #lastCard {
+  margin-left: 10rem;
 }
 header .footerheader {
   width: 100%;
@@ -149,10 +183,68 @@ header .footerheader .box {
   place-items: center;
   background: rgba(230, 226, 226, 0.9960784314);
   border-radius: 0.5rem;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
+  font-size: 1rem !important;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 header .footerheader .box img {
   width: 90px;
   aspect-ratio: 1/1;
   mix-blend-mode: multiply;
+}
+
+main {
+  width: 100%;
+  border: 2px solid;
+  min-height: 100vh;
+  background: red;
+}
+
+@media (max-width: 1330px) {
+  .footerheader {
+    width: 100%;
+    height: 25vh;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+  }
+  .footerheader .box2 {
+    margin-left: 10rem;
+  }
+  .footerheader .box3 {
+    margin-right: 10rem;
+  }
+}
+@media (max-width: 590px) {
+  #university {
+    font-size: 3rem !important;
+  }
+}
+@media (max-width: 461px) {
+  #university {
+    font-size: 2rem !important;
+  }
+}
+@media (max-width: 413px) {
+  #for-mobile-device .box {
+    margin: auto;
+  }
+  #for-mobile-device #lastCard {
+    display: none;
+  }
+}
+@media (max-width: 368px) {
+  .middleheader {
+    padding: 1rem !important;
+  }
+  .middleheader h1 {
+    font-size: 2rem !important;
+  }
+  .middleheader #university {
+    font-size: 2.1rem !important;
+  }
+  .middleheader .btn {
+    padding: 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
 }/*# sourceMappingURL=app.css.map */

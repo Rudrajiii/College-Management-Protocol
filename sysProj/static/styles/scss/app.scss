@@ -1,4 +1,6 @@
 @forward "globals";
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Holtwood+One+SC&family=Kalam:wght@300;400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Holtwood+One+SC&family=Kalam:wght@300;400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap');
 #loader h1{
     font-family: "CanvasNera", serif;
     font-weight: 400;
@@ -9,13 +11,24 @@
     bottom: 2rem;
     color: #bcbcc4;
 }
-
+@mixin font-style {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+@mixin font-style-heading {
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    
+}
 .nav{
     width: 100%;
     height: 12vh;
     display: flex;
     align-items: center;
     justify-content: space-around;
+    @include font-style;
     .logo{
         width: 13vw;
         padding: .7rem;
@@ -45,6 +58,10 @@
             font-size: 1rem;
             font-weight: 600;
             background: #e6e2e2ea;
+            a{
+                text-decoration: none;
+                color: black;
+            }
        }
         
     }
@@ -54,6 +71,7 @@ header{
     width: 100%;
     height: 70vh;
     // background: red;
+    
     background-image: url(https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjN8fHN0dWRlbnR8ZW58MHx8MHx8fDA%3D);
     background-repeat: no-repeat;
     background-position: center center;
@@ -71,23 +89,29 @@ header{
         h1{
             color: #272626;
             background: #dbeff0ea;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
             padding: .75rem;
             border-radius: .5rem;
+            font-size: 1.5rem;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
         }
         ul{
             display: flex;
+            justify-content: center;
+            align-items: center;
             list-style: none;
+            margin-top: 1rem;
             gap: 2vh;
             margin-left: 4rem;
             background: #dbeff0ea;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-            padding: 1.1rem;
+            padding: 1rem;
             border-radius: .5rem;
             li{
-                font-size: 1.5rem;
+                font-size: 1.4rem;
                 color: #272626;
-                font-weight: 700;
+                font-weight: 400 !important;
+                @include font-style-heading;
             }
         }
         a{
@@ -99,6 +123,8 @@ header{
             padding: .78rem;
             border-radius: .5rem;
             font-weight: 600;
+            @include font-style-heading;
+            font-weight: 400 !important;
             gap: 2vh;
              i{
                 color: black;
@@ -106,18 +132,22 @@ header{
                 aspect-ratio: 1/1;
              }
         }
+        #dropdown2{
+            
+        }
     }
     .middleheader{
         width: 100%;
         height: 46vh;
         display: flex;
-        gap: 2vh;
+        gap: .2vh;
         flex-direction: column;
         align-items: flex-start;
         padding: 3rem;
         // border: 2px solid black;
         h1{
             color: #fff;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
         }
         #university{
             font-size: 4rem;
@@ -132,10 +162,25 @@ header{
             background: #fff;
         }
     }
+    #for-mobile-device{
+        width: 100%;
+        height: auto;
+        // border: 3px solid;
+        // background: red;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2vh;
+        #lastCard{
+            margin-left: 10rem;
+        }
+    }
     .footerheader{
         width: 100%;
         height: 25vh;
         // border: 3px solid;
+        // background: red;
         position: relative;
         display: flex;
         // align-items: center;
@@ -148,12 +193,76 @@ header{
             place-items: center;
             background: #e6e2e2fe;
             border-radius: .5rem;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
+            font-size: 1rem !important;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
             img{
                 width: 90px;
                 aspect-ratio: 1/1;
                 mix-blend-mode: multiply;
             }
+        }
+    }
+}
+main{
+    width: 100%;
+    border: 2px solid ;
+    min-height: 100vh;
+    background: red;
+}
+@media (max-width: 1330px) {
+    
+    .footerheader {
+        width: 100%;
+        height: 25vh;
+        // border: 3px solid;
+        position: relative;
+        display: flex;
+        // align-items: center;
+        justify-content: space-between;
+        .box2{
+            margin-left: 10rem;
+        }
+        .box3{
+            margin-right: 10rem;
+        }
+    }
+  }
+@media (max-width:590px){
+    #university{
+        font-size: 3rem !important;
+    }
+}
+@media (max-width:461px){
+    #university{
+        font-size: 2rem !important;
+    }
+}
+@media (max-width:413px){
+    #for-mobile-device{
+        .box{
+            margin: auto;
+        }
+        #lastCard{
+            display: none;
+            
+        }
+    }
+}
+@media (max-width:368px){
+    .middleheader{
+        padding: 1rem !important;
+        h1{
+            font-size: 2rem !important;
+            // white-space: nowrap;
+        }
+        #university{
+            font-size: 2.1rem !important;
+            // white-space: nowrap;
+        }
+        .btn{
+            padding: .5rem !important;
+            font-size: .9rem !important;
         }
     }
 }

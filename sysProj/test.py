@@ -1,5 +1,3 @@
-print('helo')
-
 import pymongo
 
 def admin_login_db(enrollment_no,username,password):
@@ -15,5 +13,7 @@ def admin_login_db(enrollment_no,username,password):
     else:
         return 1
 admin_login_db('xxxx' , "Rudra" , '1234')
+
+
 
 
