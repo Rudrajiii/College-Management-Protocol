@@ -287,6 +287,10 @@ main{
                 width: 500px;
                 height: 500px;
                 padding: 1.5rem;
+                display: flex;
+                // align-items: center;
+                flex-direction: column;
+                justify-content: center;
                 // border: 2px solid blue;
                 button{
                     padding: .7rem 1.2rem;
@@ -297,7 +301,8 @@ main{
         }
     }
     .newContent{
-        background: #EAECEB;
+        // background: #EAECEB;
+        background: #7ce3af;
         width: 100%;
         height: 140vh;
         // background: #000;
@@ -307,7 +312,23 @@ main{
             // background: yellow !important;
         }
     }
+    .nextContent{
+        width: 100%;
+        // border: 2px solid;
+        // background: red;
+        min-height: 100vh;
+        .nextBlankSpaceForResponsiveness{
+            width: 100%;
+            height: 10vh;
+            // background: yellow;
+        }
+        .nextBlankSpaceForResponsiveness2{
+            height: 1vh;
+            // background: blue;
+        }
+    }
 }
+
 @media (max-width: 1330px) {
     
     .footerheader {
@@ -357,6 +378,17 @@ main{
 }
 @media (max-width: 1009px){
     main{
+        .nextContent{
+            .nextBlankSpaceForResponsiveness{
+                min-height: 50vh;
+                // background: yellow;
+            }
+            .nextBlankSpaceForResponsiveness2{
+                min-height: 50vh;
+                // background: blue;
+                // display: none;
+            }
+        }
         .newContent{
             width: 100%;
             height: 170vh;
@@ -383,7 +415,18 @@ main{
             }
             .rightDiv{
                 width: 100%;
-                background: green;
+                // background: green;
+            }
+        }
+    }
+}
+@media (max-width: 768px){
+    .main{
+        .nextContent{
+            .nextBlankSpaceForResponsiveness2{
+                // height: 50vh;
+                // background: blue;
+                display: flex !important;
             }
         }
     }
@@ -391,6 +434,86 @@ main{
 @media (max-width:590px){
     #university{
         font-size: 3rem !important;
+    }
+}
+@media (max-width:575px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 120rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:545px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 115rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:530px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 110rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:465px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 101rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:440px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 101rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:420px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 90rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:399px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 90rem;
+            }
+            
+        }
+    }
+}
+@media (max-width:360px){
+    main{
+        .nextContent{
+            .container{
+                margin-top: 75rem;
+            }
+            
+        }
     }
 }
 @media (max-width:502px){
@@ -436,6 +559,48 @@ main{
         .btn{
             padding: .5rem !important;
             font-size: .9rem !important;
+        }
+    }
+}
+@media (max-width:389px){
+    .contentStart{
+        .rightDiv{
+            .center{
+                width: 310px !important;
+            }
+        }
+    }
+}
+@media (max-width:358px){
+    .contentStart{
+        .leftDiv{
+            .holded{
+                .card2{
+                    width: 250px !important;
+                }
+                
+                
+            }
+        }
+    }
+}
+@media (max-width:310px){
+    .contentStart{
+        .leftDiv{
+            .holded{
+                width: 230px;
+                // background: red;
+                .card1{
+                    width: 200px !important;
+                }
+                
+                
+            }
+        }
+        .rightDiv{
+            .center{
+                width: 270px !important;
+            }
         }
     }
 }

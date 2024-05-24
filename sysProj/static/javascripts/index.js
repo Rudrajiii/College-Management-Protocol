@@ -48,6 +48,7 @@ function checkWindowSize() {
     const jkj = document.getElementById('jkj');
     const dropdown_menu2 = document.getElementById('dropdown-menu2');
     const blankSpace_forMovile_devices = document.querySelector('.blankSpace-forMovile-devices');
+    const nextBlankSpaceForResponsiveness2 = document.querySelector('nextBlankSpaceForResponsiveness2');
     
     if (window.innerWidth <= 1320) {
         if(cpy_div){
@@ -107,6 +108,15 @@ function checkWindowSize() {
             login.style.display = 'grid';
         }
     }
+    // if(window.innerWidth < 768 ){
+    //     if(nextBlankSpaceForResponsiveness2){
+    //         nextBlankSpaceForResponsiveness2.style.display = 'block';
+    //     }
+    // }else{
+    //         if(nextBlankSpaceForResponsiveness2){
+    //             nextBlankSpaceForResponsiveness2.style.display = 'none';
+    //         }
+    // }
     if(window.innerWidth > 895){
         if(dropdown2){
             dropdown2.style.display = 'none';
