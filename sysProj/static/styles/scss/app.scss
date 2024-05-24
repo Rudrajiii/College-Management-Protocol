@@ -302,9 +302,11 @@ main{
     }
     .newContent{
         // background: #EAECEB;
-        background: #7ce3af;
+        background: #a5ecc8df;
         width: 100%;
         height: 140vh;
+        z-index: -1;
+        
         // background: #000;
         .firstBlankDiv{
             width: 100%;
@@ -326,6 +328,23 @@ main{
             height: 1vh;
             // background: blue;
         }
+    }
+    .logos{
+        width: 100%;
+        // background: yellow;
+        height: 20vh;
+    }
+    .reviewContent{
+        width: 100%;
+        // background: red;
+        min-height: 100vh;
+        
+    }
+}
+footer{
+    margin-top: 2rem;
+    a{
+        text-decoration: none;
     }
 }
 
