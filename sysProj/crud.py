@@ -24,7 +24,7 @@ app = Flask(__name__)
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
-
+app.secret_key = 'opejfjfjjsjkseiiwiei45884&&&*())*$#@@$'
 def get_post(id):
     con = sqlite3.connect("users.db")
     con.row_factory = sqlite3.Row
@@ -45,11 +45,15 @@ def admin_login():
         username = request.form.get('username')
         password = request.form.get('password')
         var1 = admin_login_db(enrollment_no,username,password)
-        if var1 == 0:
-            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
-            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
-        elif var1 == 1:
-            return f'''<h1>Login Sucessfull</h1>'''
+
+        if var1:
+            session['username'] = username
+            session['role'] = 'admin'
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
+            return redirect(url_for('admin_login'))   #if the username or password does not matches 
+        
     return render_template("admin_login.html")
 
 
@@ -62,11 +66,15 @@ def teacher_login():
         password = request.form.get('password')
 
         var1 = teacher_login_db(enrollment_no,username,password)
-        if var1 == 0:
-            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
-            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
-        elif var1 == 1:
-            return f'''<h1>Login Sucessfull</h1>'''
+
+        if var1:
+            session['username'] = username
+            session['role'] = 'teacher'
+            return redirect(url_for('teacher_dashboard'))
+        else:
+            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
+            return redirect(url_for('teacher_login'))    #if the username or password does not matches 
+
     return render_template("teacher_login.html")
 
 
@@ -75,19 +83,47 @@ def teacher_login():
 @app.route('/student_login', methods = ['POST', 'GET'])
 def student_login():
     if(request.method == 'POST'):
-        enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
         password = request.form.get('password')
+        enrollment_no = request.form.get('enrollment')
 
         var1 = student_login_db(enrollment_no,username,password)
-        if var1 == 0:
-            return f'''<h1>username {username} or enrollment no.  {enrollment_no}</h1>
-            <h1>password {password} in wrong please recheck again</h1>'''    #if the username or password does not matches 
-        elif var1 == 1:
-            return f'''<h1>Login Sucessfull</h1>'''
+        if var1:
+            session['username'] = username
+            session['role'] = 'student'
+            return redirect(url_for('student_dashboard'))
+        else:
+            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
+            return redirect(url_for('student_login'))
     return render_template("student_login.html")
 
-#!Here is a problem have to fix it later!!!
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    return render_template('admin_dashboard.html', username=session['username'])
+
+@app.route('/teacher_dashboard')
+def teacher_dashboard():
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+    return render_template('teacher_dashboard.html', username=session['username'])
+
+@app.route('/student_dashboard')
+def student_dashboard():
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    return render_template('student_dashboard.html', username=session['username'])
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('role', None)
+    return redirect(url_for('index'))
+
+
+#!No to need to present in this file
+#todo Here is a problem have to fix it later!!!
 @app.route('/login', methods=['POST'])
 def login():
     auth = request.authorization
@@ -96,6 +132,7 @@ def login():
     else:
         return jsonify({'error': 'Invalid credentials'}), 401
 
+#!No to need to present in this file
 @app.route("/student_dashBoard")
 def student():
     student_data = read_csv(csv_file_path)
@@ -149,22 +186,22 @@ def modified_csv_data():
         for row in new_data:
             writer.writerow(row)
 
+#!No to need to present in this file
 @app.route("/access_data")
 def access_data():
     student_data = read_csv(csv_file_path)
     return jsonify(student_data)
-@app.route("/stuff_dashBoard")
-def stuff():
-    return "<h1>hello from stuff dashboard</h1>"
 
 @app.route("/add")
 def add():   
     return render_template("add.html")
 
+#!No to need to present in this file
 @app.route("/logic")
 def log():
     return Enrollment_logs()
 
+#!No to need to present in this file
 @app.route("/savedetails",methods = ["POST","GET"])
 def saveDetails():
     msg = "msg"
@@ -256,6 +293,7 @@ def delete_user(id):
         con.commit()
     return render_template("delete_user.html")
     
+#!No to need to present in this file
 @app.route('/secret')
 def secret():
     return get_data()
