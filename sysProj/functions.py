@@ -1,5 +1,3 @@
-# 17/5/24 edit start by satyadeep
-
 import pymongo
 
 
@@ -43,5 +41,23 @@ def student_login_db(enrollment_no,username,password):
     else:
         return 1
 
+def test(username):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    db = client['project']  
+    users_collection = db['creators']
+    admin_details = users_collection.find_one({'username': username})
+    return admin_details
 
-# 17/5/24 edit end by satyadeep
+def count_students():
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    db = client['project']  
+    students_collection = db['students']
+    total_student_count = students_collection.count_documents({})
+    return total_student_count
+
+def count_teachers():
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    db = client['project']  
+    teachers_collection = db['teachers']
+    total_teachers_count = teachers_collection.count_documents({})
+    return total_teachers_count

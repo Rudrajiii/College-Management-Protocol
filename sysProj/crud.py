@@ -1,6 +1,7 @@
 from flask import render_template , jsonify , abort
 from data import get_data , Enrollment_logs
 from resizeimage import resizeimage
+from pymongo import MongoClient
 from datetime import  datetime
 from flask import request
 from PIL import Image
@@ -8,6 +9,7 @@ from functions import *
 from flask import *
 import sqlite3
 import random
+import time 
 import glob
 import csv
 import os
@@ -25,6 +27,8 @@ csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
 app.secret_key = 'opejfjfjjsjkseiiwiei45884&&&*())*$#@@$'
+client = MongoClient('mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/')
+
 def get_post(id):
     con = sqlite3.connect("users.db")
     con.row_factory = sqlite3.Row
@@ -38,26 +42,57 @@ def get_post(id):
 def index():
     return render_template("index.html")
 
+#?Route fuction of admin login
+
 @app.route('/admin_login', methods = ['POST', 'GET'])
 def admin_login():
     if(request.method == 'POST'):
+        start_time = time.time()  # Record the start time
+
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
         password = request.form.get('password')
         var1 = admin_login_db(enrollment_no,username,password)
+        user_profile = test(username)
+        if user_profile is None:
+                flash('Invalid username. Please try again.', 'error')
+                return redirect(url_for('admin_login'))
+
+        print(test(username))
+        print(count_students())
+        print(count_teachers())
+        check = test(username)['profilepic']
+        print("Profile pic value:", check)
+        session['username'] = test(username)['username']
+        session['password'] = test(username)['password']
+        session['enrollment_no'] = test(username)['enrollment_no']
+        session['profilepic'] = test(username)['profilepic']
+        if check != 'None' :
+            session['profilepic'] = test(username)['profilepic']
+        else:
+            session['profilepic'] = 'https://github.com/Rudrajiii/Recipe-App/blob/main/public/images/uploads/default.jpg?raw=true'
+        session['total_student'] = count_students()
+        session['total_teacher'] = count_teachers()
+
+        
 
         if var1:
             session['username'] = username
             session['role'] = 'admin'
-            return redirect(url_for('admin_dashboard'))
+
+            loading_time = time.time() - start_time
+            delay = max(0, loading_time) 
+            print(delay)
+            session['delay'] = delay
+            return render_template("admin_dashboard.html", username=username)
         else:
             flash('Invalid username, enrollment number, or password. Please try again.', 'error')
-            return redirect(url_for('admin_login'))   #if the username or password does not matches 
+            return redirect(url_for('admin_login'))    #if the username or password does not matches 
         
-    return render_template("admin_login.html")
+    return render_template("admin_login.html" , delay=session.get('delay', 0))
 
+#? Route function of teacher login
 
-# Route function of teacher login
 @app.route('/teacher_login', methods = ['POST', 'GET'])
 def teacher_login():
     if(request.method == 'POST'):
@@ -78,7 +113,7 @@ def teacher_login():
     return render_template("teacher_login.html")
 
 
-#Route fuction of student login
+#?Route fuction of student login
 
 @app.route('/student_login', methods = ['POST', 'GET'])
 def student_login():
@@ -99,9 +134,19 @@ def student_login():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
+    total_student_count = session['total_student']
+    total_teacher_count = session['total_teacher']
+    admin_profile_image = session['profilepic']
+
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    return render_template('admin_dashboard.html', username=session['username'])
+
+    return render_template('admin_dashboard.html', 
+            username=session['username'] ,
+            total_student_count=total_student_count,
+            total_teacher_count=total_teacher_count,
+            admin_profile_image=admin_profile_image
+                        )
 
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
@@ -114,6 +159,33 @@ def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
     return render_template('student_dashboard.html', username=session['username'])
+
+@app.route('/admin_profile')
+def admin_profile():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    admin_username = session['username']
+    admin_password = session['password']
+    admin_enrollment = session['enrollment_no']
+    admin_profile_image = session['profilepic']
+    return render_template('admin_profile.html',
+                        admin_username=admin_username,
+                        admin_password=admin_password,
+                        admin_enrollment=admin_enrollment,
+                        admin_profile_image=admin_profile_image
+                        )
+
+
+@app.route('/student_profile')
+def student_profile():
+    ...
+
+
+@app.route('/teacher_profile')
+def teacher_profile():
+    ...
+
 
 @app.route('/logout')
 def logout():
@@ -300,4 +372,5 @@ def secret():
 
 if __name__ == "__main__":
     app.run(debug = True)
-    modified_csv_data()  
+    modified_csv_data()
+    test('Rudra')  

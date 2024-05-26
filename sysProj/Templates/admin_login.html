@@ -125,9 +125,41 @@
         text-align: center;
         margin-top: 10px;
       }
+      .loading-page{
+        width: 100%;
+        height: 100%;
+        position: relative;
+        /* z-index: 9;
+        background: #000; */
+      }
+      .loader {
+            display: none;
+            /* background: #000; */
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
   </head>
   <body>
+    <div class="loading-page">
+      <div class="loader"></div>
+    </div>
     <div class="login-container">
       <div class="social-icons">
         <a href="" target="_blank" class="facebook"
@@ -144,7 +176,7 @@
         <input type="text" name="username" placeholder="Student Username" required="yes" />
         <input type="password" name="password" placeholder="Enter Password" required="yes"/>
         <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>
-        <input type="submit" value="Login" />
+        <input type="submit" value="Login" id="sub"/>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -162,5 +194,22 @@
       </form>
 
     </div>
+    <script>
+      const sub = document.getElementById('sub');
+      const delayTime = {{ delay }};
+      sub.addEventListener("click" ,() => {
+        // z-index: 9;
+        // background: #000;
+        document.querySelector('.loader').style.display = 'block';
+        document.querySelector('.loading-page').style.zIndex = '9';
+        document.querySelector('.loading-page').style.background = 'black';
+            let delayTime = document.getElementById('invisble').value;
+            console.log(delayTime);
+            // Redirect the user to the dashboard after the specified delay
+            setTimeout(function() {
+              document.querySelector('.loader').style.display = 'none';
+            },delayTime)
+      })
+    </script>
   </body>
 </html>

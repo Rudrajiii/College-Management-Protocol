@@ -35,7 +35,7 @@ fetch("/access_data")
     };
 
     const config = {
-      type: "pie",
+      type: "doughnut",
       data: dataForChart,
       options: {
         responsive: false, 
