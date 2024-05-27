@@ -1,14 +1,15 @@
 // Sample data
-const cardData = {
-    imgSrc: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTY0Mzk4NjU1Mw&ixlib=rb-1.2.1&q=80&w=200",
-    name: "David Grant",
-    skill: "3D artist",
-    rating: "4.7 Rating",
-    reviews: "4,447 Reviews",
-    students: "478 Students",
-    description: "David Grant has been making video games for a living for more than 14 years as a Designer, Producer, Creative Director, and Executive Producer, creating games for console, mobile, PC and Facebook."
-};
+// const cardData = {
+//     imgSrc: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTY0Mzk4NjU1Mw&ixlib=rb-1.2.1&q=80&w=200",
+//     name: "David Grant",
+//     skill: "3D artist",
+//     rating: "4.7 Rating",
+//     reviews: "4,447 Reviews",
+//     students: "478 Students",
+//     description: "john_doe is a passionate elementary school teacher dedicated to fostering a nurturing and stimulating classroom environment. With over eight years of experience, she excels in creating engaging lesson plans that cater to diverse learning styles. Her commitment to student growth is evident in her interactive teaching methods and personalized approach to education."
+// };
 
+// Function to create a user card
 // Function to create a user card
 function createUserCard(data) {
     const card = document.createElement('div');
@@ -16,11 +17,11 @@ function createUserCard(data) {
 
     card.innerHTML = `
         <span class="avatar-holder">
-            <img src="${data.imgSrc}" alt="Avatar">
+            <img src="${data.profile_pic}" alt="Avatar">
         </span>
         <span class="user-info-holder">
-            <h2 class="name">${data.name}</h2>
-            <span class="skill">${data.skill}</span>
+            <h2 class="name">${data.username}</h2>
+            <span class="skill">${data.bio}</span>
 
             <div class="evaluations">
                 <span class="stars evaluation">
@@ -29,7 +30,7 @@ function createUserCard(data) {
                             <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                         </svg>
                     </span>
-                    <span class="star-text evaluation-text">${data.rating}</span>
+                    <span class="star-text evaluation-text">${data.rating} Rating</span>
                 </span>
 
                 <span class="reviews evaluation">
@@ -39,7 +40,7 @@ function createUserCard(data) {
                             <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
                         </svg>
                     </span>
-                    <span class="reviews-text evaluation-text">${data.reviews}</span>
+                    <span class="reviews-text evaluation-text">${data.reviews} Reviews</span>
                 </span>
 
                 <span class="student evaluation">
@@ -48,7 +49,7 @@ function createUserCard(data) {
                             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                         </svg>
                     </span>
-                    <span class="student-text evaluation-text">${data.students}</span>
+                    <span class="student-text evaluation-text">${data.teaches_total_students} Students</span>
                 </span>
             </div>
 
@@ -71,10 +72,11 @@ function displayCard(data) {
     const card = createUserCard(data);
     cardContainer.appendChild(card);
 }
-displayCard(cardData);
-displayCard(cardData);
-displayCard(cardData);
-displayCard(cardData);
-displayCard(cardData);
-displayCard(cardData);
 
+// Fetch data from the backend and display cards
+fetch('http://127.0.0.1:5000/teachers_data')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(teacher => displayCard(teacher));
+    })
+    .catch(error => console.error('Error fetching teachers data:', error));

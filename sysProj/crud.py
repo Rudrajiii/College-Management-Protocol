@@ -7,6 +7,7 @@ from datetime import  datetime
 from flask import request
 from PIL import Image
 from functions import *
+from flask_cors import CORS
 from flask import *
 import sqlite3
 import random
@@ -25,6 +26,7 @@ data = DataStore()
 
 
 app = Flask(__name__)
+CORS(app)
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
@@ -33,11 +35,18 @@ MONGO_URI = "mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mong
 client = MongoClient(MONGO_URI)
 db = client['project']
 creators = db.creators
-
+collection = db['teachers']
 # Configure Flask-Caching
 app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
+
+
+@app.route('/teachers_data', methods=['GET'])
+def get_creators():
+    creators = list(collection.find({}, {"_id": 0}))  # Excluding the _id field
+    return jsonify(creators)
+
 
 
 def get_user_from_db(username):
