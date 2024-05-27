@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body,
+  html {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  #myChart {
+    border: 2px solid rgb(50, 86, 228);
+    position: absolute;
+    right: 0;
+  }
+
