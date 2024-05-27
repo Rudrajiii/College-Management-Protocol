@@ -1,0 +1,246 @@
+<!-- 17/5/24 edit start by satyadeep -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/loader.css')}}">
+    <title>College Login - Admin</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url("../static/images/photo-1590012314607-cda9d9b699ae.avif"); /* Replace with your background image */
+        background-size: cover;
+        height: 100vh;
+      }
+
+      .login-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 400px;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .forgot-password {
+        text-align: center;
+        gap: 2vh;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .social-media {
+        color: black;
+      }
+
+      .forgot-password a {
+        color: #4389f9;
+        text-decoration: none;
+      }
+
+      .forgot-password a:hover {
+        text-decoration: underline;
+        
+
+      }
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .login-form input[type="text"],
+      .login-form input[type="password"],
+      .login-form input[type="enrollment_no"] {
+        padding: 10px;
+        margin: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+      }
+
+      .login-form input[type="submit"] {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .login-form input[type="submit"]:hover {
+        background-color: #3e8e41;
+      }
+      .social-icons {
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .social-icons a {
+        text-decoration: none;
+        color: #fff;
+        padding: 10px;
+        margin: 0 15px;
+        border-radius: 50%;
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        line-height: 10px;
+        transition: background-color 0.3s ease;
+      }
+      .social-icons a.facebook {
+        background-color: #3b5998;
+      }
+
+      .social-icons a.instagram {
+        background-color: #e4405f;
+      }
+
+      .social-icons a.facebook:hover {
+        background-color: #2d4373;
+      }
+
+      .social-icons a.instagram:hover {
+        background-color: #d81b60;
+      }
+      .error-message {
+        color: red;
+        text-align: center;
+        margin-top: 10px;
+      }
+      .loading-page{
+        width: 100%;
+        height: 100%;
+        position: relative;
+        /* z-index: 9;
+        background: #000; */
+      }
+      .loader {
+            display: none;
+            /* background: #000; */
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+  </head>
+  <body>
+    <div class="loading-page">
+      <!-- <div class="loader"> -->
+        <div class='body'>
+          <span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+          </span>
+          <div class='base'>
+            <span></span>
+            <div class='face'></div>
+          </div>
+        </div>
+        <div class='longfazers'>
+          <span class="f"></span>
+          <span class="f"></span>
+          <span class="f"></span>
+          <span class="f"></span>
+        </div>
+        <h1>Redirecting</h1>
+      <!-- </div> -->
+    </div>
+    <div class="login-container">
+      <div class="social-icons">
+        <a href="" target="_blank" class="facebook"
+          ><i class="fab fa-facebook-f"></i
+        ></a>
+        <a href="" target="_blank" class="instagram"
+          ><i class="fab fa-instagram"></i
+        ></a>
+      </div>
+      <form class="login-form" method="post" action="{{ url_for('admin_login') }}">
+        <!-- <h1>Welcome Back!!</h1> -->
+        <h2>Login As Admin</h2>
+
+        <input type="text" name="username" placeholder="Student Username" required="yes" />
+        <input type="password" name="password" placeholder="Enter Password" required="yes"/>
+        <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>
+        <input type="submit" value="Login" id="sub"/>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="error-message">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="forgot-password">
+          <a href="{{url_for('teacher_login')}}">Are you Teacher ? Login as Teacher</a>
+          <a href="{{url_for('student_login')}}">Are you Student ? Login as Student</a>
+          <a href="{{url_for('index')}}">Back To Home</a>
+        </div>
+      </form>
+
+    </div>
+    <script>
+      const sub = document.getElementById('sub');
+      const delayTime = {{ delay }};
+      sub.addEventListener("click" ,() => {
+        // z-index: 9;
+        // background: #000;
+        document.querySelector('.body').style.display = 'block';
+        let r = document.querySelectorAll('.b');
+        // console.log(r);
+        r.forEach((i)=>{
+          i.style.display = 'block';
+        })
+        // document.querySelector('.f').style.display = 'block';
+        let f = document.querySelectorAll('.f');
+        f.forEach((i)=>{
+          i.style.display = 'block';
+        })
+        document.querySelector('.loading-page').style.zIndex = '9';
+        document.querySelector('.loading-page').style.background = 'yellow';
+            let delayTime = document.getElementById('invisble').value;
+            console.log(delayTime);
+            // Redirect the user to the dashboard after the specified delay
+            setTimeout(function() {
+              document.querySelector('.body').style.display = 'none';
+            },delayTime * 10000000000000)
+      })
+    </script>
+  </body>
+</html>

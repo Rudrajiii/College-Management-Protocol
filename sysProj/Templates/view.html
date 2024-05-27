@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/view.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="table-wrapper">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-sm-8">
+              <h2>Student Records</h2>
+            </div>
+          </div>
+        </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Gender</th>
+              <th>Number</th>
+              <th>DOB</th>
+              <th>Enrollment_no</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+
+            <tr>
+              <td>{{row["name"]}}</td>
+              <td>{{row["email"]}}</td>
+              <td>{{row["gender"]}}</td>
+              <td>{{row["contact"]}}</td>
+              <td>{{row["dob"]}}</td>
+              <td>{{row["Enrollment_no"]}}</td>
+              <td id="cenntteerr" align="center">
+                <a
+                  href="{{ url_for('view_user', id=row['id']) }}"
+                  class="text-success"
+                  ><i class="fa fa-fw fa-eye"></i> View</a
+                >
+                <a
+                  href="{{ url_for('edit_user', id=row['id']) }}"
+                  class="text-primary"
+                  ><i class="fa fa-fw fa-edit"></i> Edit</a
+                >
+                <a
+                  href="{{ url_for('delete_user', id=row['id']) }}"
+                  class="text-danger" 
+                  ><i class="fa fa-fw fa-trash"></i> Delete</a
+                >
+              </td>
+            </tr>
+            {% endfor %}
+            <div class="row">
+              <a href="/" class="col-md-12 text-center">Go Back to home</a>
+            </div>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

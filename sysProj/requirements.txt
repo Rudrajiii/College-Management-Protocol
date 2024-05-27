@@ -1,0 +1,6 @@
+flask
+pillow
+python-resize-image
+pymongo
+
+

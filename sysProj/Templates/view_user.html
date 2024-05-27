@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>View User</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <section class="contact-from pt-4">
+      <div class="container" style="border: 2px solid">
+        <div class="row mt-5">
+          <div class="col-md-7 mx-auto">
+            <div class="form-wrapper">
+              <div class="row"></div>
+              <div class="row">
+                <img
+                  src="/static/Uploads/{{row['profile_pic']}}"
+                  class="col-md-3 mb-2"
+                  alt=""
+                />
+                <div class="col-md-8">
+                  <h4 class="text-center">View Student</h4>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label>Name :</label> {{row["name"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Gender :</label> {{row["gender"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Contact :</label> {{row["contact"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Date Of Birth :</label> {{row["dob"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Enrollment_no :</label> {{row["Enrollment_no"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Email :</label> {{row["email"]}}
+                </div>
+                <div class="col-md-6">
+                  <label>Age :</label> {{now_date}} Years
+                </div>
+              </div>
+
+              <div class="row">
+                <a href="/view" class="col-md-12 text-center">View All Users</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
