@@ -14,15 +14,32 @@
 }
 .card-container{
   background: #B0EECF !important;
-  display: flex;
-  gap: 2vh;
+  /* display: flex; */
+  min-height: 400px;
+  gap: 1vh;
   padding: 1.4rem;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: grid !important;
+  grid-template-columns: repeat(3 , 1fr) !important;
+  grid-template-rows: repeat(2 , 1fr) !important;
+  place-items: center !important;
+
+}
+
+.bc{
+  width: 350px;
+  height: 100px;
 }
 .cards{
   width: 400px;
   height: 250px;
   border-radius: .7rem !important;
   background: white;
+}
+@media (width < 1250px){
+  .card-container{
+    grid-template-columns: repeat(2 , 1fr) !important;
+  grid-template-rows: repeat(3 , 1fr) !important;
+  min-height: 550px !important;
+  }
 }

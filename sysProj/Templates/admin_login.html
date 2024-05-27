@@ -178,7 +178,7 @@
           <span class="f"></span>
           <span class="f"></span>
         </div>
-        <h1>Redirecting</h1>
+        <h1 id="redirect">Redirecting</h1>
       <!-- </div> -->
     </div>
     <div class="login-container">
@@ -191,7 +191,7 @@
         ></a>
       </div>
       <form class="login-form" method="post" action="{{ url_for('admin_login') }}">
-        <!-- <h1>Welcome Back!!</h1> -->
+        <h1>Welcome Back!!</h1>
         <h2>Login As Admin</h2>
 
         <input type="text" name="username" placeholder="Student Username" required="yes" />
@@ -222,6 +222,7 @@
         // z-index: 9;
         // background: #000;
         document.querySelector('.body').style.display = 'block';
+        document.getElementById('redirect').style.display = 'block';
         let r = document.querySelectorAll('.b');
         // console.log(r);
         r.forEach((i)=>{
