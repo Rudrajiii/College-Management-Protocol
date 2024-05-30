@@ -58,13 +58,42 @@ function createUserCard(data) {
             </span>
 
             <span class="button">
-                <button class="show-more-btn">Show More</button>
+            <button class="show-more-btn">
+            <a style="text-decoration:none;" href="/teacher_profile/${data._id}">Show More</a>
+            </button>
+            <button class="show-more-btn">
+            <a style="text-decoration:none;" href="/update_a_staff?id=${data._id}">Update Info</a>
+            </button>
+            <button class="show-more-btn"  onclick="deleteUser('${data._id}')">
+            <a style="text-decoration:none;" href="">Delete</a>
+            </button>
             </span>
         </span>
     `;
 
     return card;
 }
+
+function deleteUser(userId) {
+    if (confirm("Are you sure you want to delete this staff?")) {
+        fetch(`/delete_user/${userId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("User deleted successfully.");
+                location.reload();
+            } else {
+                alert("Failed to delete user.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        });
+    }
+}
+
 
 // Function to display cards
 function displayCard(data) {

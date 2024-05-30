@@ -2,6 +2,7 @@ import pymongo
 from admin_info import *
 from student_info import students
 from teacher_info import *
+import os
 def add_admin_function():
     try:
         client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
@@ -86,6 +87,7 @@ def delete_teacher_info():
     result = collection.update_many({}, {'$unset': {field_to_delete: ""}})
 
     print(f"Matched {result.matched_count} documents and modified {result.modified_count} documents.")
+
 
 
 

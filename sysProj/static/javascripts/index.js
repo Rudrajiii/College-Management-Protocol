@@ -261,3 +261,76 @@ if(window.innerWidth < 767){
 }else{
     document.querySelector('.adminpic').style.display = "grid";
 }
+
+
+let Switch = 1;
+
+let togggleButton = document.getElementById('mode');
+let heading = document.getElementById('oy');
+let spans = document.querySelector('.tgl');
+let spans1 = document.querySelector('.tgl1');
+let spans2 = document.querySelector('.tgl2');
+let spans3 = document.querySelector('.tgl3');
+let spans4 = document.querySelector('.tgl4');
+let spans5 = document.querySelector('.tgl5');
+let spans6 = document.querySelector('.tgl6');
+let spans7 = document.querySelector('.tgl7');
+let spans8 = document.querySelector('.tgl8');
+let spans9 = document.querySelector('.tgl9');
+// console.log(spans);
+
+togggleButton.addEventListener('click',() => {
+    let a = localStorage.getItem('reloadCount');
+    if(Switch==1) {
+        heading.style.color = '#242E42';
+        spans.style.color = '#242E42';
+        spans1.style.color = '#242E42';
+        spans2.style.color = '#242E42';
+        spans3.style.color = '#242E42';
+        spans4.style.color = '#242E42';
+        spans5.style.color = '#242E42';
+        spans6.style.color = '#242E42';
+        spans7.style.color = '#242E42';
+        spans8.style.color = '#242E42';
+        spans9.style.color = '#242E42';
+        Switch = 0;
+    }else{
+        heading.style.color = '#dde9f8';
+        spans.style.color = '#dde9f8';
+        spans1.style.color = '#dde9f8';
+        spans2.style.color = '#dde9f8';
+        spans3.style.color = '#dde9f8';
+        spans4.style.color = '#dde9f8';
+        spans5.style.color = '#dde9f8';
+        spans6.style.color = '#dde9f8';
+        spans7.style.color = '#dde9f8';
+        spans8.style.color = '#dde9f8';
+        spans9.style.color = '#dde9f8';
+        Switch = 1;
+    }
+    
+});
+
+// Function to update and log the reload count
+function updateReloadCount() {
+    // Get the current count from localStorage, default to 0 if not set
+    let reloadCount = localStorage.getItem('reloadCount');
+    if (reloadCount === null) {
+        reloadCount = 0;
+    } else {
+        reloadCount = parseInt(reloadCount, 10);
+    }
+
+    // Increment the count
+    reloadCount += 1;
+
+    // Update the count in localStorage
+    localStorage.setItem('reloadCount', reloadCount);
+
+    // Log the count to the console
+    console.log(`The window has been reloaded ${reloadCount} times.`);
+}
+
+// Call the function on page load
+updateReloadCount();
+// localStorage.removeItem('reloadCount');
