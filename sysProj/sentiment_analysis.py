@@ -27,8 +27,6 @@ response_emojis = [
     '☹️' ,
     '😑'
 ]
-
-
 prompt = (
     f"You are an efficient , experienced and highly capable sentiment analyzer. Your task is to accurately analyze the following student feedback responses "
     f"and summarize the overall sentiment in one word. Keep it mind always try to give the most relevant answer as per the input, make proper analysis "
