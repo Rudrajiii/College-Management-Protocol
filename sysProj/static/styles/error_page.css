@@ -38,7 +38,7 @@ a {
   text-transform: uppercase;
   text-decoration: none;
   background: var(--button);
-  color: var(--button-color);
+  color: var(--color);
   padding: 1rem 4rem;
   border-radius: 4rem;
   font-size: 0.875rem;

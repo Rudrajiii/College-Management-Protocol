@@ -51,37 +51,11 @@ app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
 
 
-def get_next_image_name(extension):
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-
-    teacher_files = [f for f in files if re.match(r'teacher\d+\.\w+', f)]
-
-    if teacher_files:
-
-        highest_number = max([int(re.findall(r'\d+', f)[0]) for f in teacher_files])
-
-        next_number = highest_number + 1
-
+def get_image_name(enrollment_no, extension, updated=False):
+    if updated:
+        return f'{enrollment_no}(updated){extension}'
     else:
-        next_number = 1
-
-    return f'teacher{next_number}{extension}'
-
-def get_next_image_name_for_updated_picture(extension):
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-
-    teacher_files = [f for f in files if re.match(r'teacher\d+\.\w+', f)]
-
-    if teacher_files:
-
-        highest_number = max([int(re.findall(r'\d+', f)[0]) for f in teacher_files])
-
-        next_number = highest_number + 1
-
-    else:
-        next_number = 1
-    # print(previous_image_file)
-    return f'teacher{next_number}(updated){extension}'
+        return f'{enrollment_no}{extension}'
 
 @app.route('/teachers_data', methods=['GET'])
 def get_creators():
@@ -344,7 +318,7 @@ def register_a_staff():
         profile_pic_path = None
         if profile_pic:
             extension = os.path.splitext(profile_pic.filename)[1]
-            new_image_name = get_next_image_name(extension)
+            new_image_name = get_image_name(enrollment_no, extension)
             profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
             profile_pic.save(profile_pic_path)
             profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')  # To create a relative path for HTML
@@ -380,11 +354,25 @@ def update_a_staff():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     staff_id = request.args.get('id')
-    print(type(staff_id))
+    # print(type(staff_id))
     print(staff_id)
+    # teachers = collection.find_one({"_id": ObjectId(staff_id)})
+    # print(teachers['profile_pic'])
+    # print(type(teachers['profile_pic']))
+    if not staff_id:
+        flash('Staff ID is required.', 'error')
+        return redirect(url_for('staff_informations'))
+
+    teacher = collection.find_one({"_id": ObjectId(staff_id)})
+    if not teacher:
+        flash('Staff not found.', 'error')
+        return redirect(url_for('staff_informations'))
 
     if request.method == 'POST':
         staff_id = request.form.get('staff_id')
+        if not staff_id:
+            flash('Staff ID not provided.', 'error')
+            return redirect(url_for('update_a_staff', id=staff_id))
         name = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
@@ -400,15 +388,20 @@ def update_a_staff():
         dob = request.form.get('dob')
         profile_pic = request.files['profile_pic']
 
-        files = os.listdir(app.config['UPLOAD_FOLDER'])
+        # files = os.listdir(app.config['UPLOAD_FOLDER'])
 
-        profile_pic_path = None
+        profile_pic_path = teacher['profile_pic']  # Default to the current profile pic path
 
-        # print(extract_image)
+        if profile_pic and profile_pic.filename:
+            # Delete the old profile picture
+            if teacher['profile_pic']:
+                old_profile_pic_path = os.path.join(app.root_path, teacher['profile_pic'][1:])  # Remove leading '/' from URL
+                if os.path.exists(old_profile_pic_path):
+                    os.remove(old_profile_pic_path)
 
-        if profile_pic not in files:
+            # Save the new profile picture
             extension = os.path.splitext(profile_pic.filename)[1]
-            new_image_name = get_next_image_name_for_updated_picture(extension)
+            new_image_name = get_image_name(Enrollment_no, extension, updated=True)
             profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
             profile_pic.save(profile_pic_path)
             profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')
@@ -447,7 +440,8 @@ def update_a_staff():
 
         return 'updated'  # Redirect to an appropriate route
 
-    return render_template('update_a_staff.html' , staff_id=staff_id)
+    return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
+
 @app.route('/get_staff/<staff_id>', methods=['GET'])
 def get_staff(staff_id):
     staff = collection.find_one({"_id": ObjectId(staff_id)})
@@ -467,10 +461,23 @@ def delete_user(user_id):
         user_id = ObjectId(user_id)
     except Exception as e:
         return jsonify({"error": "Invalid user ID"}), 400
-
+        # Fetch user details before deleting
+    user_details = collection.find_one({"_id": user_id})
     result = collection.delete_one({"_id": user_id})
+    print(result)
+    # if details['profile_pic']:
+    #             user_profile_pic_path = os.path.join(app.root_path, details['profile_pic'][1:])  # Remove leading '/' from URL
+    #             if os.path.exists(user_profile_pic_path):
+    #                 os.remove(user_profile_pic_path)
 
     if result.deleted_count == 1:
+        # Delete user profile pic if it exists
+        if user_details and 'profile_pic' in user_details:
+            profile_pic_path = user_details['profile_pic']
+            if profile_pic_path:
+                full_path = os.path.join(app.root_path, profile_pic_path[1:])  # Remove leading '/' from URL
+                if os.path.exists(full_path):
+                    os.remove(full_path)
         return jsonify({"message": "User deleted successfully"}), 200
     else:
         return jsonify({"error": "User not found"}), 404
@@ -652,6 +659,16 @@ def edit_user(id):
 def secret():
     return get_data()
 
+
+#* Error handling
+@app.errorhandler(404)
+def page_not_found(e):
+    print(e)
+    return render_template('error_page.html' , error = e), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return f"internal_server_error{e}", 500
 
 if __name__ == "__main__":
     app.run(debug = True)
