@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register - Staff</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/edit_user.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/add.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='javascripts/access_data.js') }}" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+    <section class="contact-from pt-1">
+      <div class="container" style="background: #fff;">
+        <div id="pad" class="row mt-2">
+          <div class="col-md-7 mx-auto">
+            <div class="form-wrapper">
+              <div class="row">
+                <div class="col-md-12">
+                  <h2 style="text-align: center;" id="Registration">Update Staff</h2>
+                </div>
+              </div>
+              <form
+                action="{{ url_for('update_a_staff' , id=staff_id) }}"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Name</label>
+                      <input
+                        id="name"
+                        type="text"
+                        class="form-control"
+                        name="username"
+                        placeholder="Name"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="">Email</label>
+                    <div class="form-group">
+                      <input
+                        id="email"
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="Email"
+                        
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="">Password</label>
+                    <div class="form-group">
+                      <input
+                        id="Password"
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        placeholder="password"
+                        
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="">Gender</label>
+                    <div class="form-group">
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          name="gender"
+                          type="radio"
+                          name="inlineRadioOptions"
+                          id="inlineRadio1"
+                          value="Male"
+                        />
+                        <label class="form-check-label" for="inlineRadio1"
+                          >Male</label
+                        >
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          name="gender"
+                          type="radio"
+                          name="inlineRadioOptions"
+                          id="inlineRadio2"
+                          value="Female"
+                          placeholder="."
+                          style="margin-left: 10px; margin-top: 5px;"
+                        />
+                        <label class="form-check-label" for="inlineRadio1"
+                          >Female</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Contact Number</label>
+                      <input
+                        id="contact"
+                        type="text"
+                        class="form-control"
+                        name="phone_no"
+                        placeholder="Phone number"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Enrollment_no</label>
+                      <input
+                        id="Enrollment_no"
+                        type="text"
+                        class="form-control"
+                        name="enrollment_no"
+                        placeholder="Enrollment_no"
+                      />
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Current Address</label>
+                      <input
+                        id="current_address"
+                        type="text"
+                        class="form-control"
+                        name="current_address"
+                        placeholder="current_address"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">bio</label>
+                      <input
+                        id="bio"
+                        type="text"
+                        class="form-control"
+                        name="bio"
+                        placeholder="bio"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">description</label>
+                      <input
+                        id="description"
+                        type="text"
+                        class="form-control"
+                        name="description"
+                        placeholder="description"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">rating</label>
+                      <input
+                        id="rating"
+                        type="text"
+                        class="form-control"
+                        name="rating"
+                        placeholder="rating"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">reviews</label>
+                      <input
+                        id="reviews"
+                        type="text"
+                        class="form-control"
+                        name="reviews"
+                        placeholder="reviews"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">teaches_total_students</label>
+                      <input
+                        id="teaches_total_students"
+                        type="text"
+                        class="form-control"
+                        name="teaches_total_students"
+                        placeholder="teaches_total_students"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">DOB</label>
+                      <input id="dob" type="date" name="dob" class="form-control" placeholder="."/>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label  style="display: flex; align-items: center; justify-content: center;"  class="form-check-label"
+                        >Upload Profile Pic
+                        <i
+                          class="fa fa-camera ml-3"
+                          aria-hidden="true"
+                          style="color:rgba(160, 161, 162, 0.731)"
+                        ></i>
+                      </label>
+                      <input
+                        id="profile_pi"
+                        name="profile_pic"
+                        class="inp_file"
+                        type="file"
+                        placeholder="."
+                      />
+                    </div>
+                  </div>
+                  <input type="hidden" name="staff_id" value="{{ staff_id }}">
+                </div>
+                <div class="row">
+                  <button type="submit" id="update_button" class="btn  mx-auto">Update</button>
+                </div>
+                <div class="row" id="copyright">
+                  <a href=""><img src="../static/images/linkedin.png" alt="linkdein"></a>
+                  <a href=""><img src="../static/images/social.png" alt="Github"></a>
+                  <a href=""><img src="../static/images/twitter-logo.png" alt="Twitter"></a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer style="display: flex; align-items: center; justify-content: space-around;"><p>@CopyRightReserved</p>
+      <p>~Rudra❤️Saha</p>
+</footer>
+<script>
+  // JavaScript function to fill the form with existing staff data
+  function fillForm(data) {
+    document.getElementById('name').value = data.username;
+    document.getElementById('email').value = data.email;
+    document.getElementById('Password').value = data.password;
+    document.querySelector(`input[name="gender"][value="${data.gender}"]`).checked = true;
+    document.getElementById('contact').value = data.phone_no;
+    document.getElementById('Enrollment_no').value = data.enrollment_no;
+    document.getElementById('current_address').value = data.current_address;
+    document.getElementById('bio').value = data.bio;
+    document.getElementById('description').value = data.description;
+    document.getElementById('rating').value = data.rating;
+    document.getElementById('reviews').value = data.reviews;
+    document.getElementById('teaches_total_students').value = data.teaches_total_students;
+    document.getElementById('dob').value = data.dob;
+  }
+
+  // Check if there's existing data to pre-fill the form
+  document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const staffId = urlParams.get('id');
+
+    if (staffId) {
+      fetch(`/get_staff/${staffId}`)
+        .then(response => response.json())
+        .then(data => fillForm(data))
+        .catch(error => console.error('Error fetching staff data:', error));
+    }
+  });
+</script>
+  </body>
+</html>

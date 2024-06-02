@@ -5,7 +5,7 @@ body {
   overflow: hidden;
 }
 
-h1 {
+#redirect{
   position: absolute;
   font-family: 'Open Sans';
   font-weight: 600;
@@ -13,6 +13,7 @@ h1 {
   text-transform: uppercase;
   left: 50%;
   top: 58%;
+  display: none;
   margin-left: -20px;
 }
 

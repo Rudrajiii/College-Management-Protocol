@@ -1,0 +1,112 @@
+<!-- 17/5/24 edit start by satyadeep -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/loader.css')}}">
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/auth_ui.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/loader.js') }}" defer></script>
+
+    <title>College Login - Admin</title>
+  </head>
+  <body>
+    <div class="loading-page">
+      <!-- <div class="loader"> -->
+        <div class='body'>
+          <span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+            <span class="b" ></span>
+          </span>
+          <div class='base'>
+            <span></span>
+            <div class='face'></div>
+          </div>
+        </div>
+        <div class='longfazers'>
+          <span class="f"></span>
+          <span class="f"></span>
+          <span class="f"></span>
+          <span class="f"></span>
+        </div>
+        <h1 id="redirect">Redirecting</h1>
+      <!-- </div> -->
+    </div>
+    <div class="login-container">
+      <div class="social-icons">
+        <a href="" target="_blank" class="facebook"
+          ><i class="fab fa-facebook-f"></i
+        ></a>
+        <a href="" target="_blank" class="instagram"
+          ><i class="fab fa-instagram"></i
+        ></a>
+      </div>
+      <form class="login-form" method="post" action="{{ url_for('admin_login') }}">
+        <h1>Welcome Back!!</h1>
+        <h2>Login As Admin</h2>
+
+        <input type="text" name="username" placeholder="Student Username" required="yes" />
+        <input type="password" name="password" placeholder="Enter Password" required="yes"/>
+        <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>
+        <input type="submit" value="Login" id="sub"/>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="error-message">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="forgot-password">
+          <a href="{{url_for('teacher_login')}}">Are you Teacher ? Login as Teacher</a>
+          <a href="{{url_for('student_login')}}">Are you Student ? Login as Student</a>
+          <a href="{{url_for('index')}}">Back To Home</a>
+        </div>
+      </form>
+
+    </div>
+    <script>
+      const sub = document.getElementById('sub');
+      const delayTime = {{ delay }};
+      const username = document.querySelector('input[name="username"]').value;
+      const password = document.querySelector('input[name="password"]').value;
+      const enrollment = document.querySelector('input[name="enrollment"]').value;
+      let checkField = true;
+      sub.addEventListener("click" ,() => {
+        if (!username || !password || !enrollment) {
+          window.location.reload();
+      }
+
+        // z-index: 9;
+        // background: #000;
+        document.querySelector('.body').style.display = 'block';
+        document.getElementById('redirect').style.display = 'block';
+        let r = document.querySelectorAll('.b');
+        // console.log(r);
+        r.forEach((i)=>{
+          i.style.display = 'block';
+        })
+        // document.querySelector('.f').style.display = 'block';
+        let f = document.querySelectorAll('.f');
+        f.forEach((i)=>{
+          i.style.display = 'block';
+        })
+        document.querySelector('.loading-page').style.zIndex = '9';
+        document.querySelector('.loading-page').style.background = 'yellow';
+            let delayTime = document.getElementById('invisble').value;
+            console.log(delayTime);
+            // Redirect the user to the dashboard after the specified delay
+            setTimeout(function() {
+              document.querySelector('.body').style.display = 'none';
+            },delayTime )
+      })
+    </script>
+  </body>
+</html>
