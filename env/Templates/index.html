@@ -4,41 +4,668 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Student Management System{% endblock %}</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/app.css')}}">
     <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/index.css')}}">
     <script src="{{ url_for('static', filename='javascripts/index.js') }}" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div id="loader">
+    <!-- <div id="loader">
         <h2 class="head">Loading..
         <h1>0%</h1>
-    </div>
+    </div> -->
+    <!-- ?nav bar code -->
     <div class="nav">
-        <h1>STUDENT MANAGEMENT SYSTEM</h1>
+        <div class="logo">
+            <img src="https://tse4.mm.bing.net/th?id=OIP.ageHnS8e-mHiDvTd8or35AHaCg&pid=Api&P=0&h=180" alt="Logo">
+        </div>
+        <div class="btns">
+            <button class="apply">Apply Now</button>
+            <button class="login"><a href="{{url_for('admin_login')}}">Login</a></button>
+        </div>
+        <div class="dropdown" id="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown link
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="/admin_login">Login</a></li>
+              <li><a class="dropdown-item" href="#">Apply</a></li>
+              <li><a class="dropdown-item" href="/">Home</a></li>
+              <li><a class="dropdown-item" href="#">Contact</a></li>
+              <li><a class="dropdown-item" href="#">Campous</a></li>
+              <li><a class="dropdown-item" href="#">Courses</a></li>
+            </ul>
+          </div>
     </div>
     {% block content%}
-    <main>
-        <div class="grab">
-            <div class="nav_menu">
-                <div class="contain">
-                    <a class="apps" href="/">Admin DashBoard</a>
-                    <a class="apps" href="/add">Add New Student</a>
-                    <a class="apps" href="/view">Review and Edit Students</a>
-                    <a class="apps" href="/student_dashBoard">student DashBoard</a>
-                    <a class="apps" href="/stuff_dashBoard">stuff DashBoard</a>
-                    <a class="apps" href="/admin_login">admin login</a>
-                    <a class="apps" href="/student_login">student login</a>
-                    <a class="apps" href="/teacher_login">teacher login</a>
-                </div>
+
+    <!-- ?Header Block Code -->
+
+    <!-- <a class="apps" href="/">Admin DashBoard</a>
+      <a class="apps" href="/add">Add New Student</a>
+      <a class="apps" href="/view">Review and Edit Students</a>
+      <a class="apps" href="/student_dashBoard">student DashBoard</a>
+      <a class="apps" href="/stuff_dashBoard">stuff DashBoard</a> -->
+    <header>
+        <div class="subheader">
+            <h1>EDUCAVO</h1>
+            <ul id="jkj">
+                <li>Home</li>
+                <li>Contact</li>
+                <li>Campous</li>
+                <li>Courses</li>
+                <!-- <a href="/view">View</a> -->
+            </ul>
+            <a href="/add" id="add">Menu <i class="fa-solid fa-bars"></i></a>
+            
+             
+        </div>
+        </div>
+        <div class="middleheader">
+            <h1>Persue Your Passion</h1>
+            <h1 id="university">Evucavo University</h1>
+            <h1>In India</h1>
+            <a href="/student_dashBoard" class="btn">
+                Discover More
+            </a>
+
+        </div>
+        <div class="footerheader" id="god-div">
+            <div class="box1 box" id="firstCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.XTaCtyya62guf-ukJ8ehTQHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>Future Students</h3>
             </div>
-            <div class="image">
-                <img src="" alt="">
+            <div class="box2 box" >
+                <img src="https://tse1.mm.bing.net/th?id=OIP.CI4opffJWbvirrqra0tWigHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>World Students</h3>
+            </div>
+            <div class="box3 box" >
+                <img src="https://seecs.nust.edu.pk/wp-content/uploads/2020/06/studentconcern-icon.png" alt="">
+                <h3>Current Students</h3>
+            </div>
+            <div class="box4 box" id="lastCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.9bpuD961fuAlMDSS0K_ZSwHaIC&pid=Api&P=0&h=180" alt="">
+                <h3>aluminis and donors</h3>
             </div>
         </div>
+        <div class="footerheader" id="cpy-div" style="margin-top: 1rem;">
+            <div class="box1 box" id="firstCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.XTaCtyya62guf-ukJ8ehTQHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>Future Students</h3>
+            </div>
+            <div class="box2 box" id="secondCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.CI4opffJWbvirrqra0tWigHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>World Students</h3>
+            </div>
+            <div class="box3 box" id="thirdCard">
+                <img src="https://seecs.nust.edu.pk/wp-content/uploads/2020/06/studentconcern-icon.png" alt="">
+                <h3>Current Students</h3>
+            </div>
+            <div class="box4 box" id="lastCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.9bpuD961fuAlMDSS0K_ZSwHaIC&pid=Api&P=0&h=180" alt="">
+                <h3>aluminis and donors</h3>
+            </div>
+        </div>
+        <div class="footerheader" style="margin-top: 1rem;" id="for-mobile-device">
+            <div class="box1 box" id="firstCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.XTaCtyya62guf-ukJ8ehTQHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>Future Students</h3>
+            </div>
+            <div class="box2 box" >
+                <img src="https://tse1.mm.bing.net/th?id=OIP.CI4opffJWbvirrqra0tWigHaHa&pid=Api&P=0&h=180" alt="">
+                <h3>World Students</h3>
+            </div>
+            <div class="box3 box" >
+                <img src="https://seecs.nust.edu.pk/wp-content/uploads/2020/06/studentconcern-icon.png" alt="">
+                <h3>Current Students</h3>
+            </div>
+            <div class="box4 box" id="lastCard">
+                <img src="https://tse1.mm.bing.net/th?id=OIP.9bpuD961fuAlMDSS0K_ZSwHaIC&pid=Api&P=0&h=180" alt="">
+                <h3>aluminis and donors</h3>
+            </div>
+        </div>
+    </header>
+
+    <!-- ?Main Block Code -->
+    <main>
+        <div class="blankSpace">
+        </div>
+        <div class="blankSpace-forMovile-devices">
+        </div>
+        <div class="contentStart">
+            <div class="leftDiv">
+                <div class="holded">
+                    <div class="card1"></div>
+                    <div class="card2"></div>
+                    <div class="card3"></div>
+                </div>
+            </div>
+            <div class="rightDiv">
+                <div class="center">
+                    <h4 style="color: #E9B802;">About Us</h4>
+                    <h2>We are leading discovery and innovation since 1905</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident unde temporibus numquam itaque incidunt quae iure explicabo alias voluptates a.t amet consectetur, adipisicing elit. Provident unde temporibus numquam itaque incidunt quae iure explicabo alias voluptates a.</p>
+                    <button>DISCOVER MORE</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="newContent">
+            <div class="firstBlankDiv"></div>
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://plus.unsplash.com/premium_photo-1714259937317-d7b93cb0241d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Z3JhZHV0aW9uJTIwYW5kJTIwc3R1ZHklMjByZWxlYXRlZCUyMGltYWdlfGVufDB8fDB8fHww" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://images.unsplash.com/photo-1460518451285-97b6aa326961?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGdyYWR1dGlvbiUyMGFuZCUyMHN0dWR5JTIwcmVsZWF0ZWQlMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://plus.unsplash.com/premium_photo-1714265043317-b49141f2197b?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>        
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHN0dWR5fGVufDB8fDB8fHww" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>        
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dW5pdmVyc2l0eXxlbnwwfHwwfHx8MA%3D%3D" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>        
+                  <div class="col">
+                    <div class="card shadow-sm">
+                      <img src="https://plus.unsplash.com/premium_photo-1682765673139-40958c79e647?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                      <div class="card-body">
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                          </div>
+                          <small class="text-body-secondary">9 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>        
+                </div>
+              </div>
+        </div>
+        <div class="nextContent">
+          <div class="nextBlankSpaceForResponsiveness"></div>
+          <div class="nextBlankSpaceForResponsiveness2"></div>
+          <main class="container">
+            <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+              <div class="col-lg-6 px-0">
+                <h1 class="display-4 fst-italic">We talk about innovation we believe in practical based study</h1>
+                <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+                <p class="lead mb-0"><a style="text-decoration: none;" href="#" class="text-body-emphasis fw-bold">Continue reading...</a></p>
+              </div>
+            </div>
+          
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                  <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary-emphasis">Tech</strong>
+                    <h3 class="mb-0"">Incampus Hackathon</h3>
+                    <div class="mb-1 text-body-secondary">Coming Soon</div>
+                    <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+                    <a style="text-decoration: none;" href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+                      read more..
+                      <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+                    </a>
+                  </div>
+                  
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                  <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-success-emphasis">Cultural Fest</strong>
+                    <h3 class="mb-0">Student Festivel</h3>
+                    <div class="mb-1 text-body-secondary">Nov 10</div>
+                    <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+                    <a style="text-decoration: none;" href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+                      read more..
+                      <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+                    </a>
+                  </div>
+                  <div class="col-auto d-none d-lg-block">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div  class="row g-5">
+              <div  class="col-md-8">
+                <h3 class="pb-4 mb-4 fst-italic border-bottom">
+                  About Our Collage
+                </h3>
+          
+                <article class="blog-post">
+                  <h2 class="display-5 link-body-emphasis mb-1">Description</h2>
+                  <p class="blog-post-meta">Established at - 19 Feb 1990<a style="margin-left: 10px; text-decoration: none;" href="#">more</a></p>
+          
+                  <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
+                  <hr>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h2>Top Private Collage</h2>
+                  <p>This is an example blockquote in action:</p>
+                  <blockquote class="blockquote">
+                    <p>Approved by NERF</p>
+                  </blockquote>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h3>Course Lists</h3>
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout. This is an example unordered list:</p>
+                  <ul>
+                    <li>First list item</li>
+                    <li>Second list item with a longer description</li>
+                    <li>Third list item to close it out</li>
+                  </ul>
+                  <h3>See More</h3>
+                  <ol>
+                    <li>First list item</li>
+                    <li>Second list item with a longer description</li>
+                    <li>Third list item to close it out</li>
+                  </ol>
+                  <p>And this is a definition list:</p>
+                  <dl>
+                    <dt>Produced Top Engineers Every Year</dt>
+                    <dd>The language used to describe and define the content of a Web page</dd>
+                    <dt>Top Students and and Strong Alumini Network</dt>
+                    <dd>Used to describe the appearance of Web content</dd>
+                    <dt>Best Faculties & and best environment</dt>
+                    <dd>The programming language used to build advanced Web sites and applications</dd>
+                  </dl>
+                <article class="blog-post">
+                  <h2 class="display-5 link-body-emphasis mb-1">We Provide Best Placements</h2>
+                  <p class="blog-post-meta">December 23, 2020 by <a style="text-decoration: none;" href="#">Jacob</a></p>
+          
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <blockquote>
+                    <p>Longer quote goes here, maybe with some <strong>emphasized text</strong> in the middle of it.</p>
+                  </blockquote>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h3>Year To Year nerf Ranking</h3>
+                  <p>And don't forget about tables in these posts:</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Upvotes</th>
+                        <th>Downvotes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Alice</td>
+                        <td>10</td>
+                        <td>11</td>
+                      </tr>
+                      <tr>
+                        <td>Bob</td>
+                        <td>4</td>
+                        <td>3</td>
+                      </tr>
+                      <tr>
+                        <td>Charlie</td>
+                        <td>7</td>
+                        <td>9</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td>Totals</td>
+                        <td>21</td>
+                        <td>23</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+          
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+                </article>
+          
+                <article class="blog-post">
+                  <h2 class="display-5 link-body-emphasis mb-1">Alumini Network</h2>
+                  <p class="blog-post-meta">December 14, 2020 by <a style="text-decoration: none;" href="#">Chris</a></p>
+          
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                
+          
+                <nav class="blog-pagination" aria-label="Pagination">
+                  <a class="btn btn-outline-primary rounded-pill" href="#">Visit</a>
+                  <a class="btn btn-outline-secondary rounded-pill disabled" aria-disabled="true">More</a>
+                </nav>
+          
+              </div>
+          
+              <div style="background: #E9ECEF; ;" class="col-md-4">
+                <div class="position-sticky" style="top: 2rem; margin-top: 20px">
+                  <div class="p-4 mb-3 bg-body-tertiary rounded">
+                    <h4 class="fst-italic">About</h4>
+                    <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+                  </div>
+          
+                  <div>
+                    <h4 class="fst-italic">All Campous</h4>
+                    <ul class="list-unstyled">
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <img width="76" height="96" src="https://plus.unsplash.com/premium_photo-1682974403182-4cbbaa811d1c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Y29sbGVnZSUyMHN0dWRlbnRzfGVufDB8fDB8fHww" alt="">
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">Management House</h6>
+                            <small class="text-body-secondary">January 15, 2024</small>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <img width="76" height="96" src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">Gurukul Campous</h6>
+                            <small class="text-body-secondary">January 14, 2024</small>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <img width="76" height="96" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGNvbGxlZ2UlMjBzdHVkZW50cyUyMHNtYWxsJTIwaW1hZ2VzfGVufDB8fDB8fHww" alt="">
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">Jaipur Campous</h6>
+                            <small class="text-body-secondary">January 13, 2024</small>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+          
+                  <div class="p-4">
+                    <h4 class="fst-italic">Achievements</h4>
+                    <ol class="list-unstyled mb-0" >
+                      <li><a style="text-decoration: none;" href="#">March 2021</a></li>
+                      <li><a style="text-decoration: none;" href="#">February 2021</a></li>
+                      <li><a style="text-decoration: none;" href="#">January 2021</a></li>
+                      <li><a style="text-decoration: none;" href="#">December 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">November 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">October 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">September 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">August 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">July 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">June 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">May 2020</a></li>
+                      <li><a style="text-decoration: none;" href="#">April 2020</a></li>
+                    </ol>
+                  </div>
+          
+                  <div class="p-4">
+                    <h4 class="fst-italic">Social Handle's</h4>
+                    <ol class="list-unstyled">
+                      <li><a style="text-decoration: none;" href="#">GitHub</a></li>
+                      <li><a style="text-decoration: none;" href="#">Twitter</a></li>
+                      <li><a style="text-decoration: none;" href="#">Facebook</a></li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+          </main>
+        </div>
+        <div class="logos">
+      <div class="logos-slide">
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/3m.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/barstool-store.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/budweiser.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/buzzfeed.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/forbes.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/macys.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/menshealth.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/mrbeast.svg" />
+      </div>
+
+      <div class="logos-slide">
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/3m.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/barstool-store.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/budweiser.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/buzzfeed.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/forbes.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/macys.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/menshealth.svg" />
+        <img alt="" src="https://raw.githubusercontent.com/Coding-with-Robby/infinite-logo-carousel/94a923b93b6f8dae40d11c0a70e72d33a0867aa3/logos/mrbeast.svg" />
+      </div>
+        </div>
+        <div class="reviewContent">
+          <div id="main">
+           
+            <div class="container marketing">
+              <!-- START THE FEATURETTES -->        
+          
+              <div class="row featurette">
+                <div class="col-md-7">
+                  <h2 class="featurette-heading fw-normal lh-1">First featurette heading. <span class="text-body-secondary">It’ll blow your mind.</span></h2>
+                  <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+                </div>
+                <div class="col-md-5">
+                  <img width="300" height="300" src="https://plus.unsplash.com/premium_photo-1663051241451-709fa4de55bc?dpr=1&w=306&auto=format&fit=crop&q=60&crop=entropy&cs=tinysrgb&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MTF8fHN0dWRlbnR8ZW58MHwwfHx8MTcxNjUxMzQzMHwx&ixlib=rb-4.0.3" alt="">
+                </div>
+              </div>
+          
+              <hr class="featurette-divider">
+          
+              <div class="row featurette">
+                <div class="col-md-7 order-md-2">
+                  <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span class="text-body-secondary">See for yourself.</span></h2>
+                  <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
+                </div>
+                <div class="col-md-5 order-md-1">
+                  <img width="300" height="300" src="https://plus.unsplash.com/premium_photo-1663051241451-709fa4de55bc?dpr=1&w=306&auto=format&fit=crop&q=60&crop=entropy&cs=tinysrgb&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MTF8fHN0dWRlbnR8ZW58MHwwfHx8MTcxNjUxMzQzMHwx&ixlib=rb-4.0.3" alt="">
+                </div>
+              </div>
+          
+              <hr class="featurette-divider">
+          
+              <div class="row featurette">
+                <div class="col-md-7">
+                  <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-body-secondary">Checkmate.</span></h2>
+                  <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
+                </div>
+                <div class="col-md-5">
+                  <img width="300" height="300" src="https://plus.unsplash.com/premium_photo-1663051241451-709fa4de55bc?dpr=1&w=306&auto=format&fit=crop&q=60&crop=entropy&cs=tinysrgb&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MTF8fHN0dWRlbnR8ZW58MHwwfHx8MTcxNjUxMzQzMHwx&ixlib=rb-4.0.3" alt="">
+                </div>
+              </div>
+          
+              <!-- /END THE FEATURETTES -->
+          
+            </div>
+          </div>
+        </div>
     </main>
+
     {% endblock %}
-    <footer>
-        <h2><span class="right">~Made by Rudra</span><span>❤️</span><span class="right">Saha~</span></h2>
-    </footer>
+    <!-- ?Footer Block Code -->
+<footer class="text-center text-lg-start bg-body-tertiary text-muted">
+  <!-- Section: Social media -->
+  <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+    <!-- Left -->
+    <div class="me-5 d-none d-lg-block">
+      <span>Get connected with us on social networks:</span>
+    </div>
+    <!-- Left -->
+
+    <!-- Right -->
+    <div>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-google"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <!-- Right -->
+  </section>
+  <!-- Section: Social media -->
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-5">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            <i class="fas fa-gem me-3"></i>Company name
+          </h6>
+          <p>
+            Here you can use rows and columns to organize your footer content. Lorem ipsum
+            dolor sit amet, consectetur adipisicing elit.
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Products
+          </h6>
+          <p>
+            <a href="#!" class="text-reset">Angular</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">React</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Vue</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Laravel</a>
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Useful links
+          </h6>
+          <p>
+            <a href="#!" class="text-reset">Pricing</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Settings</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Orders</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Help</a>
+          </p>
+        </div>
+        <!-- Grid column -->
+
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+          <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
+          <p>
+            <i class="fas fa-envelope me-3"></i>
+            info@example.com
+          </p>
+          <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
+          <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
+        </div>
+        <!-- Grid column -->
+      </div>
+      <!-- Grid row -->
+    </div>
+  </section>
+  <!-- Section: Links  -->
+
+  <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+  </div>
+  <!-- Copyright -->
+</footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
