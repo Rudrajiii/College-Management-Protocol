@@ -1,6 +1,0 @@
-flask
-pillow
-python-resize-image
-pymongo
-flask_caching
-
