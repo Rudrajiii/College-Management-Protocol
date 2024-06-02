@@ -11,6 +11,7 @@ def requires_admin_auth(func):
         return func(*args, **kwargs)
     return wrapper
 # @requires_admin_auth #!middleware
+
 def get_data():
     try:
         conn = sqlite3.connect('users.db')
