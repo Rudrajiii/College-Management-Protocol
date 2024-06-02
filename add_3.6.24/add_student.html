@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student add UI</title>
+</head>
+<body>
+    <form method="post" action="/add_student" enctype="multipart/form-data">
+        <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>
+        <input type="text" name="username" placeholder="Student Username" required="yes" />
+        <input type="text" name="password" placeholder="Enter Password" required="yes"/>
+        <input type="email" name="email" placeholder="Student Email" required="yes" />
+        <input type="text"  name="branch" placeholder="Enter branch" required="yes" />
+        <input type="number" name="year" placeholder="Student Year" required="yes" />
+        <input type="text" name="gender" placeholder="Student Gender" required="yes" />
+        <input type="text" name="phone" placeholder="Student Phone no." required="yes" />
+        <input type="date" name="dob" placeholder="Student date of birth" required="yes" />
+        <input type="text" name="parent_name" placeholder="Parents Name" required="yes" />
+        <input type="text" name="parent_no" placeholder="Parents No." required="yes" />
+        <input type="text" name="address" placeholder="Enter Current address" required="yes" />
+        <input type="file" name="profile_pic" placeholder="Select Student profile pic" required="yes" accept=".jpg, .jpeg, .png" />
+        <input type="submit" value="Upload" />
+    </form>   
+</body>
+</html>
