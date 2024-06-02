@@ -1,6 +1,4 @@
 # student data
-
-
 import sqlite3
 connection = sqlite3.connect("users.db")
 print("Database opened successfully")
