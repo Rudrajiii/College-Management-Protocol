@@ -484,6 +484,77 @@ def delete_user(user_id):
 
 
 
+#inserted code from satyadeep
+# Edited start by satyadeep at 3/6/24
+# Add student details route
+
+@app.route('/add_student', methods=['POST' , 'GET'])
+def add_student():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    if(request.method == 'POST'):
+        enrollment_no = request.form.get('enrollment')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+        branch = request.form.get('branch')
+        year = request.form.get('year')
+        gender = request.form.get('gender')
+        phone = request.form.get('phone')
+        dob = request.form.get('dob')
+        parent_name = request.form.get('parent_name')
+        parent_no = request.form.get('parent_no')
+        address = request.form.get('address')
+        file = request.files['profile_pic']
+        file_extension = os.path.splitext(file.filename)[1].lower()
+        if file_extension not in [".png" , ".jpg" , ".jpeg"]:
+            return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
+        profile_pic_location = enrollment_no + file_extension
+        print(profile_pic_location)
+        # Save the uploaded image file to the static folder
+        filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
+        file.save(filename)
+        x = add_student_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
+        if x == 1:
+            return f'''<h1>student Record Successfully added!!</h1>'''
+        else:
+            return f'''<h1>Enrollment No. is already present in database!!</h1>'''
+    return render_template('add_student.html')
+
+
+# Manage Student and Remove student details route
+
+@app.route('/manage_student', methods=['POST' , 'GET'])
+def manage_student():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    if(request.method == 'POST'):
+        enrollment_no = request.form.get('enrollment')
+        val = request.form.get('button')
+        if val == "remove":
+            # y contains 0 if no student found with that no. or if found it contains profile_pic name
+            y = remove_student_db(enrollment_no)
+            if y == 0:
+                return f'''<h1>Student not found to be removed Removed</h1>'''
+            else:
+                # Specify the path to the image file
+                filename = os.path.join(app.config['UPLOAD_DIR'], y)
+
+                # Remove the file
+                try:
+                    os.remove(filename)
+                except FileNotFoundError:
+                    return f'''<h1>Image File of student not found</h1>'''
+                return f'''<h1>Student removed successfully</h1>'''
+        if val == "edit":
+            return f'''<h1>Student Succesfully Edited</h1>'''
+    return render_template('manage_student.html')
+
+# Edited end by satyadeep at 3/6/24
+
+
 
 @app.route('/logout')
 def logout():
