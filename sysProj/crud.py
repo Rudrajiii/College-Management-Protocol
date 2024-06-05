@@ -109,6 +109,7 @@ def admin_login():
         # Check if admin's info is in the cache and not expired
         user_profile = cache.get(username)
 
+        
         if user_profile is None:
             # Fetch admin's info from MongoDB if not found in cache or expired
             user_profile = get_user(username)
@@ -224,6 +225,7 @@ def admin_dashboard():
     total_student_count = count_students()
     total_teacher_count = count_teachers()
     admin_profile_image = session['profilepic']
+    print(admin_profile_image)
     return render_template('admin_dashboard.html', 
             username=session['username'] ,
             total_student_count=total_student_count,
