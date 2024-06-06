@@ -561,7 +561,8 @@ def manage_student():
                 return redirect(url_for('edit_student'))
     return render_template('manage_student.html')
 
-# Edit student route
+# *Edit student route
+# !New Route created bu Satyadeep
 @app.route('/edit_student', methods=['POST' , 'GET'])
 def edit_student():
     if 'username' not in session or session['role'] != 'admin':
