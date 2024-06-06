@@ -114,3 +114,40 @@ def remove_student_db(enrollment_no):
         return x
 
 # Edited end by satyadeep at 3/6/24
+
+# Edit Student get data from database connection
+def edit_student_get_db(enrollment_no):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing students Collection
+    collection = db.students
+    students = collection.find_one({"enrollment_no": enrollment_no})
+    if students == None:
+        return 0
+    else:
+        return students
+    
+# Edit Student update data from database connection
+def edit_student_update_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing students Collection
+    collection = db.students
+    # Student record in one dictionary
+    student_info = {
+        "password" : password ,
+        "username" : username ,
+        "email" : email ,
+        "branch" : branch ,
+        "academic_year" : int(year) ,
+        "gender" : gender ,
+        "phone_no" : phone ,
+        "dob" : dob ,
+        "parent_name" : parent_name ,
+        "parent_no" : parent_no ,
+        "current_address" : address ,
+        "profile_pic" : profile_pic_location
+        }
+    collection.update_one({"enrollment_no": enrollment_no} , {"$set": student_info})
