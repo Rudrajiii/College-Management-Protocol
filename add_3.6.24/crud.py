@@ -7,8 +7,7 @@ from datetime import  datetime
 from flask import request
 from PIL import Image
 from functions import *
-# Temporary function import , later changed by Rudra
-from function import add_student_db,remove_student_db
+from flask_cors import CORS
 from flask import *
 import sqlite3
 import random
@@ -16,10 +15,19 @@ import time
 import glob
 import csv
 import os
-from bson import ObjectId  # Import ObjectId from bson module
+import re
+from bson import ObjectId
+
+class DataStore():
+    a = None
+    b = None
+    c = None
+
+data = DataStore()
 
 
 app = Flask(__name__)
+CORS(app)
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
@@ -28,6 +36,14 @@ MONGO_URI = "mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mong
 client = MongoClient(MONGO_URI)
 db = client['project']
 creators = db.creators
+collection = db['teachers']
+
+UPLOAD_FOLDER = 'static/Uploads/teachers'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # Configure Flask-Caching
 app.config['CACHE_TYPE'] = 'SimpleCache'
@@ -35,12 +51,31 @@ app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
 
 
+def get_image_name(enrollment_no, extension, updated=False):
+    if updated:
+        return f'{enrollment_no}(updated){extension}'
+    else:
+        return f'{enrollment_no}{extension}'
+
+@app.route('/teachers_data', methods=['GET'])
+def get_creators():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    teachers = collection.find({}) 
+    teacher_list = []
+    for teacher in teachers:
+        teacher['_id'] = str(teacher['_id'])  #string pr convert kr raha
+        teacher_list.append(teacher)
+    return jsonify(teacher_list)
+
+
+
 def get_user_from_db(username):
     print("Fetching user from cache or MongoDB if not cached")
     user =  db.creators.find_one({"username": username})
     return user
 
-@cache.memoize(timeout=300)  # Cache this function's result for 5 minutes
+@cache.memoize(timeout=300)  # Caching this function's result for 5 minutes
 def get_user(username):
     return get_user_from_db(username)
 
@@ -70,9 +105,11 @@ def admin_login():
         username = request.form.get('username')
         password = request.form.get('password')
 
+
         # Check if admin's info is in the cache and not expired
         user_profile = cache.get(username)
 
+        
         if user_profile is None:
             # Fetch admin's info from MongoDB if not found in cache or expired
             user_profile = get_user(username)
@@ -119,6 +156,7 @@ def admin_login():
             return redirect(url_for('admin_login'))    #if the username or password does not matches 
         
     return render_template("admin_login.html" , delay=session.get('delay', 0))
+
 
 
 @app.route('/view_cache')
@@ -181,12 +219,13 @@ def student_login():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
-    admin_profile_image = session['profilepic']
 
-    if 'username' not in session or session['role'] != 'admin':
+    if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
         return redirect(url_for('admin_login'))
     total_student_count = count_students()
     total_teacher_count = count_teachers()
+    admin_profile_image = session['profilepic']
+    print(admin_profile_image)
     return render_template('admin_dashboard.html', 
             username=session['username'] ,
             total_student_count=total_student_count,
@@ -222,6 +261,232 @@ def admin_profile():
                         admin_profile_image=admin_profile_image
                         )
 
+
+@app.route('/student_profile')
+def student_profile():
+    ...
+
+
+@app.route('/teacher_profile/<string:id>', methods=['GET'])
+def teacher_profile(id):
+    # Ensure the user is an admin
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    try:
+        teacher_id = ObjectId(id)
+    except Exception as e:
+        abort(404, description="Invalid teacher ID")
+
+    # Fetching teacher details using the provided id
+    teacher = collection.find_one({"_id": teacher_id})
+    if teacher is None:
+        abort(404, description="Teacher not found")
+
+    return render_template('teacher_profile.html', teacher=teacher)
+
+
+@app.route('/staff_informations')
+def staff_informations():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    teachers = list(collection.find({})) 
+    return render_template('manage_teachers.html' , teachers = teachers)
+
+
+
+@app.route('/register_a_staff', methods=['GET', 'POST'])
+def register_a_staff():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        gender = request.form.get('gender')
+        contact = request.form.get('contact')
+        enrollment_no = request.form.get('Enrollment_no')
+        current_address = request.form.get('current_address')
+        bio = request.form.get('bio')
+        description = request.form.get('description')
+        rating = request.form.get('rating')
+        reviews = request.form.get('reviews')
+        teaches_total_students = request.form.get('teaches_total_students')
+        dob = request.form.get('dob')
+        profile_pic = request.files['profile_pic']
+
+
+        profile_pic_path = None
+        if profile_pic:
+            extension = os.path.splitext(profile_pic.filename)[1]
+            new_image_name = get_image_name(enrollment_no, extension)
+            profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
+            profile_pic.save(profile_pic_path)
+            profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')  # To create a relative path for HTML
+    
+
+        teacher = {
+            "enrollment_no": enrollment_no,
+            "password": password,
+            "username": name,
+            "email": email,
+            "gender": gender,
+            "phone_no": contact,
+            "dob": dob,
+            "profile_pic": profile_pic_path,
+            "current_address": current_address,
+            "teaching_subjects": {"subjects": ["English", "History"]},
+            "alloted_sections": {"sections": ["C", "D"]},  
+            "bio": bio,
+            "description": description,
+            "rating": int(rating) if rating else 0,
+            "reviews": int(reviews) if reviews else 0,
+            "teaches_total_students": int(teaches_total_students) if teaches_total_students else 0
+        }
+        res = collection.insert_one(teacher)
+        print(res)
+        return 'Success'
+
+    return render_template('register_a_staff.html')
+
+
+@app.route('/update_a_staff', methods=['GET','POST'])
+def update_a_staff():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    staff_id = request.args.get('id')
+    # print(type(staff_id))
+    print(staff_id)
+    # teachers = collection.find_one({"_id": ObjectId(staff_id)})
+    # print(teachers['profile_pic'])
+    # print(type(teachers['profile_pic']))
+    if not staff_id:
+        flash('Staff ID is required.', 'error')
+        return redirect(url_for('staff_informations'))
+
+    teacher = collection.find_one({"_id": ObjectId(staff_id)})
+    if not teacher:
+        flash('Staff not found.', 'error')
+        return redirect(url_for('staff_informations'))
+
+    if request.method == 'POST':
+        staff_id = request.form.get('staff_id')
+        if not staff_id:
+            flash('Staff ID not provided.', 'error')
+            return redirect(url_for('update_a_staff', id=staff_id))
+        name = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        gender = request.form.get('gender')
+        contact = request.form.get('phone_no')
+        Enrollment_no = request.form.get('enrollment_no')
+        current_address = request.form.get('current_address')
+        bio = request.form.get('bio')
+        description = request.form.get('description')
+        rating = request.form.get('rating')
+        reviews = request.form.get('reviews')
+        teaches_total_students = request.form.get('teaches_total_students')
+        dob = request.form.get('dob')
+        profile_pic = request.files['profile_pic']
+
+        # files = os.listdir(app.config['UPLOAD_FOLDER'])
+
+        profile_pic_path = teacher['profile_pic']  # Default to the current profile pic path
+
+        if profile_pic and profile_pic.filename:
+            # Delete the old profile picture
+            if teacher['profile_pic']:
+                old_profile_pic_path = os.path.join(app.root_path, teacher['profile_pic'][1:])  # Remove leading '/' from URL
+                if os.path.exists(old_profile_pic_path):
+                    os.remove(old_profile_pic_path)
+
+            # Save the new profile picture
+            extension = os.path.splitext(profile_pic.filename)[1]
+            new_image_name = get_image_name(Enrollment_no, extension, updated=True)
+            profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
+            profile_pic.save(profile_pic_path)
+            profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')
+
+        staff_data = {
+            "username": name,
+            "email": email,
+            "password": password,
+            "gender": gender,
+            "phone_no": contact,
+            "enrollment_no": Enrollment_no,
+            "current_address": current_address,
+            "bio": bio,
+            "description": description,
+            "rating": rating,
+            "reviews": reviews,
+            "teaches_total_students": teaches_total_students,
+            "dob": dob,
+            "profile_pic": profile_pic_path
+        }
+
+        if staff_id:
+            result = collection.update_one(
+                {"_id": ObjectId(staff_id)},
+                {"$set": staff_data}
+            )
+            # print(result)
+            # print('Updated name: ' + result.username)
+            if result.matched_count > 0:
+                flash('Staff information updated successfully!', 'success')
+            else:
+                flash('Staff not found.', 'error')
+        else:
+            
+            flash('Staff ID not provided.', 'error')
+
+        return 'updated'  # Redirect to an appropriate route
+
+    return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
+
+@app.route('/get_staff/<staff_id>', methods=['GET'])
+def get_staff(staff_id):
+    staff = collection.find_one({"_id": ObjectId(staff_id)})
+    if staff:
+        staff['_id'] = str(staff['_id'])
+        return jsonify(staff)
+    else:
+        return jsonify({"error": "Staff not found"}), 404
+
+
+@app.route('/delete_user/<string:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+
+    try:
+        user_id = ObjectId(user_id)
+    except Exception as e:
+        return jsonify({"error": "Invalid user ID"}), 400
+        # Fetch user details before deleting
+    user_details = collection.find_one({"_id": user_id})
+    result = collection.delete_one({"_id": user_id})
+    print(result)
+    # if details['profile_pic']:
+    #             user_profile_pic_path = os.path.join(app.root_path, details['profile_pic'][1:])  # Remove leading '/' from URL
+    #             if os.path.exists(user_profile_pic_path):
+    #                 os.remove(user_profile_pic_path)
+
+    if result.deleted_count == 1:
+        # Delete user profile pic if it exists
+        if user_details and 'profile_pic' in user_details:
+            profile_pic_path = user_details['profile_pic']
+            if profile_pic_path:
+                full_path = os.path.join(app.root_path, profile_pic_path[1:])  # Remove leading '/' from URL
+                if os.path.exists(full_path):
+                    os.remove(full_path)
+        return jsonify({"message": "User deleted successfully"}), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+
+
+
+#inserted code from satyadeep
 # Edited start by satyadeep at 3/6/24
 # Add student details route
 
@@ -292,19 +557,6 @@ def manage_student():
 # Edited end by satyadeep at 3/6/24
 
 
-@app.route('/student_profile')
-def student_profile():
-    ...
-
-
-@app.route('/teacher_profile')
-def teacher_profile():
-    ...
-
-
-@app.route('/staff_informations')
-def staff_informations(): 
-    return render_template('manage_teachers.html')
 
 @app.route('/logout')
 def logout():
@@ -475,20 +727,21 @@ def edit_user(id):
             return render_template("success.html" , msg = msg)
     return render_template('edit_user.html', user = user)
 
-@app.route('/<int:id>/delete_user', methods=("GET", "POST"))
-def delete_user(id):
-    user = get_post(id)
-    with sqlite3.connect("users.db") as con:
-        cur = con.cursor() 
-        con.execute('DELETE FROM users WHERE id = ?', (id,))
-        con.commit()
-    return render_template("delete_user.html")
-    
 #!No to need to present in this file
 @app.route('/secret')
 def secret():
     return get_data()
 
+
+#* Error handling
+@app.errorhandler(404)
+def page_not_found(e):
+    print(e)
+    return render_template('error_page.html' , error = e), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return f"internal_server_error{e}", 500
 
 if __name__ == "__main__":
     app.run(debug = True)
