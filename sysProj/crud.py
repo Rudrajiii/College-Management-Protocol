@@ -513,7 +513,6 @@ def add_student():
         if file_extension not in [".png" , ".jpg" , ".jpeg"]:
             return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
         profile_pic_location = enrollment_no + file_extension
-        print(profile_pic_location)
         # Save the uploaded image file to the static folder
         filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
         file.save(filename)
@@ -539,7 +538,7 @@ def manage_student():
             # y contains 0 if no student found with that no. or if found it contains profile_pic name
             y = remove_student_db(enrollment_no)
             if y == 0:
-                return f'''<h1>Student not found to be removed Removed</h1>'''
+                return f'''<h1>Student not found to be Removed</h1>'''
             else:
                 # Specify the path to the image file
                 filename = os.path.join(app.config['UPLOAD_DIR'], y)
@@ -551,10 +550,61 @@ def manage_student():
                     return f'''<h1>Image File of student not found</h1>'''
                 return f'''<h1>Student removed successfully</h1>'''
         if val == "edit":
-            return f'''<h1>Student Succesfully Edited</h1>'''
+            # y contains 0 if no student found with that enroll no. else it contains the record of student
+            y = edit_student_get_db(enrollment_no)
+            if y == 0:
+                return f'''<h1>Student not found to be edited</h1>'''
+            else:
+                # student_record variable is considered as global to use it in edit route functions
+                global student_record
+                student_record = y
+                return redirect(url_for('edit_student'))
     return render_template('manage_student.html')
 
-# Edited end by satyadeep at 3/6/24
+# Edit student route
+@app.route('/edit_student', methods=['POST' , 'GET'])
+def edit_student():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    if(request.method == 'POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+        branch = request.form.get('branch')
+        year = request.form.get('year')
+        gender = request.form.get('gender')
+        phone = request.form.get('phone')
+        dob = request.form.get('dob')
+        parent_name = request.form.get('parent_name')
+        parent_no = request.form.get('parent_no')
+        address = request.form.get('address')
+        file = request.files['profile_pic']
+        if file.filename == '':
+            profile_pic_location = student_record['profile_pic']
+            edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
+            return f'''<h1>Student record Successfully edited</h1>'''
+        else:
+            # Specify the path to the image file
+            filename = os.path.join(app.config['UPLOAD_DIR'], student_record['profile_pic'])
+
+            # Remove the file
+            try:
+                os.remove(filename)
+            except FileNotFoundError:
+                return f'''<h1>Image File of student not found</h1>'''
+            file_extension = os.path.splitext(file.filename)[1].lower()
+            if file_extension not in [".png" , ".jpg" , ".jpeg"]:
+                return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
+            profile_pic_location = student_record['enrollment_no'] + file_extension
+            # Save the uploaded image file to the static folder
+            filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
+            file.save(filename)
+            edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
+            return f'''<h1>Student record updated with Updated pic</h1>'''
+    return render_template('edit_student.html' , student_record = student_record)
+
+# Edited end by satyadeep at 4/6/24
 
 
 
