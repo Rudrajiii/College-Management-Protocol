@@ -37,6 +37,7 @@ client = MongoClient(MONGO_URI)
 db = client['project']
 creators = db.creators
 collection = db['teachers']
+students = db['students']
 
 UPLOAD_FOLDER = 'static/Uploads/teachers'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -211,6 +212,7 @@ def student_login():
         if var1:
             session['username'] = username
             session['role'] = 'student'
+            session['enrollment_no'] = enrollment_no
             return redirect(url_for('student_dashboard'))
         else:
             flash('Invalid username, enrollment number, or password. Please try again.', 'error')
@@ -243,7 +245,18 @@ def teacher_dashboard():
 def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template('student_dashboard.html', username=session['username'])
+    student_enrollment = session['enrollment_no']
+    print("ENROLLMENT_NO "+student_enrollment)
+    setudent_details = students.find_one({"enrollment_no":student_enrollment})
+    print(setudent_details)
+    return render_template('student_dashboard.html', username=session['username'] ,
+                            ENROLLMENT_NO=setudent_details['enrollment_no'],
+                            PASSWORD = setudent_details['password'],
+                            DOB = setudent_details['dob'],
+                            CONTACT = setudent_details['phone_no'],
+                            BRANCH = setudent_details['branch'],
+                            EMAIL_ID = setudent_details['email'],
+                            ADDRESS = setudent_details['current_address'])
 
 @app.route('/admin_profile')
 def admin_profile():
@@ -681,6 +694,27 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return f"internal_server_error{e}", 500
+
+#* Let's link up the student dashboard with our main gateway.
+@app.route("/timetable" , methods = ["GET", "POST"])
+def timetable():
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    return render_template("timetable.html")
+
+
+@app.route("/exam" , methods=["GET", "POST"])
+def exam():
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    return render_template("exam.html")
+
+@app.route("/update_password" , methods=["GET","POST"])
+def update_password():
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    return render_template("password.html")
+
 
 if __name__ == "__main__":
     app.run(debug = True)
