@@ -23,6 +23,12 @@
     #svg{
         display:none;
     }
+    #radio-btn{
+      display: flex !important;
+      width: 100%;
+      margin-left: 6px;
+      gap: 5vh;
+    }
 </style>
 <body>
   <svg id="svg" >
@@ -110,32 +116,46 @@
   <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Open modal for @mdo</button> -->
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">For:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Send Notifications</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="col-form-label">Choose Whom do you want to notify :</label>
+              <div id="radio-btn">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="recipient" id="recipient-student" value="Student">
+                  <label class="form-check-label" for="recipient-student">Student</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="recipient" id="recipient-teacher" value="Teacher">
+                  <label class="form-check-label" for="recipient-teacher">Teacher</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="recipient" id="recipient-both" value="Both">
+                  <label class="form-check-label" for="recipient-both">Both</label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Send message</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  
       <header class="page-header">
         <nav>
           <!-- <a href="#0" aria-label="forecastr logo" class="logo">
