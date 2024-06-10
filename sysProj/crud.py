@@ -709,11 +709,25 @@ def exam():
         return redirect(url_for('student_login'))
     return render_template("exam.html")
 
-@app.route("/update_password" , methods=["GET","POST"])
-def update_password():
+@app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
+def update_password(ENROLLMENT_NO):
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("password.html")
+    
+    if request.method == 'POST':
+        current_password = request.form.get('currentpass')
+        new_password = request.form.get('newpass')
+        confirm_password = request.form.get('confirmpass')
+        if new_password != confirm_password:
+            return f'''<h1>Confirm password and new password does not match</h1>'''
+        else:
+            x = change_student_pass_db(ENROLLMENT_NO,current_password,confirm_password)
+            # If x = 0 , means currentpassword is wrongly put else change password is success
+            if x == 0:
+                return f'''<h1>Please input correct old password</h1>'''
+            else:
+                return f'''<h1>Password Successfully changed</h1>'''
+    return render_template("password.html" , ENROLLMENT_NO = ENROLLMENT_NO)
 
 
 if __name__ == "__main__":
