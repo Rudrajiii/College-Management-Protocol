@@ -151,3 +151,18 @@ def edit_student_update_db(enrollment_no,username,password,email,branch,year,gen
         "profile_pic" : profile_pic_location
         }
     collection.update_one({"enrollment_no": enrollment_no} , {"$set": student_info})
+
+
+# Change Students password from students dashboard database connection
+def change_student_pass_db(ENROLLMENT_NO,current_password,confirm_password):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing students Collection
+    collection = db.students
+    students = collection.find_one({"enrollment_no": ENROLLMENT_NO})
+    if current_password != students['password']:
+        return 0
+    else:
+        collection.update_one({"enrollment_no": ENROLLMENT_NO} , {"$set": {'password': confirm_password}})
+        return 1
