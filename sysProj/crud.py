@@ -621,13 +621,11 @@ def edit_student():
 # Edited end by satyadeep at 4/6/24
 
 
-
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     session.pop('role', None)
     return redirect(url_for('index'))
-
 
 #** Important function for chart data generation
 
@@ -700,20 +698,19 @@ def internal_server_error(e):
 def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("timetable.html")
+    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
 
 
 @app.route("/exam" , methods=["GET", "POST"])
 def exam():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("exam.html")
+    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 @app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
 def update_password(ENROLLMENT_NO):
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    
     if request.method == 'POST':
         current_password = request.form.get('currentpass')
         new_password = request.form.get('newpass')
@@ -722,12 +719,13 @@ def update_password(ENROLLMENT_NO):
             return f'''<h1>Confirm password and new password does not match</h1>'''
         else:
             x = change_student_pass_db(ENROLLMENT_NO,current_password,confirm_password)
+            print(x)
             # If x = 0 , means currentpassword is wrongly put else change password is success
             if x == 0:
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = ENROLLMENT_NO)
+    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 
 if __name__ == "__main__":
