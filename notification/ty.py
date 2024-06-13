@@ -15,52 +15,38 @@ deletion_time2 = current_time + timedelta(minutes=2, seconds=20)
 
 documents =[
     {
-        "teacher_name": "John Smith",
+        "FOR": "teacher",
         "reason": "Medical Leave",
         #"deleteAt": deletion_time          #remove the hash when using it during projct implementation
     },
     {
-        "teacher_name": "Emily Johnson",
+        "FOR": "teacher",
         "reason": "Family Emergency",
         #"deleteAt": deletion_time1
     },
     {
-        "teacher_name": "Michael Brown",
+        "FOR": "teacher",
         "reason": "Personal Leave",
         #"deleteAt": deletion_time2
     },
     {
-        "teacher_name": "Sarah Davis",
+        "FOR": "teacher",
         "reason": "Professional Development",
         #"deleteAt": deletion_time
     },
     {
-        "teacher_name": "David Wilson",
+        "FOR": "student",
         "reason": "Maternity/Paternity Leave",
         #"deleteAt": deletion_time1
     },
     {
-        "teacher_name": "Laura Martinez",
+        "FOR": "student",
         "reason": "Vacation",
         #"deleteAt": deletion_time2
     },
+    
     {
-        "teacher_name": "James Anderson",
-        "reason": "Bereavement",
-        #"deleteAt": deletion_time
-    },
-    {
-        "teacher_name": "Patricia Thomas",
-        "reason": "Mental Health Leave",
-        #"deleteAt": deletion_time1
-    },
-    {
-        "teacher_name": "Robert Jackson",
-        "reason": "Jury Duty",
-        #"deleteAt": deletion_time2
-    },
-    {
-        "teacher_name": "Jennifer White",
+        "FOR": "student",
         "reason": "Unexpected Travel",
         #"deleteAt": deletion_time
     }
