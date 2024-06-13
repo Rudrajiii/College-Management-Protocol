@@ -38,6 +38,7 @@ db = client['project']
 creators = db.creators
 collection = db['teachers']
 students = db['students']
+application = db['teacherApplications']
 
 UPLOAD_FOLDER = 'static/Uploads/teachers'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -158,8 +159,6 @@ def admin_login():
         
     return render_template("admin_login.html" , delay=session.get('delay', 0))
 
-
-
 @app.route('/view_cache')
 def view_cache():
     cached_items = []
@@ -191,6 +190,7 @@ def teacher_login():
         if var1:
             session['username'] = username
             session['role'] = 'teacher'
+            session['enrollment_no'] = enrollment_no
             return redirect(url_for('teacher_dashboard'))
         else:
             flash('Invalid username, enrollment number, or password. Please try again.', 'error')
@@ -227,19 +227,30 @@ def admin_dashboard():
     total_student_count = count_students()
     total_teacher_count = count_teachers()
     admin_profile_image = session['profilepic']
+    application = db['teacherApplications']
+    count = application.count_documents({})
     print(admin_profile_image)
     return render_template('admin_dashboard.html', 
             username=session['username'] ,
             total_student_count=total_student_count,
             total_teacher_count=total_teacher_count,
-            admin_profile_image=admin_profile_image
+            admin_profile_image=admin_profile_image,
+            count=count
                         )
 
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
     if 'username' not in session or session['role'] != 'teacher':
         return redirect(url_for('teacher_login'))
-    return render_template('teacher_dashboard.html', username=session['username'])
+    enrollment_no = session['enrollment_no']
+    teacher_details = collection.find_one({'enrollment_no':enrollment_no})
+    # print(teacher_details) #? -> Teacher Details
+    teacher_application = application.find_one({'enrollment_number': session['enrollment_no']})
+    if teacher_application:
+        status = teacher_application.get('status', 'None')
+    else:
+        status = 'None'  # Default if no application found
+    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status)
 
 @app.route('/student_dashboard')
 def student_dashboard():
@@ -682,6 +693,45 @@ def access_data():
     student_data = read_csv(csv_file_path)
     return jsonify(student_data)
 
+
+@app.route("/view_all_notifications" , methods=["GET", "POST"])
+def view_all_notifications():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    return render_template("all_notifications.html")
+
+
+@app.route('/submit_application' , methods=['POST'])
+def submit_application():
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+    try:
+        # Check if there is an existing application with status "Pending"
+        existing_application = application.find_one({
+            'enrollment_number': session['enrollment_no'],
+            'status': 'Pending'
+        })
+
+        if existing_application:
+            return jsonify({'error': 'You already have a pending application'}), 400
+        # Get data from request
+        data = request.json
+
+        # Insert into MongoDB collection
+        application.insert_one({
+            'enrollment_number': data['enrollment_number'],
+            'name': session['username'],
+            'start_time': data['start_time'],
+            'end_time': data['end_time'],
+            'reason': data['reason'],
+            'status': data['status'],
+            'response':data['Response']
+        })
+
+        return jsonify({'message': 'Application submitted successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 #* Error handling
 @app.errorhandler(404)

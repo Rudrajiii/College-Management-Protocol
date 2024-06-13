@@ -166,3 +166,24 @@ def change_student_pass_db(ENROLLMENT_NO,current_password,confirm_password):
     else:
         collection.update_one({"enrollment_no": ENROLLMENT_NO} , {"$set": {'password': confirm_password}})
         return 1
+
+def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        # Acessing project Database
+        db = client['project']
+        # Acessing students Collection
+        application = db.teacherApplications
+        record = {
+            "enrollment_number": enrollment_no,
+            "name":name,
+            "reason": reason,
+            "start_time": start_time,
+            "end_time": end_time,
+            "status": status,
+            "response": response
+        }
+        save_record = application.insert_one(record)
+        print("Saved record successfully")
+    except Exception as e:
+        print(e)
