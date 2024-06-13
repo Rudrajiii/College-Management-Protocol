@@ -367,11 +367,13 @@
                     <div class="card-body">
                       <div class="media d-flex">
                         <div class="media-body text-left">
-                          <h3 class="warning">156</h3>
-                          <span>New Comments</span>
+                          <h5 class="warning">
+                            <a href="/view_all_notifications">View All</a>
+                          </h5>
+                          <span >All Notifications</span>
                         </div>
-                        <div class="align-self-center">
-                          <i class="icon-bubbles warning font-large-2 float-right"></i>
+                        <div id="bell-icon" class="align-self-center" current-count="{{count}}">
+                          <i class="fa-solid fa-bell"></i>
                         </div>
                       </div>
                       <div class="progress mt-1 mb-0" style="height: 7px;">

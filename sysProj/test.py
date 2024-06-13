@@ -210,21 +210,68 @@ def add_student_db_test(enrollment_no, username, password, email, branch, year, 
         return 0
 
 # Example usage
-result = add_student_db_test(
-    "55509", "lol", "lol", "john@example.com", 
-    "CS", "2", "Male", "1230000000", "2000-01-01", 
-    "John Doe Sr.", "0987654321", "123 Main St", "/path/to/profile_pic"
-)
-print("Insertion result:", result)
+# result = add_student_db_test(
+#     "55509", "lol", "lol", "john@example.com", 
+#     "CS", "2", "Male", "1230000000", "2000-01-01", 
+#     "John Doe Sr.", "0987654321", "123 Main St", "/path/to/profile_pic"
+# )
+# print("Insertion result:", result)
 
+class TeacherApplication:
+    def __init__(self, enrollment_number, name, reason, start_time,end_time, status, response):
+        self.enrollment_number = enrollment_number
+        self.name = name
+        self.reason = reason
+        self.start_time = start_time
+        self.end_time = end_time
+        self.status = status
+        self.response = response
 
+def create_teacherApplication_collections(application):
+    try:
+        # Connect to MongoDB (replace with your MongoDB connection string)
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        
+        # Access or create the database
+        db = client['project']
+        
+        # Access or create the collection 'teacherApplications'
+        collection = db['teacherApplications']
+        
+        # Create a document from the application object
+        document = {
+            "enrollment_number": application.enrollment_number,
+            "name": application.name,
+            "reason": application.reason,
+            "start_time": application.start_time,
+            "end_time": application.end_time,
+            "status": application.status,
+            "response": application.response
+        }
+        
+        # Insert the document into the collection
+        collection.insert_one(document)
+        
+        print("New Teacher application record created successfully.")
 
-#! Don't Run this Functions
-# update_admin_info() 
-# add_admin_function()
-# update_teacher_info()
-# add_student_function()
-# delete_info_func()
-# delete_teacher_info()
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        # Close the MongoDB connection (optional, but recommended)
+        client.close()
+
+# Example usage
+if __name__ == "__main__":
+    # Create an instance of TeacherApplication
+    application1 = TeacherApplication(enrollment_number="ENR2024002", name="alice_smith", reason="__", start_time="2024-06-13T17:31",end_time="2024-06-27T17:31", status="pending", response="accepted")
+    #! Don't Run this Functions
+    create_teacherApplication_collections(application1)
+    # update_admin_info() 
+    # add_admin_function()
+    # update_teacher_info()
+    # add_student_function()
+    # delete_info_func()
+    # delete_teacher_info()
 
 
