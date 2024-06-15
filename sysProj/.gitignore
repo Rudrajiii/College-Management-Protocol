@@ -4,3 +4,4 @@
 /Scripts
 /node_modules
 pyvenv.cfg
+.env
