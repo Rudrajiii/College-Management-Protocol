@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("default status: " + defaultStatus); 
     const sumbit = document.getElementById("sumbit");
     console.log(sumbit);
+    // Initialize socket connection to the specific URL
+    var teacherSocket = io.connect('http://127.0.0.1:5000/teacher_dashboard');
     const form = document.getElementById('leaveApplicationForm');
 
     form.addEventListener('submit', async (e) => {
@@ -20,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const reason = document.querySelector('input[name="reason"]').value;
         const status = 'Pending'; // Default status
         const Response = "accepted"; // Default Response
+
+
 
         try {
             // Send data to backend using fetch API or XMLHttpRequest
@@ -38,11 +42,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 }),
             });
 
+            teacherSocket.emit('apply', { message: 'Apply button clicked!' });
+
             const result = await response.json();
 
             if (!response.ok) {
                 throw new Error(result.error || 'Failed to submit application');
             }
+            const formData = new FormData(form);
+            console.log(formData);
+            const data = {};
+            formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+            console.log(data);
 
             // Update status display
             const statusSpan = document.getElementById('Status');
@@ -52,6 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // form.reset();
 
             console.log('Application submitted successfully');
+
+            // Send message to WebSocket server
+            socket.send('New leave application submitted');
         } catch (error) {
             console.error('Error submitting application:', error);
             // Handle error as needed (e.g., show error message to user)

@@ -266,12 +266,10 @@ if __name__ == "__main__":
     # Create an instance of TeacherApplication
     application1 = TeacherApplication(enrollment_number="ENR2024002", name="alice_smith", reason="__", start_time="2024-06-13T17:31",end_time="2024-06-27T17:31", status="pending", response="accepted")
     #! Don't Run this Functions
-    create_teacherApplication_collections(application1)
+    # create_teacherApplication_collections(application1)
     # update_admin_info() 
     # add_admin_function()
     # update_teacher_info()
     # add_student_function()
     # delete_info_func()
     # delete_teacher_info()
-
-

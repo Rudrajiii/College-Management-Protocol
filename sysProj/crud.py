@@ -17,6 +17,7 @@ import csv
 import os
 import re
 from bson import ObjectId
+from flask_socketio import SocketIO, emit , send , Namespace
 
 class DataStore():
     a = None
@@ -28,6 +29,7 @@ data = DataStore()
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app , cors_allowed_origins="*")
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
@@ -728,6 +730,10 @@ def submit_application():
             'response':data['Response']
         })
 
+         # Emit an alert to all connected clients in the admin_dashboard namespace
+        socketio.emit('alert', {'message': 'An apply button was clicked!'}, namespace='/admin_dashboard')
+
+
         return jsonify({'message': 'Application submitted successfully'}), 200
 
     except Exception as e:
@@ -778,8 +784,36 @@ def update_password(ENROLLMENT_NO):
     return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 
+# @socketio.on('message')
+# def handle_message(data):
+#     print('\n\n received message: \n\n' + data)
+#     send(data)
+#     emit('custom-event',"i am currently testing the application")
+
+class AdminNamespace(Namespace):
+    def on_connect(self):
+        print('Admin connected.')
+
+    def on_disconnect(self):
+        print('Admin disconnected.')
+
+class TeacherNamespace(Namespace):
+    def on_connect(self):
+        print('Teacher connected.')
+
+    def on_apply(self, data):
+        print('Apply button clicked:', data)
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        # socketio.emit('alert', {'message': 'An apply button was clicked!'}, namespace='/admin_dashboard')
+
+    def on_disconnect(self):
+        print('Teacher disconnected.')
+
+socketio.on_namespace(AdminNamespace('/admin_dashboard'))
+socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    socketio.run(app , debug = True)
     modified_csv_data()
     test('Rudra')
 
