@@ -479,6 +479,11 @@ footer a {
     width: 250px !important;
   }
 }
+@media (max-width: 576px) {
+  html, body {
+    overflow-x: hidden !important;
+  }
+}
 @media (max-width: 310px) {
   .contentStart .leftDiv .holded {
     width: 230px;
