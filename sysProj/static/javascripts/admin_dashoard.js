@@ -1,9 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const socket = io();
+    // Connect to the admin dashboard namespace
+    var adminSocket = io.connect('http://127.0.0.1:5000/admin_dashboard');
 
-    // Handle new application notification from server
-    socket.on('new_application', (data) => {
-        // Handle the notification (e.g., show a notification to admin)
-        alert(`New application received:\n${JSON.stringify(data, null, 2)}`);
+    adminSocket.on('alert', function(data) {
+      showSuccessAlert(data.message); 
     });
+
+    function showSuccessAlert(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'success-alert';
+    alertDiv.textContent = message;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => {
+      alertDiv.remove();
+    }, 3000);
+  }
 });
+

@@ -14,6 +14,8 @@ import random
 import time 
 import glob
 from datetime import datetime
+import timeago
+from time import time
 import csv
 import os
 import re
@@ -779,11 +781,12 @@ def submit_application():
             'end_time': data['end_time'],
             'reason': data['reason'],
             'status': data['status'],
-            'response':data['Response']
+            'response':data['Response'],
+            'submitted_at': datetime.now()
         })
 
-         # Emit an alert to all connected clients in the admin_dashboard namespace
-        socketio.emit('alert', {'message': 'An apply button was clicked!'}, namespace='/admin_dashboard')
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        socketio.emit('alert', {'message': f'New application from {session["username"]} ({session["enrollment_no"]})'}, namespace='/admin_dashboard')
 
 
         return jsonify({'message': 'Application submitted successfully'}), 200

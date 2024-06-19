@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Send data to backend using fetch API or XMLHttpRequest
+            // Update status display
+            const statusSpan = document.getElementById('Status');
+            statusSpan.textContent = 'Pending';
+
             const response = await fetch('/submit_application', {
                 method: 'POST',
                 headers: {
@@ -40,9 +44,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     status: status,
                     Response:Response
                 }),
-            });
+            })
+            .then(response => response.json())
+            .then(data => {
+            if (data.error) {
+                showErrorAlert(data.error, 'error');
+            }else{
+                showSuccessAlert(data.message, 'success');
+            }
+        })
+        teacherSocket.emit('apply', { message: 'Apply button clicked!' });
 
-            teacherSocket.emit('apply', { message: 'Apply button clicked!' });
+            
 
             const result = await response.json();
 
@@ -57,9 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             console.log(data);
 
-            // Update status display
-            const statusSpan = document.getElementById('Status');
-            statusSpan.textContent = 'Pending';
+            
 
             // Reset the form (optional)
             // form.reset();
@@ -73,6 +84,25 @@ document.addEventListener("DOMContentLoaded", () => {
             // Handle error as needed (e.g., show error message to user)
         }
     });
+
+    function showErrorAlert(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'error-alert';
+        alertDiv.textContent = message;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 3000);
+      }
+      function showSuccessAlert(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'success-alert';
+        alertDiv.textContent = message;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 3000);
+      }
 });
 
 

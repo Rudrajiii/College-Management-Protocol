@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.timeago').forEach(element => {
+        const timestamp = element.getAttribute('datetime');
+        element.textContent = timeago.format(new Date(timestamp));
+      });
+
     document.querySelectorAll('#clear_msg').forEach(button => {
       button.addEventListener('click', (event) => {
         const liElement = event.target.closest('li');
@@ -52,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             liElement.querySelector('.status').textContent = `Current Status: ${newStatus}`;
             showUpdateAlert(`Application ${newStatus}`);
           } else {
-            alert('Failed to update status.');
+            showErrorAlert(`Already ${newStatus}`);
           }
         });
     }

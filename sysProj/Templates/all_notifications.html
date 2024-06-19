@@ -6,13 +6,15 @@
     <title>Teacher Applications</title>
     <script src="{{ url_for('static', filename='javascripts/teacher_applications.js') }}" defer></script>
     <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/notification.css')}}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
   <body>
     <h1>Here are all the notifications</h1>
+    <span><a href="/admin_dashboard">admin dashboard</a></span>
     {% if teacher_applications %}
     <ul>
       {% for application in teacher_applications %}
-      <li data-id="{{ application['_id'] }}">
+      <li data-id="{{ application['_id'] }}" style="border: 2px solid;">
         <header>
           <div class="header">
             FROM: {{ application['name'] }} EN: {{ application['enrollment_number'] }}
@@ -20,6 +22,9 @@
           <div class="time">
             Requested Gap: {{ application['requested_gap'] }} days
           </div>
+          <div class="timeago" datetime="{{ application.get('submitted_at', '') | default('N/A', true) }}">
+            Sent: {{ application.get('submitted_at', '') | default('N/A', true) }}
+        </div>
         </header>
         <hr />
         <main>
