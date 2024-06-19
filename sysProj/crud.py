@@ -13,6 +13,7 @@ import sqlite3
 import random
 import time 
 import glob
+from datetime import datetime
 import csv
 import os
 import re
@@ -700,7 +701,58 @@ def access_data():
 def view_all_notifications():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    return render_template("all_notifications.html")
+    teacher_applications = list(application.find({}))
+    
+    # Calculate the requested gap in days
+    for app in teacher_applications:
+        start_time = app.get('start_time', '')
+        end_time = app.get('end_time', '')
+        
+        if start_time and end_time:
+            try:
+                start_dt = datetime.fromisoformat(start_time)
+                end_dt = datetime.fromisoformat(end_time)
+                app['requested_gap'] = (end_dt - start_dt).days
+            except ValueError:
+                app['requested_gap'] = 'Invalid date format'
+        else:
+            app['requested_gap'] = 'Missing date'
+
+    # print(teacher_applications)
+    return render_template("all_notifications.html" ,teacher_applications = teacher_applications )
+
+
+@app.route("/delete_notification/<application_id>", methods=["DELETE"])
+def delete_notification(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    result = application.delete_one({'_id': ObjectId(application_id)})
+    
+    if result.deleted_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to delete notification'}), 500
+
+@app.route("/update_status/<application_id>", methods=["PUT"])
+def update_status(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    new_status = request.json.get('status')
+    
+    if new_status not in ['Accepted', 'Rejected']:
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+    
+    result = application.update_one(
+        {'_id': ObjectId(application_id)},
+        {'$set': {'status': new_status}}
+    )
+    
+    if result.modified_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to update status'}), 500
 
 
 @app.route('/submit_application' , methods=['POST'])
@@ -783,12 +835,6 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Password Successfully changed</h1>'''
     return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
-
-# @socketio.on('message')
-# def handle_message(data):
-#     print('\n\n received message: \n\n' + data)
-#     send(data)
-#     emit('custom-event',"i am currently testing the application")
 
 class AdminNamespace(Namespace):
     def on_connect(self):

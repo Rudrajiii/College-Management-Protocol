@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Here is the all notifications</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Applications</title>
+    <script src="{{ url_for('static', filename='javascripts/teacher_applications.js') }}" defer></script>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/notification.css')}}">
+  </head>
+  <body>
+    <h1>Here are all the notifications</h1>
+    {% if teacher_applications %}
+    <ul>
+      {% for application in teacher_applications %}
+      <li data-id="{{ application['_id'] }}">
+        <header>
+          <div class="header">
+            FROM: {{ application['name'] }} EN: {{ application['enrollment_number'] }}
+          </div>
+          <div class="time">
+            Requested Gap: {{ application['requested_gap'] }} days
+          </div>
+        </header>
+        <hr />
+        <main>
+          <div class="reason">
+            Reason: {{ application['reason'] }}
+          </div>
+          <div class="status">
+            Current Status: {{ application['status'] }}
+          </div>
+        </main>
+        <footer>
+            <button class="accept-button">Accept</button>
+            <button class="reject-button">Reject</button>
+          <div class="right_most_button">
+            <button id="clear_msg">Clear Notification</button>
+          </div>
+        </footer>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </body>
 </html>
