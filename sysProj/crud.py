@@ -106,7 +106,7 @@ def index():
 def admin_login():
     print("Admin login function called") 
     if(request.method == 'POST'):
-        start_time = time.time()  # Record the start time
+        start_time = time()  # Record the start time
 
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
@@ -153,7 +153,7 @@ def admin_login():
             session['username'] = username
             session['role'] = 'admin'
 
-            loading_time = time.time() - start_time
+            loading_time = time() - start_time
             delay = max(0, loading_time) 
             print(delay)
             session['delay'] = delay
