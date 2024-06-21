@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Get form values
         const enrollmentNumber = document.querySelector('input[name="enrollment"]').value;
+        const email = document.querySelector('input[name="email"]').value;
         const startTime = document.getElementById('start_time').value;
         const endTime = document.getElementById('end_time').value;
         const reason = document.querySelector('input[name="reason"]').value;
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 body: JSON.stringify({
                     enrollment_number: enrollmentNumber,
+                    email: email,
                     start_time: startTime,
                     end_time: endTime,
                     reason: reason,

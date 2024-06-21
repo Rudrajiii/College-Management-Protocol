@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reject-button').forEach(button => {
       button.addEventListener('click', () => updateStatus(button, 'Rejected'));
     });
+
+    document.querySelectorAll('.email-button').forEach(button => {
+      button.addEventListener('click', () => sendEmail(button));
+  });
   
     function updateStatus(button, newStatus) {
       const liElement = button.closest('li');
@@ -61,6 +65,25 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
     }
+
+
+    //sending emails 
+    function sendEmail(button) {
+      const liElement = button.closest('li');
+      const applicationId = liElement.dataset.id;
+
+      fetch(`/send_email/${applicationId}`, {
+          method: 'POST',
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              showSuccessAlert('Email sent successfully.');
+          } else {
+              showErrorAlert('Failed to send email.');
+          }
+      });
+  }
 
     function showErrorAlert(message) {
         const alertDiv = document.createElement('div');

@@ -21,6 +21,7 @@ import os
 import re
 from bson import ObjectId
 from flask_mail import Mail ,  Message
+import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace
 
 class DataStore():
@@ -51,8 +52,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # E.g., 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'br7007612@gmail.com'
-app.config['MAIL_PASSWORD'] = 'donotStealMypassword'
-app.config['MAIL_DEFAULT_SENDER'] = ('FLASK STUDENT', 'br7007612@gmail.com')
+app.config['MAIL_PASSWORD'] = 'APNI_PASSWORD_DAL_LE_CHOMU'
 
 mail = Mail(app)
 
@@ -778,25 +778,34 @@ def update_status(application_id):
     )
     
     if result.modified_count == 1:
-        # Fetch the teacher's email address
-        # app = application.find_one({'_id': ObjectId(application_id)})
-        # teacher_email = app.get('email')
-        # teacher_name = app.get('name')
-
-        # # Send the email notification
-        # subject = 'Leave Application Status'
-        # if new_status == 'Accepted':
-        #     body = f'Dear {teacher_name},\n\nYour leave application has been accepted.'
-        # else:
-        #     body = f'Dear {teacher_name},\n\nYour leave application has been rejected.'
-
-        # msg = Message(subject, recipients=[teacher_email], body=body)
-        # mail.send(msg)
-        
-        # return jsonify({'success': True, 'message': 'Status updated and email sent successfully'}), 200
         return jsonify({'success': True}), 200
     else:
         return jsonify({'success': False, 'error': 'Failed to update status'}), 500
+
+
+#EMAIL FEATURE
+@app.route("/send_email/<application_id>", methods=["POST"])
+def send_email(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+
+    teacher_application = application.find_one({'_id': ObjectId(application_id)})
+    teacher_email = teacher_application.get('email')
+    application_status = teacher_application.get('status')
+
+    if not teacher_email:
+        return jsonify({'success': False, 'error': 'Email address not found for this application'}), 400
+
+    subject = "Your leave application update"
+    body = f"Dear {teacher_application['name']},\n\nThis is a notification regarding your leave application\n\nSo Your application got {application_status}.\n\nBest regards,\nAdmin"
+    msg = Message(subject, sender='br7007612@gmail.com', recipients=[teacher_email])
+    msg.body = body
+
+    try:
+        mail.send(msg)
+        return jsonify({'success': True}), 200
+    except smtplib.SMTPException as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/submit_application' , methods=['POST'])
@@ -814,6 +823,7 @@ def submit_application():
             return jsonify({'error': 'You already have a pending application'}), 400
         # Get data from request
         data = request.json
+        print(data)
 
         # Insert into MongoDB collection
         application.insert_one({
@@ -824,7 +834,8 @@ def submit_application():
             'reason': data['reason'],
             'status': data['status'],
             'response':data['Response'],
-            'submitted_at': datetime.now()
+            'submitted_at': datetime.now(),
+            'email': data['email']
         })
 
         # Emit an alert to all connected clients in the admin_dashboard namespace
