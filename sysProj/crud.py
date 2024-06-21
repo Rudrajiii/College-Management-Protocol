@@ -20,6 +20,7 @@ import csv
 import os
 import re
 from bson import ObjectId
+from flask_mail import Mail ,  Message
 from flask_socketio import SocketIO, emit , send , Namespace
 
 class DataStore():
@@ -44,6 +45,16 @@ creators = db.creators
 collection = db['teachers']
 students = db['students']
 application = db['teacherApplications']
+
+#email sending configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # E.g., 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'br7007612@gmail.com'
+app.config['MAIL_PASSWORD'] = 'nodehackernode'
+app.config['MAIL_DEFAULT_SENDER'] = ('FLASK STUDENT', 'br7007612@gmail.com')
+
+mail = Mail(app)
 
 UPLOAD_FOLDER = 'static/Uploads/teachers'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -752,6 +763,22 @@ def update_status(application_id):
     )
     
     if result.modified_count == 1:
+        # Fetch the teacher's email address
+        # app = application.find_one({'_id': ObjectId(application_id)})
+        # teacher_email = app.get('email')
+        # teacher_name = app.get('name')
+
+        # # Send the email notification
+        # subject = 'Leave Application Status'
+        # if new_status == 'Accepted':
+        #     body = f'Dear {teacher_name},\n\nYour leave application has been accepted.'
+        # else:
+        #     body = f'Dear {teacher_name},\n\nYour leave application has been rejected.'
+
+        # msg = Message(subject, recipients=[teacher_email], body=body)
+        # mail.send(msg)
+        
+        # return jsonify({'success': True, 'message': 'Status updated and email sent successfully'}), 200
         return jsonify({'success': True}), 200
     else:
         return jsonify({'success': False, 'error': 'Failed to update status'}), 500
