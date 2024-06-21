@@ -276,6 +276,8 @@ def student_dashboard():
     print("ENROLLMENT_NO "+student_enrollment)
     setudent_details = students.find_one({"enrollment_no":student_enrollment})
     print(setudent_details)
+    # Getting the data for annoucement for student from database
+    announcement = student_announcement_db()
     return render_template('student_dashboard.html', username=session['username'] ,
                             ENROLLMENT_NO=setudent_details['enrollment_no'],
                             PASSWORD = setudent_details['password'],
@@ -283,7 +285,8 @@ def student_dashboard():
                             CONTACT = setudent_details['phone_no'],
                             BRANCH = setudent_details['branch'],
                             EMAIL_ID = setudent_details['email'],
-                            ADDRESS = setudent_details['current_address'])
+                            ADDRESS = setudent_details['current_address'],
+                            announcement = announcement)
 
 @app.route('/admin_profile')
 def admin_profile():
@@ -647,6 +650,18 @@ def edit_student():
 
 # Edited end by satyadeep at 4/6/24
 
+# Edit start by Satyadeep on 20/6/24
+
+@app.route('/announcement', methods = ['POST', 'GET'])
+def announcement():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        recipient = request.form.get('recipient')
+        message = request.form.get('message')
+        announcement_db(recipient,message)
+    return f'''<h1>Message recorded sucessfully</h1>'''
+    
 
 @app.route('/logout')
 def logout():
