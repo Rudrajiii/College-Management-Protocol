@@ -4,3 +4,7 @@ python-resize-image
 pymongo
 flask_caching
 flask_cors
+flask-socketio
+timeago
+Flask-Mail
+

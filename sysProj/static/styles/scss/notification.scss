@@ -1,0 +1,27 @@
+$error-color: red;
+$success-color: rgb(100, 249, 59);
+$update-color: rgb(255, 220, 20);
+$black: black;
+$white: white;
+@mixin similarProps{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    z-index: 1000;
+}
+.error-alert {
+    background-color: $error-color;
+    color: $white;
+    @include similarProps;
+}
+.success-alert {
+    background-color: $success-color;
+    color: $black;
+    @include similarProps;
+}
+.update-alert {
+    background-color:$update-color ;
+    color: $black;
+    @include similarProps;
+}

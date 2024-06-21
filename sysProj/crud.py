@@ -13,10 +13,16 @@ import sqlite3
 import random
 import time 
 import glob
+from datetime import datetime
+import timeago
+from time import time
 import csv
 import os
 import re
 from bson import ObjectId
+from flask_mail import Mail ,  Message
+import smtplib
+from flask_socketio import SocketIO, emit , send , Namespace
 
 class DataStore():
     a = None
@@ -28,6 +34,7 @@ data = DataStore()
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app , cors_allowed_origins="*")
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
@@ -39,6 +46,15 @@ creators = db.creators
 collection = db['teachers']
 students = db['students']
 application = db['teacherApplications']
+
+#email sending configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # E.g., 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'br7007612@gmail.com'
+app.config['MAIL_PASSWORD'] = 'APNI_PASSWORD_DAL_LE_CHOMU'
+
+mail = Mail(app)
 
 UPLOAD_FOLDER = 'static/Uploads/teachers'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -101,7 +117,7 @@ def index():
 def admin_login():
     print("Admin login function called") 
     if(request.method == 'POST'):
-        start_time = time.time()  # Record the start time
+        start_time = time()  # Record the start time
 
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
@@ -148,7 +164,7 @@ def admin_login():
             session['username'] = username
             session['role'] = 'admin'
 
-            loading_time = time.time() - start_time
+            loading_time = time() - start_time
             delay = max(0, loading_time) 
             print(delay)
             session['delay'] = delay
@@ -260,6 +276,8 @@ def student_dashboard():
     print("ENROLLMENT_NO "+student_enrollment)
     setudent_details = students.find_one({"enrollment_no":student_enrollment})
     print(setudent_details)
+    # Getting the data for annoucement for student from database
+    announcement = student_announcement_db()
     return render_template('student_dashboard.html', username=session['username'] ,
                             ENROLLMENT_NO=setudent_details['enrollment_no'],
                             PASSWORD = setudent_details['password'],
@@ -267,7 +285,8 @@ def student_dashboard():
                             CONTACT = setudent_details['phone_no'],
                             BRANCH = setudent_details['branch'],
                             EMAIL_ID = setudent_details['email'],
-                            ADDRESS = setudent_details['current_address'])
+                            ADDRESS = setudent_details['current_address'],
+                            announcement = announcement)
 
 @app.route('/admin_profile')
 def admin_profile():
@@ -631,6 +650,18 @@ def edit_student():
 
 # Edited end by satyadeep at 4/6/24
 
+# Edit start by Satyadeep on 20/6/24
+
+@app.route('/announcement', methods = ['POST', 'GET'])
+def announcement():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        recipient = request.form.get('recipient')
+        message = request.form.get('message')
+        announcement_db(recipient,message)
+    return f'''<h1>Message recorded sucessfully</h1>'''
+    
 
 @app.route('/logout')
 def logout():
@@ -698,7 +729,83 @@ def access_data():
 def view_all_notifications():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    return render_template("all_notifications.html")
+    teacher_applications = list(application.find({}))
+    
+    # Calculate the requested gap in days
+    for app in teacher_applications:
+        start_time = app.get('start_time', '')
+        end_time = app.get('end_time', '')
+        
+        if start_time and end_time:
+            try:
+                start_dt = datetime.fromisoformat(start_time)
+                end_dt = datetime.fromisoformat(end_time)
+                app['requested_gap'] = (end_dt - start_dt).days
+            except ValueError:
+                app['requested_gap'] = 'Invalid date format'
+        else:
+            app['requested_gap'] = 'Missing date'
+
+    # print(teacher_applications)
+    return render_template("all_notifications.html" ,teacher_applications = teacher_applications )
+
+
+@app.route("/delete_notification/<application_id>", methods=["DELETE"])
+def delete_notification(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    result = application.delete_one({'_id': ObjectId(application_id)})
+    
+    if result.deleted_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to delete notification'}), 500
+
+@app.route("/update_status/<application_id>", methods=["PUT"])
+def update_status(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    new_status = request.json.get('status')
+    
+    if new_status not in ['Accepted', 'Rejected']:
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+    
+    result = application.update_one(
+        {'_id': ObjectId(application_id)},
+        {'$set': {'status': new_status}}
+    )
+    
+    if result.modified_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to update status'}), 500
+
+
+#EMAIL FEATURE
+@app.route("/send_email/<application_id>", methods=["POST"])
+def send_email(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+
+    teacher_application = application.find_one({'_id': ObjectId(application_id)})
+    teacher_email = teacher_application.get('email')
+    application_status = teacher_application.get('status')
+
+    if not teacher_email:
+        return jsonify({'success': False, 'error': 'Email address not found for this application'}), 400
+
+    subject = "Your leave application update"
+    body = f"Dear {teacher_application['name']},\n\nThis is a notification regarding your leave application\n\nSo Your application got {application_status}.\n\nBest regards,\nAdmin"
+    msg = Message(subject, sender='br7007612@gmail.com', recipients=[teacher_email])
+    msg.body = body
+
+    try:
+        mail.send(msg)
+        return jsonify({'success': True}), 200
+    except smtplib.SMTPException as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/submit_application' , methods=['POST'])
@@ -716,6 +823,7 @@ def submit_application():
             return jsonify({'error': 'You already have a pending application'}), 400
         # Get data from request
         data = request.json
+        print(data)
 
         # Insert into MongoDB collection
         application.insert_one({
@@ -725,8 +833,14 @@ def submit_application():
             'end_time': data['end_time'],
             'reason': data['reason'],
             'status': data['status'],
-            'response':data['Response']
+            'response':data['Response'],
+            'submitted_at': datetime.now(),
+            'email': data['email']
         })
+
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        socketio.emit('alert', {'message': f'New application from {session["username"]} ({session["enrollment_no"]})'}, namespace='/admin_dashboard')
+
 
         return jsonify({'message': 'Application submitted successfully'}), 200
 
@@ -778,8 +892,30 @@ def update_password(ENROLLMENT_NO):
     return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 
+class AdminNamespace(Namespace):
+    def on_connect(self):
+        print('Admin connected.')
+
+    def on_disconnect(self):
+        print('Admin disconnected.')
+
+class TeacherNamespace(Namespace):
+    def on_connect(self):
+        print('Teacher connected.')
+
+    def on_apply(self, data):
+        print('Apply button clicked:', data)
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        # socketio.emit('alert', {'message': 'An apply button was clicked!'}, namespace='/admin_dashboard')
+
+    def on_disconnect(self):
+        print('Teacher disconnected.')
+
+socketio.on_namespace(AdminNamespace('/admin_dashboard'))
+socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    socketio.run(app , debug = True)
     modified_csv_data()
     test('Rudra')
 

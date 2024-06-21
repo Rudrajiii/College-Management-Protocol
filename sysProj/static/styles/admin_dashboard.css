@@ -622,3 +622,18 @@ body {
   justify-content: center;
   font-size: 20px;
 }
+.alert {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  z-index: 1000;
+}
+.alert-success {
+  background-color: green;
+  color: white;
+}
+.alert-error {
+  background-color: red;
+  color: white;
+}
