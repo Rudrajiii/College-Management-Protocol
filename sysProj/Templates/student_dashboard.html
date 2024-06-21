@@ -157,18 +157,12 @@
             <div class="announcements">
                 <h2>Announcements</h2>
                 <div class="updates">
+                    {% for info in announcement %}
                     <div class="message">
-                        <p> <b>Academic</b> Summer training internship with Live Projects.</p>
-                        <small class="text-muted">2 Minutes Ago</small>
+                        <p><b>{{info[0]}}</b></p>
+                        <small class="text-muted">{{info[1]}}</small>
                     </div>
-                    <div class="message">
-                        <p> <b>Co-curricular</b> Global internship oportunity by Student organization.</p>
-                        <small class="text-muted">10 Minutes Ago</small>
-                    </div>
-                    <div class="message">
-                        <p> <b>Examination</b> Instructions for Mid Term Examination.</p>
-                        <small class="text-muted">Yesterday</small>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
