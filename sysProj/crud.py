@@ -51,7 +51,7 @@ application = db['teacherApplications']
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # E.g., 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'br7007612@gmail.com'
+app.config['MAIL_USERNAME'] = 'university0690@gmail.com'
 app.config['MAIL_PASSWORD'] = 'APNI_PASSWORD_DAL_LE_CHOMU'
 
 mail = Mail(app)
@@ -799,7 +799,7 @@ def send_email(application_id):
 
     subject = "Your leave application update"
     body = f"Dear {teacher_application['name']},\n\nThis is a notification regarding your leave application\n\nSo Your application got {application_status}.\n\nBest regards,\nAdmin"
-    msg = Message(subject, sender='br7007612@gmail.com', recipients=[teacher_email])
+    msg = Message(subject, sender='university0690@gmail.com', recipients=[teacher_email])
     msg.body = body
 
     try:
