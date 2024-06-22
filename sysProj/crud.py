@@ -286,6 +286,7 @@ def student_dashboard():
                             BRANCH = setudent_details['branch'],
                             EMAIL_ID = setudent_details['email'],
                             ADDRESS = setudent_details['current_address'],
+                            ACADEMIC_YEAR = setudent_details['academic_year'],
                             announcement = announcement)
 
 @app.route('/admin_profile')
