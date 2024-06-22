@@ -266,6 +266,7 @@ def student_dashboard():
     setudent_details = students.find_one({"enrollment_no":student_enrollment})
     print(setudent_details)
     # Getting the data for annoucement for student from database
+    announcement = []
     announcement = student_announcement_db()
     return render_template('student_dashboard.html', username=session['username'] ,
                             ENROLLMENT_NO=setudent_details['enrollment_no'],
