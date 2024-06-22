@@ -22,9 +22,12 @@
           <div class="time">
             Requested Gap: {{ application['requested_gap'] }} days
           </div>
-          <div class="timeago" datetime="{{ application.get('submitted_at', '') | default('N/A', true) }}">
-            Sent: {{ application.get('submitted_at', '') | default('N/A', true) }}
-        </div>
+          <div class="time_tracker">
+
+        Sent : <div class="timeago" datetime="{{ application.get('submitted_at', '') | default('N/A', true) }}">
+                  {{ application.get('submitted_at', '') | default('N/A', true) }}
+                </div>
+            </div>
         </header>
         <hr />
         <main>
@@ -38,6 +41,7 @@
         <footer>
             <button class="accept-button">Accept</button>
             <button class="reject-button">Reject</button>
+            <button class="email-button">Email</button>
           <div class="right_most_button">
             <button id="clear_msg">Clear Notification</button>
           </div>

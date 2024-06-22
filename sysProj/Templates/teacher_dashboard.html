@@ -14,6 +14,7 @@
     <form id="leaveApplicationForm" method="POST"  action="/submit_application" enctype="multipart/form-data">
         <label for="">EN Number</label>
         <input name="enrollment" type="text" value="{{teacher_details['enrollment_no']}}" placeholder="EN number">
+        <input name="email" type="hidden" value="{{teacher_details['email']}}" placeholder="EN number">
         <br>
         <label for="">Start date*</label>
         <input type="datetime-local" name="start_time" id="start_time" placeholder=".">
