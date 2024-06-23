@@ -53,3 +53,28 @@ This project is a web-based student management system designed to streamline var
     Open your web browser and go to `http://127.0.0.1:5000`.
 
 ## Project Structure
+## Project Structure
+**Features**
+- Admin Dashboard
+The admin dashboard manages all staff information, processes data from MongoDB collections, and displays it through a card interface. The dashboard provides an overview of the entire system, ensuring that administrators can efficiently handle student and teacher data.
+![System Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/data_flow.jpg?raw=true)
+
+**MongoDB Database Structure**
+Our MongoDB database structure is designed to store and organize data efficiently, supporting the seamless flow of information between different components of the system.
+![System Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171227.png?raw=true)
+
+**Data Flow**
+The data flow diagram illustrates how student data is managed within the system, showing the routes from admin to students and vice versa. The backend server processes and formats data in JSON for seamless communication.
+![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171300.png?raw=true)
+
+**Real-Time Notifications**
+Notifications are handled using WebSockets for real-time updates. This feature is crucial for applications like teacher leave requests, ensuring that administrators and teachers are promptly informed of any changes.
+![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171300.png?raw=true)
+
+
+
+**Teacher Applications**
+The system processes teacher applications in real-time, with features to accept, reject, and send emails using Flask-Mail. Administrators can also clear notifications once actions are taken.
+![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171300.png?raw=true)
+
+
