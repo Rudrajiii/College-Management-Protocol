@@ -69,12 +69,12 @@ The data flow diagram illustrates how student data is managed within the system,
 
 **Real-Time Notifications**
 Notifications are handled using WebSockets for real-time updates. This feature is crucial for applications like teacher leave requests, ensuring that administrators and teachers are promptly informed of any changes.
-![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171300.png?raw=true)
+![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171534.png?raw=true)
 
 
 
 **Teacher Applications**
 The system processes teacher applications in real-time, with features to accept, reject, and send emails using Flask-Mail. Administrators can also clear notifications once actions are taken.
-![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171300.png?raw=true)
+![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171621.png?raw=true)
 
 
