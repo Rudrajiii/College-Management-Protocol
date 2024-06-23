@@ -1,101 +1,101 @@
 Full_name,gender,department
-Lucius Wilby,Male,CSBS
-Roxi Liley,Female,CSE
-Roscoe Walkden,Male,CSBS
-Ned Darinton,Male,CSE(ai)
-Rosco Grindall,Male,CSE(ai & Ml)
-Egbert Gannaway,Male,CSE(ai)
-Stan Musprat,Male,CSBS
-Rory Partington,Female,CSE(ai & Ml)
-Fraser Suart,Male,CSBS
-Jesselyn Tatlowe,Female,ECE
-Donnie Baldi,Female,CSE(ai)
-Collie Moreno,Female,ME
-Zsa zsa Fasson,Female,CSE
+Lucius Wilby,Male,CSE
+Roxi Liley,Female,CSBS
+Roscoe Walkden,Male,IT
+Ned Darinton,Male,IT
+Rosco Grindall,Male,IT
+Egbert Gannaway,Male,EE
+Stan Musprat,Male,ECE
+Rory Partington,Female,EE
+Fraser Suart,Male,ECE
+Jesselyn Tatlowe,Female,IT
+Donnie Baldi,Female,EE
+Collie Moreno,Female,CSE(ai & Ml)
+Zsa zsa Fasson,Female,ECE
 Ody Paulusch,Male,CSE
-Hogan Emes,Male,ECE
-Friederike Cleal,Female,EE
-Martie Taylor,Female,ECE
-Rollo Sides,Male,IOT
-L;urette Grainge,Female,CSE(ai & Ml)
-Ronny Philson,Female,CSBS
-Aggie Attwell,Female,CSE
-Keene Faires,Male,ME
-Heloise Restill,Female,CSE(ai & Ml)
-Debora Stoak,Female,CSE(ai)
-Rorke Gerretsen,Male,ECE
+Hogan Emes,Male,CSE
+Friederike Cleal,Female,ME
+Martie Taylor,Female,CSE
+Rollo Sides,Male,IT
+L;urette Grainge,Female,CSE(ai)
+Ronny Philson,Female,IOT
+Aggie Attwell,Female,IOT
+Keene Faires,Male,CSE(ai & Ml)
+Heloise Restill,Female,IOT
+Debora Stoak,Female,ME
+Rorke Gerretsen,Male,IT
 Daven Kuzemka,Male,ME
-Anders Aphale,Male,ECE
-Ferdie McCrostie,Male,IOT
-Ericka Gatecliff,Female,CSE(ai)
-Violetta Whiteman,Female,EE
+Anders Aphale,Male,CSBS
+Ferdie McCrostie,Male,ME
+Ericka Gatecliff,Female,CSBS
+Violetta Whiteman,Female,IT
 Sheffield Varnals,Male,IOT
-Crin Kellie,Female,IT
-Duncan Bakewell,Male,ECE
-Jean Olsson,Bigender,CSBS
-Ginnie Horick,Female,CSE(ai & Ml)
-Jamison Mosedall,Male,ECE
-Luciano Wooland,Male,EE
-Ardra Sang,Female,EE
-Mellisent Abrey,Female,ME
+Crin Kellie,Female,CSE(ai & Ml)
+Duncan Bakewell,Male,IOT
+Jean Olsson,Bigender,EE
+Ginnie Horick,Female,IT
+Jamison Mosedall,Male,ME
+Luciano Wooland,Male,ME
+Ardra Sang,Female,CSE
+Mellisent Abrey,Female,ECE
 Oran Ceschini,Male,ME
-Shanta Stevens,Female,CSBS
-Sheba Crosi,Female,CSE(ai)
-Goddard Yakuntzov,Male,ECE
-Yoko Bredes,Genderfluid,IOT
+Shanta Stevens,Female,IT
+Sheba Crosi,Female,IT
+Goddard Yakuntzov,Male,CSE(ai & Ml)
+Yoko Bredes,Genderfluid,ECE
 Siusan Ricciardi,Female,ECE
-Haleigh Gudyer,Female,CSE(ai)
-Ninette Gateland,Female,IT
-Owen Ortas,Male,IT
-Alie McGragh,Female,IT
-Nat Grice,Female,CSE
-Waylan Manoch,Male,ECE
-Flor Fell,Female,CSE(ai)
-Giselbert Whyte,Male,ME
-Broddy Ovington,Male,ME
-Griffin Khidr,Male,IT
-Graeme Windous,Male,CSE(ai)
-Fabio Sawforde,Male,IOT
-Deb Fried,Female,ME
-Ellis Rattenberie,Male,ECE
-Mathian Gages,Male,IT
-Reginald Upcott,Male,EE
-Charla Hallihan,Female,CSE(ai)
-Gwennie Grisewood,Female,ME
-Yoshi Columbell,Genderfluid,EE
-Thomas Gotts,Male,CSE(ai & Ml)
-Cecilio Chattaway,Male,CSE(ai & Ml)
+Haleigh Gudyer,Female,IOT
+Ninette Gateland,Female,CSBS
+Owen Ortas,Male,EE
+Alie McGragh,Female,ME
+Nat Grice,Female,CSBS
+Waylan Manoch,Male,IT
+Flor Fell,Female,CSE(ai & Ml)
+Giselbert Whyte,Male,EE
+Broddy Ovington,Male,ECE
+Griffin Khidr,Male,IOT
+Graeme Windous,Male,IOT
+Fabio Sawforde,Male,CSE
+Deb Fried,Female,CSBS
+Ellis Rattenberie,Male,CSE
+Mathian Gages,Male,IOT
+Reginald Upcott,Male,CSE(ai)
+Charla Hallihan,Female,CSBS
+Gwennie Grisewood,Female,IOT
+Yoshi Columbell,Genderfluid,CSE(ai & Ml)
+Thomas Gotts,Male,ECE
+Cecilio Chattaway,Male,CSE
 Scarface Tempest,Male,IOT
-Dianemarie Eymer,Female,CSE(ai)
-Ode Aiken,Male,IOT
+Dianemarie Eymer,Female,IOT
+Ode Aiken,Male,CSE
 Audrye Bleby,Female,CSE(ai)
-Tracey Freathy,Male,EE
-Nial Eloy,Male,CSBS
-Harlin O' Culligan,Male,CSBS
-Margarete Lifton,Bigender,CSE(ai & Ml)
-Rance Hellis,Male,CSBS
-Jere Musgrave,Female,IT
-Welby McLean,Male,ME
-Chantalle Sigmund,Agender,CSE(ai)
-Yorgo Buessen,Male,EE
-Woodrow Huglin,Male,CSE(ai)
+Tracey Freathy,Male,IOT
+Nial Eloy,Male,IT
+Harlin O' Culligan,Male,CSE
+Margarete Lifton,Bigender,CSE
+Rance Hellis,Male,IOT
+Jere Musgrave,Female,ECE
+Welby McLean,Male,CSE
+Chantalle Sigmund,Agender,CSE
+Yorgo Buessen,Male,ME
+Woodrow Huglin,Male,CSE(ai & Ml)
 Brande Tavinor,Polygender,CSE(ai)
-Brittne Feye,Female,ECE
-Zachery Newton,Male,CSBS
-Haleigh Nehl,Female,ME
-Charla Rabl,Female,ME
-Aubree Spurrior,Female,IOT
-Hughie Brettoner,Male,IOT
-Delmar Davidowich,Male,CSE(ai)
-Augusto Richings,Male,CSE
+Brittne Feye,Female,CSE(ai)
+Zachery Newton,Male,CSE
+Haleigh Nehl,Female,ECE
+Charla Rabl,Female,IOT
+Aubree Spurrior,Female,CSE
+Hughie Brettoner,Male,ME
+Delmar Davidowich,Male,CSE(ai & Ml)
+Augusto Richings,Male,CSBS
 Simone Lightbowne,Male,CSBS
-Dolli Fradgley,Female,ME
+Dolli Fradgley,Female,CSE
 Roby Uttley,Female,CSE(ai & Ml)
-Amil Fearnehough,Genderfluid,CSE(ai)
-Rosella Grene,Female,CSE
-Marjorie Calrow,Female,CSBS
-Gustavus Antunez,Genderfluid,EE
-Hillie Yonnie,Male,ME
-Virgie Tichner,Female,CSE(ai & Ml)
-Anstice Hirtzmann,Female,ME
-Meghann Greenlees,Female,CSBS
+Amil Fearnehough,Genderfluid,ME
+Rosella Grene,Female,ECE
+Marjorie Calrow,Female,ME
+Gustavus Antunez,Genderfluid,CSE(ai & Ml)
+Hillie Yonnie,Male,CSE
+Virgie Tichner,Female,IT
+Anstice Hirtzmann,Female,CSE(ai)
+Meghann Greenlees,Female,CSE(ai & Ml)
