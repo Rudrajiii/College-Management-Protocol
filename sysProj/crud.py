@@ -1,28 +1,28 @@
 from flask import render_template , jsonify , abort
 from data import get_data , Enrollment_logs
-from resizeimage import resizeimage
+from resizeimage import resizeimage  # type: ignore
 from pymongo import MongoClient
-from flask_caching import Cache
+from flask_caching import Cache # type: ignore
 from datetime import  datetime
 from flask import request
 from PIL import Image
 from functions import *
-from flask_cors import CORS
+from flask_cors import CORS # type: ignore
 from flask import *
 import sqlite3
 import random
 import time 
 import glob
-from datetime import datetime
-import timeago
+from datetime import datetime 
+import timeago # type: ignore
 from time import time
 import csv
 import os
 import re
 from bson import ObjectId
-from flask_mail import Mail ,  Message
+from flask_mail import Mail ,  Message # type: ignore
 import smtplib
-from flask_socketio import SocketIO, emit , send , Namespace
+from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 
 class DataStore():
     a = None
@@ -46,9 +46,10 @@ creators = db.creators
 collection = db['teachers']
 students = db['students']
 application = db['teacherApplications']
+history_collection = db['history']
 
 #email sending configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # E.g., 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  #smtp.gmail.com
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'university0690@gmail.com'
@@ -266,7 +267,11 @@ def teacher_dashboard():
         status = teacher_application.get('status', 'None')
     else:
         status = 'None'  # Default if no application found
-    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status)
+    
+     # Fetch leave application history
+    history_records = list(history_collection.find({"enrollment_number": enrollment_no}).sort("timestamp", -1))
+
+    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
 
 @app.route('/student_dashboard')
 def student_dashboard():
@@ -756,6 +761,10 @@ def delete_notification(application_id):
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
+    application_data = application.find_one({'_id': ObjectId(application_id)})
+    if not application_data:
+        return jsonify({'success': False, 'error': 'Application not found'}), 404
+    
     result = application.delete_one({'_id': ObjectId(application_id)})
     
     if result.deleted_count == 1:
@@ -773,6 +782,40 @@ def update_status(application_id):
     if new_status not in ['Accepted', 'Rejected']:
         return jsonify({'success': False, 'error': 'Invalid status'}), 400
     
+    application_data = application.find_one({'_id': ObjectId(application_id)})
+    print(application_data)
+    if not application_data:
+        return jsonify({'success': False, 'error': 'Application not found'}), 404
+    
+    
+    # Check if a history entry already exists for this application
+    history_data = history_collection.find_one({'application_id': ObjectId(application_id)});
+
+    # Prepare the message to be saved in history
+    message = application_data.get('reason', 'No message provided');
+
+    today = datetime.today().date()
+    formatted_time = today.strftime('%d-%m-%Y')
+
+    if history_data:
+        # Update existing history entry
+        result = history_collection.update_one(
+            {'application_id': ObjectId(application_id)},
+            {'$set': {'status': new_status, 'timestamp':formatted_time}}
+        )
+    else:
+        # Prepare new history data
+        history_data = {
+            'application_id': ObjectId(application_id),
+            'enrollment_number': application_data['enrollment_number'],
+            'name': application_data['name'],
+            'status': new_status,  # Save the new status
+            'timestamp': formatted_time,
+            'email': application_data['email'],
+            'message': message
+        }
+        result = history_collection.insert_one(history_data)
+
     result = application.update_one(
         {'_id': ObjectId(application_id)},
         {'$set': {'status': new_status}}

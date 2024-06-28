@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
           if (data.success) {
             liElement.querySelector('.status').textContent = `Current Status: ${newStatus}`;
+            // liElement.querySelector('.accept-button').style.display = 'none';
+            // liElement.querySelector('.reject-button').style.display = 'none';
+            // liElement.querySelector('.clear-button').style.display = 'inline-block';
             showUpdateAlert(`Application ${newStatus}`);
           } else {
             showErrorAlert(`Already ${newStatus}`);
@@ -112,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
           alertDiv.remove();
         }, 3000);
       }
+
+
   });
 
 

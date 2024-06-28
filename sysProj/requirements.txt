@@ -7,4 +7,3 @@ flask_cors
 flask-socketio
 timeago
 Flask-Mail
-

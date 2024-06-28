@@ -262,3 +262,21 @@ def teacher_application_record(enrollment_no , name , reason ,start_time, end_ti
         print("Saved record successfully")
     except Exception as e:
         print(e)
+
+
+
+def save_history(enrollment_number, name, status, timestamp, email):
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        history_collection = db['history']
+        history_collection.insert_one({
+            "enrollment_number": enrollment_number,
+            "name": name,
+            "status": status,
+            "timestamp": timestamp,
+            "email": email
+        });
+        print("History Saved Successfully!!!");
+    except Exception as e:
+        print(e)
