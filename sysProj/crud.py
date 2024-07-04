@@ -1,14 +1,14 @@
-from flask import render_template , jsonify , abort
+from flask import render_template , jsonify , abort # type: ignore
 from data import get_data , Enrollment_logs
 from resizeimage import resizeimage  # type: ignore
-from pymongo import MongoClient
+from pymongo import MongoClient # type: ignore
 from flask_caching import Cache # type: ignore
 from datetime import  datetime
-from flask import request
-from PIL import Image
+from flask import request # type: ignore
+from PIL import Image # type: ignore
 from functions import *
 from flask_cors import CORS # type: ignore
-from flask import *
+from flask import * # type: ignore
 import sqlite3
 import random
 import time 
@@ -19,7 +19,7 @@ from time import time
 import csv
 import os
 import re
-from bson import ObjectId
+from bson import ObjectId # type: ignore
 from flask_mail import Mail ,  Message # type: ignore
 import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
