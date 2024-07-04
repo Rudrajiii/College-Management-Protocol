@@ -140,34 +140,34 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3">
+            <div class="mb-3" id="hidden-div" style="display: none;">
               <label for="academic-year" class="col-form-label">Select The Academic Year of Students:</label>
               <div id="radio-group" style="display: flex; gap: 2.2vh;">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-1" value="1st Year">
+                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-1" value="1">
                   <label class="form-check-label" for="year-1">1st Year</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-2" value="2nd Year">
+                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-2" value="2">
                   <label class="form-check-label" for="year-2">2nd Year</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-3" value="3rd Year">
+                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-3" value="3">
                   <label class="form-check-label" for="year-3">3rd Year</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-final" value="Final Year">
+                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-final" value="4">
                   <label class="form-check-label" for="year-final">Final Year</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-none" value="None">
-                  <label class="form-check-label" for="year-none">None</label>
+                  <input class="form-check-input" type="radio" name="academic_year[]" id="year-none" value="all" checked>
+                  <label class="form-check-label" for="year-none">all</label>
                 </div>
               </div>
             </div>
             <div class="mb-3">
               <label for="message-text" class="col-form-label">Set Time Duration:</label>
-              <input  type="datetime-local">
+              <input  type="datetime-local" name="set_time">
             </div>
             <div class="mb-3">
               <label for="message-text" class="col-form-label">Message:</label>

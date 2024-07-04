@@ -334,3 +334,17 @@ function updateReloadCount() {
 // Call the function on page load
 updateReloadCount();
 // localStorage.removeItem('reloadCount');
+
+const radioButtons = document.getElementsByName('recipient');
+const hiddenDiv = document.getElementById('hidden-div');
+
+radioButtons.forEach((radio) => {
+  radio.addEventListener('change', (e) => {
+    console.log(`You selected: ${e.target.value}`);
+    if(e.target.value === 'Student'){
+        hiddenDiv.style.display = 'block';
+    }else{
+        hiddenDiv.style.display = 'none';
+    }
+  });
+});
