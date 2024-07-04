@@ -282,7 +282,9 @@ def student_dashboard():
     setudent_details = students.find_one({"enrollment_no":student_enrollment})
     print(setudent_details)
     # Getting the data for annoucement for student from database
-    announcement = student_announcement_db()
+    ACADEMIC_YEAR = setudent_details['academic_year']
+    announcement = []
+    announcement = student_announcement_db(ACADEMIC_YEAR)
     return render_template('student_dashboard.html', username=session['username'] ,
                             ENROLLMENT_NO=setudent_details['enrollment_no'],
                             PASSWORD = setudent_details['password'],
@@ -665,7 +667,14 @@ def announcement():
     if(request.method == 'POST'):
         recipient = request.form.get('recipient')
         message = request.form.get('message')
-        announcement_db(recipient,message)
+        set_time = request.form.get('set_time')
+        student_year = request.form.get('academic_year[]')  #only if student it enables or for teachers its set to all
+        recipient = recipient + " " + student_year
+        print(recipient)
+        if message == "" or set_time == "" or student_year == "":
+            return f'''<h1>Input fields are empty</h1>'''
+        else:
+            announcement_db(recipient,message,set_time)
     return f'''<h1>Message recorded sucessfully</h1>'''
     
 
