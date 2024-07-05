@@ -124,7 +124,7 @@
         <div class="modal-body">
           <form method="post" action="/announcement">
             <div class="mb-3">
-              <label class="col-form-label">Choose Whom do you want to notify :</label>
+              <label class="col-form-label Expirey-Time">Choose Whom do you want to notify :</label>
               <div id="radio-btn">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="recipient" id="recipient-student" value="Student">
@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="mb-3" id="hidden-div" style="display: none;">
-              <label for="academic-year" class="col-form-label">Select The Academic Year of Students:</label>
+              <label class="Expirey-Time" for="academic-year" class="col-form-label">Select The Academic Year of Students:</label>
               <div id="radio-group" style="display: flex; gap: 2.2vh;">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="academic_year[]" id="year-1" value="1">
@@ -166,7 +166,7 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="message-text" class="col-form-label">Set Time Duration:</label>
+              <label class="Expirey-Time" for="message-text" class="col-form-label">Set Expirey Time:</label>
               <input  type="datetime-local" name="set_time">
             </div>
             <div class="mb-3">
@@ -329,18 +329,6 @@
         </section>
         <section class="grid">
           <article class="card-container">
-            <!-- <div class="cards">
-              <h2>Total Students</h2>
-              <span style="color: black; font-size: 1.7rem;" id="numS">{{total_student_count}}</span>
-            </div>
-            <div class="cards">
-              <h2>Total Staffs</h2>
-              <span style="color: black; font-size: 1.7rem;" id="numT">{{total_teacher_count}}</span>
-            </div>
-            <div class="cards"></div> -->
-
-              
-  
               <div class="bc">
                 <div class="card">
                   <div class="card-content">
@@ -483,9 +471,6 @@
         </section>
         <footer class="page-footer">
           <span>Made by Rudra -</span>
-          <!-- <a href="" target="_blank">
-            <img width="24" height="24" src="https://assets.codepen.io/162656/george-martsoukos-small-logo.svg" alt="George Martsoukos logo">
-          </a> -->
         </footer>
       </section>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

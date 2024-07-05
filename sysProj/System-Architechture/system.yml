@@ -1,0 +1,28 @@
+home = C:\Users\Rudra\conda
+include-system-site-packages = false
+version = 3.11.7
+executable = C:\Users\Rudra\conda\python.exe
+command = C:\Users\Rudra\conda\python.exe -m venv C:\Users\Rudra\OneDrive\Desktop\student_management_app2.0\sysProj
+
+DELETED ->
+admin_data.py
+admin_info.py
+teacher_info.py
+student_info.py
+
+CHANGES ->
+data.py -> Decorator Functions
+
+Main -> 
+crud.py
+functions.py
+
+admin_main.py
+students_main.py
+teachers_main.py
+admin_function.py
+teacher_function.py
+students_function.py
+error.py
+
+

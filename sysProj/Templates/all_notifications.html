@@ -17,7 +17,19 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
+        {% for history in all_history %}
+          <ul>
+              {% if history%}
+              <li>
+                <h3>EN : {{history['enrollment_number']}}</h3>
+                <p>name : {{history['name']}} </p>
+                <p>message : {{history['message']}} </p>
+                <p>Status : {{history['status']}}</p>
+                <p>Date : {{history['timestamp']}}</p>
+              </li>
+              {% endif %}
+          </ul>
+          {% endfor %}
       </div>
     </div>
     <span><a href="/admin_dashboard">admin dashboard</a></span>

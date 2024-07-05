@@ -286,7 +286,7 @@ def teacher_application_record(enrollment_no , name , reason ,start_time, end_ti
         print(e)
 
 
-
+##Not useful
 def save_history(enrollment_number, name, status, timestamp, email):
     try:
         client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
@@ -300,5 +300,14 @@ def save_history(enrollment_number, name, status, timestamp, email):
             "email": email
         });
         print("History Saved Successfully!!!");
+    except Exception as e:
+        print(e)
+def make_history():
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        history_collection = db['history']
+        all_history = history_collection.find()
+        return all_history
     except Exception as e:
         print(e)
