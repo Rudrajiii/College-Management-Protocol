@@ -195,6 +195,16 @@ aside .profile .top .profile-photo{
 aside .profile .about p{
     padding-bottom: 1rem;
 }
+#pp{
+    width: 3rem;
+    height: 3rem;
+    position: relative;
+}
+#pompom{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
 aside .profile .about{
     margin-top: 1rem;
 }

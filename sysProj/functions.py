@@ -311,3 +311,20 @@ def make_history():
         return all_history
     except Exception as e:
         print(e)
+
+def get_teacher_image():
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        teachers_collection = db['teachers']
+        all_info = teachers_collection.find({})
+        return all_info
+    except Exception as e:
+        print(f"error : {e}")
+
+# Function to add leave information to the collection
+def add_leave_info(teacher_info):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    db = client['project']
+    temporary_application_queue = db['temporary_application_queue']
+    temporary_application_queue.insert_one(teacher_info)    

@@ -13,16 +13,18 @@ import sqlite3
 import random
 import time 
 import glob
-from datetime import datetime 
+from datetime import datetime ,timezone
 import timeago # type: ignore
 from time import time
 import csv
 import os
 import re
+import requests
 from bson import ObjectId # type: ignore
 from flask_mail import Mail ,  Message # type: ignore
 import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
+import uuid
 
 class DataStore():
     a = None
@@ -47,6 +49,7 @@ collection = db['teachers']
 students = db['students']
 application = db['teacherApplications']
 history_collection = db['history']
+temporary_application_queue = db['temporary_application_queue']
 
 #email sending configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  #smtp.gmail.com
@@ -86,7 +89,6 @@ def get_creators():
         teacher['_id'] = str(teacher['_id'])  #string pr convert kr raha
         teacher_list.append(teacher)
     return jsonify(teacher_list)
-
 
 
 def get_user_from_db(username):
@@ -277,24 +279,49 @@ def teacher_dashboard():
 def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
+    
+    delete_expired_documents()
+    # update_temporary_queue()
+
     student_enrollment = session['enrollment_no']
-    print("ENROLLMENT_NO "+student_enrollment)
-    setudent_details = students.find_one({"enrollment_no":student_enrollment})
-    print(setudent_details)
-    # Getting the data for annoucement for student from database
-    ACADEMIC_YEAR = setudent_details['academic_year']
-    announcement = []
+    student_details = students.find_one({"enrollment_no": student_enrollment})
+    
+    fetch_all_history = make_history()
+    docs = list(fetch_all_history)
+
+    teacher_infos = get_teacher_image()  # Assuming this returns a list of teacher information
+    teacher_info_map = {teacher['enrollment_no']: teacher for teacher in teacher_infos}
+
+    leave_entries = list(temporary_application_queue.find())
+    print("_______________________________\n\n")
+    print(leave_entries)
+    print("\n\n_______________________________")
+    for doc in leave_entries:
+        if doc['status'] == "Accepted":
+            teacher_enrollment_no = doc['enrollment_number']
+            if teacher_enrollment_no in teacher_info_map:
+                doc['image_url'] = teacher_info_map[teacher_enrollment_no]['profile_pic']
+                
+                # for leave in leave_entries:
+                #     if leave['enrollment_number'] == teacher_enrollment_no and leave['requested_gap'] > 0:
+                #         doc['requested_gap'] = leave['requested_gap']
+
+    ACADEMIC_YEAR = student_details['academic_year']
     announcement = student_announcement_db(ACADEMIC_YEAR)
-    return render_template('student_dashboard.html', username=session['username'] ,
-                            ENROLLMENT_NO=setudent_details['enrollment_no'],
-                            PASSWORD = setudent_details['password'],
-                            DOB = setudent_details['dob'],
-                            CONTACT = setudent_details['phone_no'],
-                            BRANCH = setudent_details['branch'],
-                            EMAIL_ID = setudent_details['email'],
-                            ADDRESS = setudent_details['current_address'],
-                            ACADEMIC_YEAR = setudent_details['academic_year'],
-                            announcement = announcement)
+    
+    return render_template('student_dashboard.html', username=session['username'],
+                           ENROLLMENT_NO=student_details['enrollment_no'],
+                           PASSWORD=student_details['password'],
+                           DOB=student_details['dob'],
+                           CONTACT=student_details['phone_no'],
+                           BRANCH=student_details['branch'],
+                           EMAIL_ID=student_details['email'],
+                           ADDRESS=student_details['current_address'],
+                           ACADEMIC_YEAR=student_details['academic_year'],
+                           announcement=announcement,
+                           docs=leave_entries)
+
+
 
 @app.route('/admin_profile')
 def admin_profile():
@@ -787,6 +814,28 @@ def delete_notification(application_id):
     else:
         return jsonify({'success': False, 'error': 'Failed to delete notification'}), 500
 
+def update_temporary_queue():
+    accepted_applications = history_collection.find({'status': 'Accepted'})
+    for app in accepted_applications:
+        if app['requested_gap'] >= 0:
+            temporary_application_queue.update_one(
+                {'application_id': app['application_id']},
+                {'$set': app},
+                upsert=True
+            )
+    # Remove entries from temporary queue if they are not in accepted state anymore
+    all_temp_entries = temporary_application_queue.find()
+    for entry in all_temp_entries:
+        if history_collection.find_one({'application_id': entry['application_id'], 'status': 'Accepted'}) is None:
+            temporary_application_queue.delete_one({'application_id': entry['application_id']})
+
+def delete_expired_documents():
+    current_time = datetime.now()
+    result = temporary_application_queue.delete_many({'deleted_at': {'$lte': current_time}})
+    if result.deleted_count > 0:
+        print(f"Deleted {result.deleted_count} expired document(s)")
+
+
 @app.route("/update_status/<application_id>", methods=["PUT"])
 def update_status(application_id):
     if 'username' not in session or session['role'] != 'admin':
@@ -798,44 +847,56 @@ def update_status(application_id):
         return jsonify({'success': False, 'error': 'Invalid status'}), 400
     
     application_data = application.find_one({'_id': ObjectId(application_id)})
-    print(application_data)
     if not application_data:
         return jsonify({'success': False, 'error': 'Application not found'}), 404
     
+    start_time = application_data.get('start_time', '')
+    end_time = application_data.get('end_time', '')
+    requested_gap = None
     
-    # Check if a history entry already exists for this application
-    history_data = history_collection.find_one({'application_id': ObjectId(application_id)});
-
-    # Prepare the message to be saved in history
-    message = application_data.get('reason', 'No message provided');
-
+    if start_time and end_time:
+        try:
+            start_dt = datetime.fromisoformat(start_time)
+            end_dt = datetime.fromisoformat(end_time)
+            requested_gap = (end_dt - start_dt).days
+        except ValueError:
+            requested_gap = 'Invalid date format'
+    else:
+        requested_gap = 'Missing date'
+    
+    message = application_data.get('reason', 'No message provided')
     today = datetime.today().date()
     formatted_time = today.strftime('%d-%m-%Y')
 
+    history_data = history_collection.find_one({'application_id': ObjectId(application_id)})
+
     if history_data:
-        # Update existing history entry
         result = history_collection.update_one(
             {'application_id': ObjectId(application_id)},
-            {'$set': {'status': new_status, 'timestamp':formatted_time}}
+            {'$set': {'status': new_status, 'timestamp': formatted_time, 'requested_gap': requested_gap}}
         )
     else:
-        # Prepare new history data
         history_data = {
             'application_id': ObjectId(application_id),
             'enrollment_number': application_data['enrollment_number'],
             'name': application_data['name'],
-            'status': new_status,  # Save the new status
+            'status': new_status,
             'timestamp': formatted_time,
             'email': application_data['email'],
-            'message': message
+            'message': message,
+            'requested_gap': requested_gap,
+            'deleted_at': application_data['deleted_at']
         }
+        temporary_application_queue.insert_one(history_data)
         result = history_collection.insert_one(history_data)
+    # Call the function to update the temporary queue
+    update_temporary_queue()
 
     result = application.update_one(
         {'_id': ObjectId(application_id)},
         {'$set': {'status': new_status}}
     )
-    
+
     if result.modified_count == 1:
         return jsonify({'success': True}), 200
     else:
@@ -884,6 +945,13 @@ def submit_application():
         data = request.json
         print(data)
 
+
+
+        # Calculate deleted_at timestamp
+        dt = datetime.strptime(data['end_time'], "%Y-%m-%dT%H:%M")
+        deleted_at = dt.replace(tzinfo=timezone.utc)
+        
+
         # Insert into MongoDB collection
         application.insert_one({
             'enrollment_number': data['enrollment_number'],
@@ -894,7 +962,8 @@ def submit_application():
             'status': data['status'],
             'response':data['Response'],
             'submitted_at': datetime.now(),
-            'email': data['email']
+            'email': data['email'],
+            'deleted_at': deleted_at
         })
 
         # Emit an alert to all connected clients in the admin_dashboard namespace
@@ -904,6 +973,7 @@ def submit_application():
         return jsonify({'message': 'Application submitted successfully'}), 200
 
     except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 500
 
 #* Error handling
