@@ -195,6 +195,16 @@ aside .profile .top .profile-photo{
 aside .profile .about p{
     padding-bottom: 1rem;
 }
+#pp{
+    width: 3rem;
+    height: 3rem;
+    position: relative;
+}
+#pompom{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
 aside .profile .about{
     margin-top: 1rem;
 }
@@ -355,6 +365,22 @@ main .timetable.active .closeBtn{
     border-radius: var(--card-border-radius);
     box-shadow: var(--box-shadow);
     transition: all 300ms ease;
+    /* background: red; */
+    max-height: 40vh;
+    overflow-y: scroll;
+}
+.updates::-webkit-scrollbar{
+    width: 1em;
+}
+.updates::-webkit-scrollbar-track{
+    background: var(--color-primary);
+    border-radius: 100vw;
+    margin-block: 0.5em;
+}
+.updates::-webkit-scrollbar-thumb {
+    background: rgb(183, 218, 247);
+    border-radius: 100vw;
+    border: .15rem solid var(--color-primary);
 }
 .right .announcements .updates:hover{box-shadow: none;}
 .right .announcements .updates .message{

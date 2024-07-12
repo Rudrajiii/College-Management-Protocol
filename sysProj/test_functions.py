@@ -1,7 +1,4 @@
 import pymongo
-from admin_info import *
-from student_info import students
-from teacher_info import *
 import os
 def add_admin_function():
     try:
@@ -9,9 +6,9 @@ def add_admin_function():
         db = client['project']
         collection = db['creators']
         all_admins = [
-            person1,
-            person2,
-            person3
+            # person1,
+            # person2,
+            # person3
         ]
         result = collection.insert_many(all_admins)
         print(result)
@@ -135,8 +132,8 @@ def update_admin_info():
 
 
     admin_cursor = collection.find()
-
-    for creator, url in zip(admin_cursor, admin_image_source):
+    #! This function will not work anymore and will throw error becoz of lack of data
+    for creator, url in zip(admin_cursor, admin_image_source): # type: ignore
         collection.update_one(
             {'_id': creator['_id']},
             {'$set': {'profilepic': url}}
@@ -152,7 +149,7 @@ def update_teacher_info():
 
     teacher_cursor = collection.find()
 
-    for creator, url in zip(teacher_cursor, a):
+    for creator, url in zip(teacher_cursor, a): # type: ignore
         collection.update_one(
             {'_id': creator['_id']},
             {'$set': {'teaches_total_students': url}}
@@ -266,12 +263,10 @@ if __name__ == "__main__":
     # Create an instance of TeacherApplication
     application1 = TeacherApplication(enrollment_number="ENR2024002", name="alice_smith", reason="__", start_time="2024-06-13T17:31",end_time="2024-06-27T17:31", status="pending", response="accepted")
     #! Don't Run this Functions
-    create_teacherApplication_collections(application1)
+    # create_teacherApplication_collections(application1)
     # update_admin_info() 
     # add_admin_function()
     # update_teacher_info()
     # add_student_function()
     # delete_info_func()
     # delete_teacher_info()
-
-

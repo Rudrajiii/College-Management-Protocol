@@ -65,6 +65,8 @@
                 <div class="about">
                     <h5>Branch</h5>
                     <p>{{BRANCH}}</p>
+                    <h5>Academic Year</h5>
+                    <p>{{ACADEMIC_YEAR}} year</p>
                     <h5>DOB</h5>
                     <p>{{DOB}}</p>
                     <h5>Contact</h5>
@@ -156,47 +158,30 @@
         <div class="right">
             <div class="announcements">
                 <h2>Announcements</h2>
+                <!-- Messages are storing here!! -->
                 <div class="updates">
+                    {% for info in announcement %}
                     <div class="message">
-                        <p> <b>Academic</b> Summer training internship with Live Projects.</p>
-                        <small class="text-muted">2 Minutes Ago</small>
+                        <p><b>{{info[0]}}</b></p>
+                        <small class="text-muted">{{info[1]}}</small>
                     </div>
-                    <div class="message">
-                        <p> <b>Co-curricular</b> Global internship oportunity by Student organization.</p>
-                        <small class="text-muted">10 Minutes Ago</small>
-                    </div>
-                    <div class="message">
-                        <p> <b>Examination</b> Instructions for Mid Term Examination.</p>
-                        <small class="text-muted">Yesterday</small>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-
             <div class="leaves">
                 <h2>Teachers on leave</h2>
-                <div class="teacher">
-                    <div class="profile-photo"><img src="../static/images/profile-2.jpeg" alt=""></div>
+                {% for doc in docs %}
+                {% if doc['status'] == "Accepted" and doc['requested_gap'] >= 0 %}
+                <div class="teacher" id="teacher-{{ doc['_id'] }}" data-start-date="{{ doc['leave_start_date'] }}" data-duration="{{ doc['requested_gap'] }}">
+                    <div id="pp" class="profile-photo"><img id="pompom" src="{{doc['image_url']}}" alt="pp"></div>
                     <div class="info">
-                        <h3>The Professor</h3>
-                        <small class="text-muted">Full Day</small>
+                        <h3>{{ doc['name'] }}</h3>
+                        <small class="text-muted">In leave for {{ doc['requested_gap'] }} day{% if doc['requested_gap'] != 1 %}s{% endif %}</small>
                     </div>
                 </div>
-                <div class="teacher">
-                    <div class="profile-photo"><img src="../static/images/profile-3.jpg" alt=""></div>
-                    <div class="info">
-                        <h3>Lisa Manobal</h3>
-                        <small class="text-muted">Half Day</small>
-                    </div>
-                </div>
-                <div class="teacher">
-                    <div class="profile-photo"><img src="../static/images/profile-4.jpg" alt=""></div>
-                    <div class="info">
-                        <h3>Himanshu Jindal</h3>
-                        <small class="text-muted">Full Day</small>
-                    </div>
-                </div>
+                {% endif %}
+                {% endfor %}
             </div>
-
         </div>
     </div>
 </body>

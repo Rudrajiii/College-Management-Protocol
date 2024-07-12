@@ -4,3 +4,6 @@
 /Scripts
 /node_modules
 pyvenv.cfg
+.env
+private.key
+payment_gateway.py

@@ -1,11 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Here is the all notifications</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Applications</title>
+    <script src="{{ url_for('static', filename='javascripts/teacher_applications.js') }}" defer></script>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/notification.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+  </head>
+  <body>
+    <h1>Here are all the notifications</h1>
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">All application status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        {% for history in all_history %}
+          <ul>
+              {% if history%}
+              <li>
+                <h3>EN : {{history['enrollment_number']}}</h3>
+                <p>name : {{history['name']}} </p>
+                <p>message : {{history['message']}} </p>
+                <p>Status : {{history['status']}}</p>
+                <p>Date : {{history['timestamp']}}</p>
+              </li>
+              {% endif %}
+          </ul>
+          {% endfor %}
+      </div>
+    </div>
+    <span><a href="/admin_dashboard">admin dashboard</a></span>
+
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Application History</button>
+
+    {% if teacher_applications %}
+    <ul>
+      {% for application in teacher_applications %}
+      <li data-id="{{ application['_id'] }}" style="border: 2px solid;">
+        <header>
+          <div class="header">
+            FROM: {{ application['name'] }} EN: {{ application['enrollment_number'] }}
+          </div>
+          <div class="time">
+            Requested Gap: {{ application['requested_gap'] }} days
+          </div>
+          <div class="time_tracker">
+
+        Sent : <div class="timeago" datetime="{{ application.get('submitted_at', '') | default('N/A', true) }}">
+                  {{ application.get('submitted_at', '') | default('N/A', true) }}
+                </div>
+            </div>
+        </header>
+        <hr />
+        <main>
+          <div class="reason">
+            Reason: {{ application['reason'] }}
+          </div>
+          <div class="status">
+            Current Status: {{ application['status'] }}
+          </div>
+        </main>
+        <footer>
+            <button class="accept-button">Accept</button>
+            <button class="reject-button">Reject</button>
+            <button class="email-button">Email</button>
+          <div class="right_most_button">
+            <button id="clear_msg" class="clear-button">Clear Notification</button>
+          </div>
+        </footer>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
 </html>

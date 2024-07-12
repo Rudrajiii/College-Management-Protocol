@@ -1,22 +1,30 @@
-from flask import render_template , jsonify , abort
+from flask import render_template , jsonify , abort # type: ignore
 from data import get_data , Enrollment_logs
-from resizeimage import resizeimage
-from pymongo import MongoClient
-from flask_caching import Cache
+from resizeimage import resizeimage  # type: ignore
+from pymongo import MongoClient # type: ignore
+from flask_caching import Cache # type: ignore
 from datetime import  datetime
-from flask import request
-from PIL import Image
+from flask import request # type: ignore
+from PIL import Image # type: ignore
 from functions import *
-from flask_cors import CORS
-from flask import *
+from flask_cors import CORS # type: ignore
+from flask import * # type: ignore
 import sqlite3
 import random
 import time 
 import glob
+from datetime import datetime ,timezone
+import timeago # type: ignore
+from time import time
 import csv
 import os
 import re
-from bson import ObjectId
+import requests
+from bson import ObjectId # type: ignore
+from flask_mail import Mail ,  Message # type: ignore
+import smtplib
+from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
+import uuid
 
 class DataStore():
     a = None
@@ -28,6 +36,7 @@ data = DataStore()
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app , cors_allowed_origins="*")
 csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
@@ -39,6 +48,17 @@ creators = db.creators
 collection = db['teachers']
 students = db['students']
 application = db['teacherApplications']
+history_collection = db['history']
+temporary_application_queue = db['temporary_application_queue']
+
+#email sending configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  #smtp.gmail.com
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'university0690@gmail.com'
+app.config['MAIL_PASSWORD'] = 'APNI_PASSWORD_DAL_LE_CHOMU'
+
+mail = Mail(app)
 
 UPLOAD_FOLDER = 'static/Uploads/teachers'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -71,7 +91,6 @@ def get_creators():
     return jsonify(teacher_list)
 
 
-
 def get_user_from_db(username):
     print("Fetching user from cache or MongoDB if not cached")
     user =  db.creators.find_one({"username": username})
@@ -101,7 +120,7 @@ def index():
 def admin_login():
     print("Admin login function called") 
     if(request.method == 'POST'):
-        start_time = time.time()  # Record the start time
+        start_time = time()  # Record the start time
 
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
@@ -148,7 +167,7 @@ def admin_login():
             session['username'] = username
             session['role'] = 'admin'
 
-            loading_time = time.time() - start_time
+            loading_time = time() - start_time
             delay = max(0, loading_time) 
             print(delay)
             session['delay'] = delay
@@ -250,24 +269,59 @@ def teacher_dashboard():
         status = teacher_application.get('status', 'None')
     else:
         status = 'None'  # Default if no application found
-    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status)
+    
+     # Fetch leave application history
+    history_records = list(history_collection.find({"enrollment_number": enrollment_no}).sort("timestamp", -1))
+
+    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
 
 @app.route('/student_dashboard')
 def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
+    
+    delete_expired_documents()
+    # update_temporary_queue()
+
     student_enrollment = session['enrollment_no']
-    print("ENROLLMENT_NO "+student_enrollment)
-    setudent_details = students.find_one({"enrollment_no":student_enrollment})
-    print(setudent_details)
-    return render_template('student_dashboard.html', username=session['username'] ,
-                            ENROLLMENT_NO=setudent_details['enrollment_no'],
-                            PASSWORD = setudent_details['password'],
-                            DOB = setudent_details['dob'],
-                            CONTACT = setudent_details['phone_no'],
-                            BRANCH = setudent_details['branch'],
-                            EMAIL_ID = setudent_details['email'],
-                            ADDRESS = setudent_details['current_address'])
+    student_details = students.find_one({"enrollment_no": student_enrollment})
+    
+    fetch_all_history = make_history()
+    docs = list(fetch_all_history)
+
+    teacher_infos = get_teacher_image()  # Assuming this returns a list of teacher information
+    teacher_info_map = {teacher['enrollment_no']: teacher for teacher in teacher_infos}
+
+    leave_entries = list(temporary_application_queue.find())
+    print("_______________________________\n\n")
+    print(leave_entries)
+    print("\n\n_______________________________")
+    for doc in leave_entries:
+        if doc['status'] == "Accepted":
+            teacher_enrollment_no = doc['enrollment_number']
+            if teacher_enrollment_no in teacher_info_map:
+                doc['image_url'] = teacher_info_map[teacher_enrollment_no]['profile_pic']
+                
+                # for leave in leave_entries:
+                #     if leave['enrollment_number'] == teacher_enrollment_no and leave['requested_gap'] > 0:
+                #         doc['requested_gap'] = leave['requested_gap']
+
+    ACADEMIC_YEAR = student_details['academic_year']
+    announcement = student_announcement_db(ACADEMIC_YEAR)
+    
+    return render_template('student_dashboard.html', username=session['username'],
+                           ENROLLMENT_NO=student_details['enrollment_no'],
+                           PASSWORD=student_details['password'],
+                           DOB=student_details['dob'],
+                           CONTACT=student_details['phone_no'],
+                           BRANCH=student_details['branch'],
+                           EMAIL_ID=student_details['email'],
+                           ADDRESS=student_details['current_address'],
+                           ACADEMIC_YEAR=student_details['academic_year'],
+                           announcement=announcement,
+                           docs=leave_entries)
+
+
 
 @app.route('/admin_profile')
 def admin_profile():
@@ -631,6 +685,25 @@ def edit_student():
 
 # Edited end by satyadeep at 4/6/24
 
+# Edit start by Satyadeep on 20/6/24
+
+@app.route('/announcement', methods = ['POST', 'GET'])
+def announcement():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        recipient = request.form.get('recipient')
+        message = request.form.get('message')
+        set_time = request.form.get('set_time')
+        student_year = request.form.get('academic_year[]')  #only if student it enables or for teachers its set to all
+        recipient = recipient + " " + student_year
+        print(recipient)
+        if message == "" or set_time == "" or student_year == "":
+            return f'''<h1>Input fields are empty</h1>'''
+        else:
+            announcement_db(recipient,message,set_time)
+    return f'''<h1>Message recorded sucessfully</h1>'''
+    
 
 @app.route('/logout')
 def logout():
@@ -698,7 +771,161 @@ def access_data():
 def view_all_notifications():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    return render_template("all_notifications.html")
+    teacher_applications = list(application.find({}))
+    
+    # Calculate the requested gap in days
+    fetch_all_history = make_history()
+    # print(list(fetch_all_history))
+    docs = list(fetch_all_history)
+    print(docs)
+    # for doc in docs:
+    #     print(doc)
+    for app in teacher_applications:
+        start_time = app.get('start_time', '')
+        end_time = app.get('end_time', '')
+        
+        if start_time and end_time:
+            try:
+                start_dt = datetime.fromisoformat(start_time)
+                end_dt = datetime.fromisoformat(end_time)
+                app['requested_gap'] = (end_dt - start_dt).days
+            except ValueError:
+                app['requested_gap'] = 'Invalid date format'
+        else:
+            app['requested_gap'] = 'Missing date'
+
+    # print(teacher_applications)
+    return render_template("all_notifications.html" ,teacher_applications = teacher_applications , all_history = docs)
+
+
+@app.route("/delete_notification/<application_id>", methods=["DELETE"])
+def delete_notification(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    application_data = application.find_one({'_id': ObjectId(application_id)})
+    if not application_data:
+        return jsonify({'success': False, 'error': 'Application not found'}), 404
+    
+    result = application.delete_one({'_id': ObjectId(application_id)})
+    
+    if result.deleted_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to delete notification'}), 500
+
+def update_temporary_queue():
+    accepted_applications = history_collection.find({'status': 'Accepted'})
+    for app in accepted_applications:
+        if app['requested_gap'] >= 0:
+            temporary_application_queue.update_one(
+                {'application_id': app['application_id']},
+                {'$set': app},
+                upsert=True
+            )
+    # Remove entries from temporary queue if they are not in accepted state anymore
+    all_temp_entries = temporary_application_queue.find()
+    for entry in all_temp_entries:
+        if history_collection.find_one({'application_id': entry['application_id'], 'status': 'Accepted'}) is None:
+            temporary_application_queue.delete_one({'application_id': entry['application_id']})
+
+def delete_expired_documents():
+    current_time = datetime.now()
+    result = temporary_application_queue.delete_many({'deleted_at': {'$lte': current_time}})
+    if result.deleted_count > 0:
+        print(f"Deleted {result.deleted_count} expired document(s)")
+
+
+@app.route("/update_status/<application_id>", methods=["PUT"])
+def update_status(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    new_status = request.json.get('status')
+    
+    if new_status not in ['Accepted', 'Rejected']:
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+    
+    application_data = application.find_one({'_id': ObjectId(application_id)})
+    if not application_data:
+        return jsonify({'success': False, 'error': 'Application not found'}), 404
+    
+    start_time = application_data.get('start_time', '')
+    end_time = application_data.get('end_time', '')
+    requested_gap = None
+    
+    if start_time and end_time:
+        try:
+            start_dt = datetime.fromisoformat(start_time)
+            end_dt = datetime.fromisoformat(end_time)
+            requested_gap = (end_dt - start_dt).days
+        except ValueError:
+            requested_gap = 'Invalid date format'
+    else:
+        requested_gap = 'Missing date'
+    
+    message = application_data.get('reason', 'No message provided')
+    today = datetime.today().date()
+    formatted_time = today.strftime('%d-%m-%Y')
+
+    history_data = history_collection.find_one({'application_id': ObjectId(application_id)})
+
+    if history_data:
+        result = history_collection.update_one(
+            {'application_id': ObjectId(application_id)},
+            {'$set': {'status': new_status, 'timestamp': formatted_time, 'requested_gap': requested_gap}}
+        )
+    else:
+        history_data = {
+            'application_id': ObjectId(application_id),
+            'enrollment_number': application_data['enrollment_number'],
+            'name': application_data['name'],
+            'status': new_status,
+            'timestamp': formatted_time,
+            'email': application_data['email'],
+            'message': message,
+            'requested_gap': requested_gap,
+            'deleted_at': application_data['deleted_at']
+        }
+        temporary_application_queue.insert_one(history_data)
+        result = history_collection.insert_one(history_data)
+    # Call the function to update the temporary queue
+    update_temporary_queue()
+
+    result = application.update_one(
+        {'_id': ObjectId(application_id)},
+        {'$set': {'status': new_status}}
+    )
+
+    if result.modified_count == 1:
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'Failed to update status'}), 500
+
+
+#EMAIL FEATURE
+@app.route("/send_email/<application_id>", methods=["POST"])
+def send_email(application_id):
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+
+    teacher_application = application.find_one({'_id': ObjectId(application_id)})
+    teacher_email = teacher_application.get('email')
+    application_status = teacher_application.get('status')
+
+    if not teacher_email:
+        return jsonify({'success': False, 'error': 'Email address not found for this application'}), 400
+
+    subject = "Your leave application update"
+    body = f"Dear {teacher_application['name']},\n\nThis is a notification regarding your leave application\n\nSo Your application got {application_status}.\n\nBest regards,\nAdmin"
+    msg = Message(subject, sender='university0690@gmail.com', recipients=[teacher_email])
+    msg.body = body
+
+    try:
+        mail.send(msg)
+        return jsonify({'success': True}), 200
+    except smtplib.SMTPException as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/submit_application' , methods=['POST'])
@@ -716,6 +943,14 @@ def submit_application():
             return jsonify({'error': 'You already have a pending application'}), 400
         # Get data from request
         data = request.json
+        print(data)
+
+
+
+        # Calculate deleted_at timestamp
+        dt = datetime.strptime(data['end_time'], "%Y-%m-%dT%H:%M")
+        deleted_at = dt.replace(tzinfo=timezone.utc)
+        
 
         # Insert into MongoDB collection
         application.insert_one({
@@ -725,12 +960,20 @@ def submit_application():
             'end_time': data['end_time'],
             'reason': data['reason'],
             'status': data['status'],
-            'response':data['Response']
+            'response':data['Response'],
+            'submitted_at': datetime.now(),
+            'email': data['email'],
+            'deleted_at': deleted_at
         })
+
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        socketio.emit('alert', {'message': f'New application from {session["username"]} ({session["enrollment_no"]})'}, namespace='/admin_dashboard')
+
 
         return jsonify({'message': 'Application submitted successfully'}), 200
 
     except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 500
 
 #* Error handling
@@ -778,8 +1021,30 @@ def update_password(ENROLLMENT_NO):
     return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 
+class AdminNamespace(Namespace):
+    def on_connect(self):
+        print('Admin connected.')
+
+    def on_disconnect(self):
+        print('Admin disconnected.')
+
+class TeacherNamespace(Namespace):
+    def on_connect(self):
+        print('Teacher connected.')
+
+    def on_apply(self, data):
+        print('Apply button clicked:', data)
+        # Emit an alert to all connected clients in the admin_dashboard namespace
+        # socketio.emit('alert', {'message': 'An apply button was clicked!'}, namespace='/admin_dashboard')
+
+    def on_disconnect(self):
+        print('Teacher disconnected.')
+
+socketio.on_namespace(AdminNamespace('/admin_dashboard'))
+socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    socketio.run(app , debug = True)
     modified_csv_data()
     test('Rudra')
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/notification.css')}}">
     <script src="{{ url_for('static', filename='javascripts/teacher_dash.js') }}" defer></script>
 </head>
 <body>
@@ -13,21 +14,47 @@
     <form id="leaveApplicationForm" method="POST"  action="/submit_application" enctype="multipart/form-data">
         <label for="">EN Number</label>
         <input name="enrollment" type="text" value="{{teacher_details['enrollment_no']}}" placeholder="EN number">
+        <input name="email" type="hidden" value="{{teacher_details['email']}}" placeholder="EN number">
         <br>
         <label for="">Start date*</label>
-        <input type="datetime-local" name="start_time" id="start_time" placeholder=".">
+        <input type="datetime-local" name="start_time" id="start_time" placeholder="." required>
         <br>
         <label for="">End date*</label>
-        <input type="datetime-local" name="end_time" id="end_time" placeholder=".">
+        <input type="datetime-local" name="end_time" id="end_time" placeholder="." required>
         <br>
         <label for="">My Reason:</label>
         <input name="reason" type="text" placeholder="enter your messege">
         <br>
-        <span>Status : <span id="Status">{{status}}</span></span>
+        <span>Current-Application-Status : <span id="Status">{{status}}</span></span>
         <br>
         <input id="sumbit" type="submit" value="Apply">
     </form>
     <a href="/logout">Logout Me</a>
+
+    <h2>Leave Application History</h2>
+<table style="border: 2px solid;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>messege</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in history %}
+        <tr>
+            <td>{{ record.name }}</td>
+            <td>{{ record.message}}</td>
+            <td>{{ record.status }} by Admin</td>
+            <td>{{ record.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
 </body>
 </html>
 

@@ -1,3 +1,4 @@
+from datetime import datetime , timedelta
 import pymongo
 
 
@@ -166,6 +167,102 @@ def change_student_pass_db(ENROLLMENT_NO,current_password,confirm_password):
     else:
         collection.update_one({"enrollment_no": ENROLLMENT_NO} , {"$set": {'password': confirm_password}})
         return 1
+    
+# Edit start by Satyadeep on 20/6/24
+# Announcement DB connection through admin dashboard
+
+def announcement_db(recipient,message,set_time):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing notifications Collection
+    collection = db.notifications
+    # Adding The data for notification database
+    current_time = datetime.utcnow()                                             # Using UTC time
+    # converting str type of set_time to datetime variable 
+    deletion_time = datetime.strptime(set_time, "%Y-%m-%dT%H:%M") - timedelta(hours = 5 , minutes = 30)
+    announcement_info ={
+            "for": recipient ,
+            "message": message,
+            "timestamp": current_time,
+            "deleteAt": deletion_time          
+        }
+    collection.insert_one(announcement_info).inserted_id
+    collection.create_index(
+        [("deleteAt", pymongo.ASCENDING)],
+        expireAfterSeconds=0
+        )
+    
+# Announcement DB connection for student dashboard , we are sorting the data for both and students
+def student_announcement_db(ACADEMIC_YEAR):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing notifications Collection
+    collection = db.notifications
+    info_list = []
+    current_time = datetime.utcnow()                            # Use UTC time
+    info1 = collection.find({"for":"Both all"})                     # For collecting the data of announcement for both(student , teacher)
+    for item in info1:                                          
+        message = item['message']
+        timestamp = item['timestamp']
+        time_difference = current_time - timestamp
+        days = time_difference.days
+        seconds = time_difference.seconds
+        hours, remainder = divmod(seconds, 3600)    
+        minutes, seconds = divmod(remainder, 60)
+        if days != 0:
+            time_past = f"{days} days ago"
+        elif days == 0 and hours != 0:
+            time_past = f"{hours} hours ago"
+        elif days == 0 and hours == 0 and minutes != 0:
+            time_past = f"{minutes} minutes ago"
+        else:
+            time_past = f"{seconds} seconds ago"
+        temp_lst = [message,time_past]
+        info_list.append(temp_lst)
+    info2 = collection.find({"for":"Student all"})                     # For collecting the data of announcement foronly all year student
+    for item in info2:                                          
+        message = item['message']
+        timestamp = item['timestamp']
+        time_difference = current_time - timestamp
+        days = time_difference.days
+        seconds = time_difference.seconds
+        hours, remainder = divmod(seconds, 3600)    
+        minutes, seconds = divmod(remainder, 60)
+        if days != 0:
+            time_past = f"{days} days ago"
+        elif days == 0 and hours != 0:
+            time_past = f"{hours} hours ago"
+        elif days == 0 and hours == 0 and minutes != 0:
+            time_past = f"{minutes} minutes ago"
+        else:
+            time_past = f"{seconds} seconds ago"
+        temp_lst = [message,time_past]
+        info_list.append(temp_lst)
+    # merging the syntax to retrive only particular year student announcement
+    particular_year_info = "Student" + " " + str(ACADEMIC_YEAR)
+    info3 = collection.find({"for": particular_year_info})                    # For collecting the data of announcement foronly particular year student
+    for item in info3:                                          
+        message = item['message']
+        timestamp = item['timestamp']
+        time_difference = current_time - timestamp
+        days = time_difference.days
+        seconds = time_difference.seconds
+        hours, remainder = divmod(seconds, 3600)    
+        minutes, seconds = divmod(remainder, 60)
+        if days != 0:
+            time_past = f"{days} days ago"
+        elif days == 0 and hours != 0:
+            time_past = f"{hours} hours ago"
+        elif days == 0 and hours == 0 and minutes != 0:
+            time_past = f"{minutes} minutes ago"
+        else:
+            time_past = f"{seconds} seconds ago"
+        temp_lst = [message,time_past]
+        info_list.append(temp_lst)
+    return info_list
+
 
 def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):
     try:
@@ -187,3 +284,47 @@ def teacher_application_record(enrollment_no , name , reason ,start_time, end_ti
         print("Saved record successfully")
     except Exception as e:
         print(e)
+
+
+##Not useful
+def save_history(enrollment_number, name, status, timestamp, email):
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        history_collection = db['history']
+        history_collection.insert_one({
+            "enrollment_number": enrollment_number,
+            "name": name,
+            "status": status,
+            "timestamp": timestamp,
+            "email": email
+        });
+        print("History Saved Successfully!!!");
+    except Exception as e:
+        print(e)
+def make_history():
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        history_collection = db['history']
+        all_history = history_collection.find()
+        return all_history
+    except Exception as e:
+        print(e)
+
+def get_teacher_image():
+    try:
+        client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+        db = client['project']
+        teachers_collection = db['teachers']
+        all_info = teachers_collection.find({})
+        return all_info
+    except Exception as e:
+        print(f"error : {e}")
+
+# Function to add leave information to the collection
+def add_leave_info(teacher_info):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    db = client['project']
+    temporary_application_queue = db['temporary_application_queue']
+    temporary_application_queue.insert_one(teacher_info)    
