@@ -536,7 +536,7 @@ def add_student():
         file_extension = os.path.splitext(file.filename)[1].lower()
         if file_extension not in [".png" , ".jpg" , ".jpeg"]:
             return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
-        profile_pic_location = enrollment_no + file_extension
+        profile_pic_location = enrollment_no + file_extension                                        
         # Save the uploaded image file to the static folder
         filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
         file.save(filename)

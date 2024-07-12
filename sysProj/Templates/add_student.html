@@ -3,24 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student add UI</title>
+    <title>Student Add UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            max-width: 500px;
+            width: 90%;
+            background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .card h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px;
+            font-size: 14px;
+        }
+
+        .card input,
+        .card button,
+        .card select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .card button {
+            background-image: linear-gradient(-20deg, #6e45e2 0%, #88d3ce 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .card button i {
+            margin-right: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .card h1 {
+                font-size: 20px;
+            }
+
+            .card h3 {
+                font-size: 12px;
+            }
+        }  
+
+        .case {
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .case span {
+            margin-left: 10px;
+            color: gray; /* Neutral color */
+        }
+
+        .valid {
+            color: #4caf50; /* Green color */
+        }
+
+        .invalid {
+            color: #f44336; /* Red color */
+        }
+
+        .gender-choose {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .gender-label {
+            font-weight: bolder;
+        }
+
+        .phone-error {
+            color: #f44336; /* Red color */
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <form method="post" action="/add_student" enctype="multipart/form-data">
-        <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>
-        <input type="text" name="username" placeholder="Student Username" required="yes" />
-        <input type="text" name="password" placeholder="Enter Password" required="yes"/>
-        <input type="email" name="email" placeholder="Student Email" required="yes" />
-        <input type="text"  name="branch" placeholder="Enter branch" required="yes" />
-        <input type="number" name="year" placeholder="Student Year" required="yes" />
-        <input type="text" name="gender" placeholder="Student Gender" required="yes" />
-        <input type="text" name="phone" placeholder="Student Phone no." required="yes" />
-        <input type="date" name="dob" placeholder="Student date of birth" required="yes" />
-        <input type="text" name="parent_name" placeholder="Parents Name" required="yes" />
-        <input type="text" name="parent_no" placeholder="Parents No." required="yes" />
-        <input type="text" name="address" placeholder="Enter Current address" required="yes" />
-        <input type="file" name="profile_pic" placeholder="Select Student profile pic" required="yes" accept=".jpg, .jpeg, .png" />
-        <input type="submit" value="Upload" />
-    </form>   
+    <div class="card">
+        <h1>Credentials</h1>
+        <form id="studentForm" method="post" action="/add_student" enctype="multipart/form-data">
+            <h3>Enrollment number</h3>
+            <input type="text" name="enrollment" placeholder="Enter Enrollment Number" required />
+            
+            <h3>Student Email</h3>
+            <input type="email" name="email" placeholder="Student Email" required />
+            
+            <h3>Student Username</h3>
+            <input type="text" name="username" placeholder="Student Username" required />
+            
+            <h3>Password</h3>
+            <input type="text" name="password" id="password" placeholder="Enter Password" required />
+            <p class="case" id="lowercase">Must contain a lowercase letter<span></span></p>
+            <p class="case" id="uppercase">Must contain an uppercase letter<span></span></p>
+            <p class="case" id="digit">Must contain a digit<span></span></p>
+            <p class="case" id="special">Must contain a special character (@, $)<span></span></p>
+            
+            <h3>Student Year</h3>
+            <label class="grade-label" for="year"></label>
+            <select class="grade-choose" name="year">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <h3>Gender</h3>
+            <label class="gender-label" for="gender"></label>
+            <select class="gender-choose" name="gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+               <option value="other">Other</option>
+            </select>
+            
+            <h3>Student Phone Code</h3>
+            <input type="text" name="phone" id="phone" placeholder="Student Phone no." required />
+            <p class="phone-error" id="phoneError">Phone number must be 10 digits.</p>
+            
+            <h3>Enter Branch</h3>
+            <input type="text" name="branch" placeholder="Enter branch" required />
+            
+            <h3>DOB</h3>
+            <input type="date" name="dob" placeholder="Student date of birth" required />
+            
+            <h3>Parent's Name</h3>
+            <input type="text" name="parent_name" placeholder="Parents Name" required />
+            
+            <h3>Parent's No.</h3>
+            <input type="text" name="parent_no" id="phone1" placeholder="Parents No." required />    
+            <p class="phone-error" id="phoneError1">Phone number must be 10 digits.</p>               
+
+            <h3>Address</h3>
+            <input type="text" name="address" placeholder="Enter Current address" required />
+            
+            <h3>Select Student profile pic</h3>
+            <input type="file" name="profile_pic" required accept=".jpg, .jpeg, .png" />
+            
+            <button type="submit">
+                <i class="fa-solid fa-upload"></i> Upload
+            </button>
+        </form>
+
+        <script>
+            const passwordInput = document.getElementById('password');
+            const lowercaseIndicator = document.getElementById('lowercase').querySelector('span');
+            const uppercaseIndicator = document.getElementById('uppercase').querySelector('span');
+            const digitIndicator = document.getElementById('digit').querySelector('span');
+            const specialIndicator = document.getElementById('special').querySelector('span');
+            const phoneInput = document.getElementById('phone');
+            const phoneInput1 = document.getElementById('phone1');
+            const phoneError = document.getElementById('phoneError');
+            const phoneError1 = document.getElementById('phoneError1');
+            
+
+            passwordInput.addEventListener('input', function() {
+                const value = passwordInput.value;
+                const hasLowercase = /[a-z]/.test(value);
+                const hasUppercase = /[A-Z]/.test(value);
+                const hasDigit = /\d/.test(value);
+                const hasSpecial = /[@$]/.test(value);
+
+                updateIndicator(lowercaseIndicator, hasLowercase);
+                updateIndicator(uppercaseIndicator, hasUppercase);
+                updateIndicator(digitIndicator, hasDigit);
+                updateIndicator(specialIndicator, hasSpecial);
+            });
+
+            function updateIndicator(indicator, isValid) {
+                if (isValid) {
+                    indicator.innerHTML = '&#10004;';
+                    indicator.classList.remove('invalid');
+                    indicator.classList.add('valid');
+                } else {
+                    indicator.innerHTML = '&#10060;';
+                    indicator.classList.remove('valid');
+                    indicator.classList.add('invalid');
+                }
+            }
+
+            document.getElementById('studentForm').addEventListener('submit', function(event) {
+                const password = passwordInput.value;
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$])[A-Za-z\d@$]{8,}$/;
+
+                if (!passwordRegex.test(password)) {
+                    alert('Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@ or $).');
+                    event.preventDefault();
+                }
+            });
+
+            phoneInput.addEventListener('input', function() {
+                const value = phoneInput.value.trim();
+                if (value.length > 10) {
+                    phoneError.style.display = 'block';
+                } else {
+                    phoneError.style.display = 'none';
+                }
+            });
+
+            phoneInput1.addEventListener('input', function() {
+                const value = phoneInput1.value.trim();
+                if (value.length > 10) {
+                    phoneError1.style.display = 'block';
+                } else {
+                    phoneError1.style.display = 'none';
+                }
+            });
+
+            document.getElementById('studentForm').addEventListener('submit', function(event) {
+                const phone = phoneInput.value.trim();
+                const phone1 = phoneInput1.value.trim();
+                if (phone.length !== 10) {
+                    phoneError.style.display = 'block';
+                    event.preventDefault();
+                }
+                 if (phone1.length !== 10) {
+                    phoneError1.style.display = 'block';
+                    event.preventDefault();
+                }
+            });
+            
+
+        </script>
+    </div>
 </body>
 </html>
