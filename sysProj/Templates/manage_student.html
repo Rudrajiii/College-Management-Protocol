@@ -4,13 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>manage student</title>
+
+  <style>
+
+    body {
+        
+        background-color: black;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+     .card {
+        height: 500px;
+        width: 300px;
+        background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+        margin-top: 50px;
+        
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+
+        
+     }
+
+     .inner-card {
+          margin-left: 58px;
+          margin-top: 150px;
+     }
+    
+
+      .fr1 {
+         
+        height: 80px;
+        width: 180px;
+      
+        
+        border-radius: 20px;
+
+     } 
+
+     .remove {
+        background-color: #00008B;
+        position: absolute;
+        margin-top: 100px;
+        margin-left: -10px;
+        border-radius: 20px;
+        height: 40px;
+        width: 200px;
+        font-size: 16px;
+        color: white;
+     }
+
+     .edit {
+        background-color: #00008B;
+        position: absolute;
+        margin-top:30px;
+        margin-left: -10px;
+        border-radius: 20px;
+        height: 40px;
+        width: 200px;
+        font-size: 16px;
+        color: white;
+     }
+     
+     ::placeholder {
+            font-size: 20px;
+            opacity: 0.6;          
+            font-family: sans-serif;    
+            height: 200px;
+            width: 200px;
+        }
+
+         
+
+  </style>
+
 </head>
 <body>
-    <h1>Manage Student PAGE</h1>
+
+     <div class="card">
+        <div class="inner-card">
+
+            <div class="manageform">
     <form method="post" action="/manage_student">
-        <input type="text" name="enrollment" placeholder=" Enter Enrollment Number" required="yes"/>      
-        <input type="submit" name="button" placeholder="remove student" value="remove" />
-        <input type="submit" name="button" placeholder="edit student" value="edit" />
-    </form>
+
+     <input class="fr1" type="text" name="enrollment" placeholder=" Enrollment ID " required="yes"/> 
+         
+        
+       <div class="fr2"> 
+        <!-- <input type="submit" name="button" placeholder="remove student" value="remove"/>  -->
+                          <button type="submit" class="remove" value="remove" name="button">
+                              Remove
+                          </button> </div>
+        
+        
+                       <div class="fr3"> 
+                         <!-- <input type="submit" name="button" placeholder="edit student" value="edit"/>  -->
+
+                         <button type="submit" class="edit" name="button" value="edit">
+                            Edit
+                         </button>
+                </div>
+            </form>
+         </div>
+      </div>
+  </div>
+
+
+
+
+  <script src=" " class="Js.file">
+         
+                         
+
+  </script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
