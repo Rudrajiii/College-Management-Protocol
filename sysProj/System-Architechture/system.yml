@@ -17,12 +17,10 @@ Main ->
 crud.py
 functions.py
 
-admin_main.py
-students_main.py
-teachers_main.py
+app.py --> all routes 
 admin_function.py
 teacher_function.py
 students_function.py
-error.py
+
 
 

@@ -372,6 +372,7 @@ def staff_informations():
     return render_template('manage_teachers.html' , teachers = teachers)
 
 
+
 @app.route('/register_a_staff', methods=['GET', 'POST'])
 def register_a_staff():
     if 'username' not in session or session['role'] != 'admin':

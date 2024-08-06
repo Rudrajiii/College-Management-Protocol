@@ -26,6 +26,12 @@ import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 import uuid
 
+
+#? Local Module's
+from db_config import *
+from caching import user_cache
+from admin_function import *
+
 class DataStore():
     a = None
     b = None
@@ -41,17 +47,9 @@ csv_file_path = 'data/modified_student_data.csv'
 app.config['UPLOAD_DIR'] = 'static/Uploads'
 root_dir = 'static/Uploads'
 app.secret_key = 'opejfjfjjsjkseiiwiei45884&&&*())*$#@@$'
-MONGO_URI = "mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/project"
-client = MongoClient(MONGO_URI)
-db = client['project']
-creators = db.creators
-collection = db['teachers']
-students = db['students']
-application = db['teacherApplications']
-history_collection = db['history']
-temporary_application_queue = db['temporary_application_queue']
 
-#email sending configuration
+
+#?email sending configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  #smtp.gmail.com
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -67,55 +65,39 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-# Configure Flask-Caching
+#? Configure Flask-Caching
 app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
 
+@app.route('/view_cache')
+def view_cache():
+    cached_items = []
+    for key in cache.cache._cache.keys():
+        value = cache.get(key)
+        # Convert ObjectId to string if present
+        if isinstance(value, dict):
+            for k, v in value.items():
+                if isinstance(v, ObjectId):
+                    value[k] = str(v)
+        cached_items.append({
+            'key': key,
+            'value': value
+        })
+        print(f"Cache item - Key: {key}, Value: {value}")
+    return jsonify(cached_items)
 
-def get_image_name(enrollment_no, extension, updated=False):
-    if updated:
-        return f'{enrollment_no}(updated){extension}'
-    else:
-        return f'{enrollment_no}{extension}'
-
-@app.route('/teachers_data', methods=['GET'])
-def get_creators():
-    if 'username' not in session or session['role'] != 'admin':
-        return redirect(url_for('admin_login'))
-    teachers = collection.find({}) 
-    teacher_list = []
-    for teacher in teachers:
-        teacher['_id'] = str(teacher['_id'])  #string pr convert kr raha
-        teacher_list.append(teacher)
-    return jsonify(teacher_list)
-
-
-def get_user_from_db(username):
-    print("Fetching user from cache or MongoDB if not cached")
-    user =  db.creators.find_one({"username": username})
-    return user
-
-@cache.memoize(timeout=300)  # Caching this function's result for 5 minutes
-def get_user(username):
-    return get_user_from_db(username)
-
-
-def get_post(id):
-    con = sqlite3.connect("users.db")
-    con.row_factory = sqlite3.Row
-    user = con.execute('SELECT * FROM users WHERE id = ?',(id,)).fetchone()
-    con.close()
-    if user is None:
-        abort(404)
-    return user
-
+#? Our Main Entry Gate Way
 @app.route("/")
 def index():
     return render_template("index.html")
 
-#?Route fuction of admin login
+# -------------------------------------------------------
+#*Route fuction of admin login
+#* all admin route's are listed down here
+# -------------------------------------------------------
 
+#? admin login route
 @app.route('/admin_login', methods = ['POST', 'GET'])
 def admin_login():
     print("Admin login function called") 
@@ -133,7 +115,7 @@ def admin_login():
         
         if user_profile is None:
             # Fetch admin's info from MongoDB if not found in cache or expired
-            user_profile = get_user(username)
+            user_profile = user_cache.get_user(username)
             # Cache the admin's info
             cache.set(username, user_profile, timeout=300)
             print(f"Admin's info fetched from MongoDB: {user_profile}")
@@ -178,25 +160,64 @@ def admin_login():
         
     return render_template("admin_login.html" , delay=session.get('delay', 0))
 
-@app.route('/view_cache')
-def view_cache():
-    cached_items = []
-    for key in cache.cache._cache.keys():
-        value = cache.get(key)
-        # Convert ObjectId to string if present
-        if isinstance(value, dict):
-            for k, v in value.items():
-                if isinstance(v, ObjectId):
-                    value[k] = str(v)
-        cached_items.append({
-            'key': key,
-            'value': value
-        })
-        print(f"Cache item - Key: {key}, Value: {value}")
-    return jsonify(cached_items)
+#? admin dashboard route
+@app.route('/admin_dashboard')
+def admin_dashboard():
 
-#? Route function of teacher login
+    if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
+        return redirect(url_for('admin_login'))
+    total_student_count = count_students()
+    total_teacher_count = count_teachers()
+    admin_profile_image = session['profilepic']
+    application = db['teacherApplications']
+    count = application.count_documents({})
+    print(admin_profile_image)
+    return render_template('admin_dashboard.html', 
+            username=session['username'] ,
+            total_student_count=total_student_count,
+            total_teacher_count=total_teacher_count,
+            admin_profile_image=admin_profile_image,
+            count=count
+                        )
 
+#? admin profile route
+@app.route('/admin_profile')
+def admin_profile():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    admin_username = session['username']
+    admin_password = session['password']
+    admin_enrollment = session['enrollment_no']
+    admin_profile_image = session['profilepic']
+    return render_template('admin_profile.html',
+                        admin_username=admin_username,
+                        admin_password=admin_password,
+                        admin_enrollment=admin_enrollment,
+                        admin_profile_image=admin_profile_image
+                        )
+
+# --------------------------------------------------
+#todo all admin activites
+# --------------------------------------------------
+#?Teacher Data Retrival
+@app.route('/teachers_data', methods=['GET'])
+def get_creators():
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    teachers = collection.find({}) 
+    teacher_list = []
+    for teacher in teachers:
+        teacher['_id'] = str(teacher['_id'])  #string pr convert kr raha
+        teacher_list.append(teacher)
+    return jsonify(teacher_list)
+
+# --------------------------------------------------
+#* Route function of teacher login
+#* all teacher login route is listed down here
+# --------------------------------------------------
+
+#?teacher login route
 @app.route('/teacher_login', methods = ['POST', 'GET'])
 def teacher_login():
     if(request.method == 'POST'):
@@ -217,46 +238,7 @@ def teacher_login():
 
     return render_template("teacher_login.html")
 
-
-#?Route fuction of student login
-
-@app.route('/student_login', methods = ['POST', 'GET'])
-def student_login():
-    if(request.method == 'POST'):
-        username = request.form.get('username')
-        password = request.form.get('password')
-        enrollment_no = request.form.get('enrollment')
-
-        var1 = student_login_db(enrollment_no,username,password)
-        if var1:
-            session['username'] = username
-            session['role'] = 'student'
-            session['enrollment_no'] = enrollment_no
-            return redirect(url_for('student_dashboard'))
-        else:
-            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
-            return redirect(url_for('student_login'))
-    return render_template("student_login.html")
-
-@app.route('/admin_dashboard')
-def admin_dashboard():
-
-    if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
-        return redirect(url_for('admin_login'))
-    total_student_count = count_students()
-    total_teacher_count = count_teachers()
-    admin_profile_image = session['profilepic']
-    application = db['teacherApplications']
-    count = application.count_documents({})
-    print(admin_profile_image)
-    return render_template('admin_dashboard.html', 
-            username=session['username'] ,
-            total_student_count=total_student_count,
-            total_teacher_count=total_teacher_count,
-            admin_profile_image=admin_profile_image,
-            count=count
-                        )
-
+#?teacher dashboard route
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
     if 'username' not in session or session['role'] != 'teacher':
@@ -275,6 +257,49 @@ def teacher_dashboard():
 
     return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
 
+#?Teacher Profile route
+@app.route('/teacher_profile/<string:id>', methods=['GET'])
+def teacher_profile(id):
+    # Ensure the user is an admin
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    
+    try:
+        teacher_id = ObjectId(id)
+    except Exception as e:
+        abort(404, description="Invalid teacher ID")
+
+    # Fetching teacher details using the provided id
+    teacher = collection.find_one({"_id": teacher_id})
+    if teacher is None:
+        abort(404, description="Teacher not found")
+
+    return render_template('teacher_profile.html', teacher=teacher)
+
+# -------------------------------------------------------
+#*Route fuction of student login
+#*All student routes are listed down here 
+# -------------------------------------------------------
+#?Student login route
+@app.route('/student_login', methods = ['POST', 'GET'])
+def student_login():
+    if(request.method == 'POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
+        enrollment_no = request.form.get('enrollment')
+
+        var1 = student_login_db(enrollment_no,username,password)
+        if var1:
+            session['username'] = username
+            session['role'] = 'student'
+            session['enrollment_no'] = enrollment_no
+            return redirect(url_for('student_dashboard'))
+        else:
+            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
+            return redirect(url_for('student_login'))
+    return render_template("student_login.html")
+
+#? student dashboard route
 @app.route('/student_dashboard')
 def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
@@ -321,48 +346,10 @@ def student_dashboard():
                            announcement=announcement,
                            docs=leave_entries)
 
-
-
-@app.route('/admin_profile')
-def admin_profile():
-    if 'username' not in session or session['role'] != 'admin':
-        return redirect(url_for('admin_login'))
-    
-    admin_username = session['username']
-    admin_password = session['password']
-    admin_enrollment = session['enrollment_no']
-    admin_profile_image = session['profilepic']
-    return render_template('admin_profile.html',
-                        admin_username=admin_username,
-                        admin_password=admin_password,
-                        admin_enrollment=admin_enrollment,
-                        admin_profile_image=admin_profile_image
-                        )
-
-
+#? student profile route
 @app.route('/student_profile')
 def student_profile():
     ...
-
-
-@app.route('/teacher_profile/<string:id>', methods=['GET'])
-def teacher_profile(id):
-    # Ensure the user is an admin
-    if 'username' not in session or session['role'] != 'admin':
-        return redirect(url_for('admin_login'))
-    
-    try:
-        teacher_id = ObjectId(id)
-    except Exception as e:
-        abort(404, description="Invalid teacher ID")
-
-    # Fetching teacher details using the provided id
-    teacher = collection.find_one({"_id": teacher_id})
-    if teacher is None:
-        abort(404, description="Teacher not found")
-
-    return render_template('teacher_profile.html', teacher=teacher)
-
 
 @app.route('/staff_informations')
 def staff_informations():
