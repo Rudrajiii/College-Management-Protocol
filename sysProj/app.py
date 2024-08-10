@@ -31,6 +31,7 @@ import uuid
 from db_config import *
 from caching import user_cache
 from admin_function import *
+from graphical_analysis import *
 
 class DataStore():
     a = None
@@ -504,6 +505,29 @@ def edit_student():
     return render_template('edit_student.html' , student_record = student_record)
 
 
+#? All the internal announcements will be endergoes from admin panel
+@app.route('/announcement', methods = ['POST', 'GET'])
+def announcement():
+    """
+    if admin wants to notify something either for students
+    or stuffs will be operated by this function.
+    
+    """
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        recipient = request.form.get('recipient')
+        message = request.form.get('message')
+        set_time = request.form.get('set_time')
+        student_year = request.form.get('academic_year[]')  #only if student it enables or for teachers its set to all
+        recipient = recipient + " " + student_year
+        print(recipient)
+        if message == "" or set_time == "" or student_year == "":
+            return f'''<h1>Input fields are empty</h1>'''
+        else:
+            announcement_db(recipient,message,set_time)
+    return f'''<h1>Message recorded sucessfully</h1>'''
+
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
@@ -691,84 +715,30 @@ def delete_user(user_id):
         return jsonify({"error": "User not found"}), 404
 
 
-@app.route('/announcement', methods = ['POST', 'GET'])
-def announcement():
-    if 'username' not in session or session['role'] != 'admin':
-        return redirect(url_for('admin_login'))
-    if(request.method == 'POST'):
-        recipient = request.form.get('recipient')
-        message = request.form.get('message')
-        set_time = request.form.get('set_time')
-        student_year = request.form.get('academic_year[]')  #only if student it enables or for teachers its set to all
-        recipient = recipient + " " + student_year
-        print(recipient)
-        if message == "" or set_time == "" or student_year == "":
-            return f'''<h1>Input fields are empty</h1>'''
-        else:
-            announcement_db(recipient,message,set_time)
-    return f'''<h1>Message recorded sucessfully</h1>'''
-    
+#? func to logout from respective dashboard's
 @app.route('/logout')
 def logout():
+    """
+    internally removes the metadata
+    stored in a session stack.
+    
+    """
     session.pop('username', None)
     session.pop('role', None)
     return redirect(url_for('index'))
 
-#** Important function for chart data generation
-
-def read_csv(your_csv_file):
-    with open(your_csv_file, "r") as csv_reader:
-        csv_file = csv.DictReader(csv_reader)
-        data = [row for row in csv_file]
-    return data
-def modified_csv_data():
-    # Given departments array
-    departments_array = ['CSE', 'CSE(ai)', 'CSE(ai & Ml)', 'ECE', 'EE', 'ME', 'IOT', 'CSBS', 'IT']
-
-    # Read the CSV file and store the data
-    data = []
-    with open('data/student_data.csv', newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            data.append(row)
-    # print(data)
-# Count the number of rows and calculate the desired number of CSE entries
-    total_rows = len(data)
-    cse_min_count = total_rows * 0.4
-    cse_max_count = total_rows * 0.6
-
-    # Initialize counters
-    cse_count = 0
-    new_data = []
-
-    # Modify department values according to the given array
-    for row in data:
-        if row['department'] == 'CSE':
-            if cse_count < cse_min_count:
-                row['department'] = 'CSE'
-                cse_count += 1
-            elif cse_count >= cse_min_count and cse_count < cse_max_count:
-                row['department'] = random.choice(['CSE', 'CSE(ai)', 'CSE(ai & Ml)'])
-                cse_count += 1
-            else:
-                row['department'] = random.choice(departments_array)
-        else:
-            row['department'] = random.choice(departments_array)
-        new_data.append(row)
-
-# Write the modified data to a new CSV file
-    with open('data/modified_student_data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['Full_name', 'gender', 'department']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in new_data:
-            writer.writerow(row)
-
+#? still in development process
+#? making api endpoint for all statistical analysis
 @app.route("/access_data")
 def access_data():
+    """
+    rightnow only making data with
+    dummy data set , will be replaced with
+    realone soon.
+    
+    """
     student_data = read_csv(csv_file_path)
     return jsonify(student_data)
-
 
 @app.route("/view_all_notifications" , methods=["GET", "POST"])
 def view_all_notifications():
