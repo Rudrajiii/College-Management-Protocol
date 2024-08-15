@@ -740,8 +740,25 @@ def access_data():
     student_data = read_csv(csv_file_path)
     return jsonify(student_data)
 
+#* -----------------------------------------------------------------
+# todo Notification Section Where admin will able too see the all
+# todo necessary notifications releated to teacher applications.
+#* ------------------------------------------------------------------
+
 @app.route("/view_all_notifications" , methods=["GET", "POST"])
 def view_all_notifications():
+
+    """
+    section where we store all the upcoming leave
+    applications send by the teachers.Now admin has options
+    >>Accept Application
+    >>Reject Application
+    >>In Each Case Email will be send to the teacher it self
+    
+    each and every response performed by the admin will be
+    stored in the history section also.
+    """
+
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     teacher_applications = list(application.find({}))
@@ -770,9 +787,16 @@ def view_all_notifications():
     # print(teacher_applications)
     return render_template("all_notifications.html" ,teacher_applications = teacher_applications , all_history = docs)
 
-
+# todo route to remove notification's
 @app.route("/delete_notification/<application_id>", methods=["DELETE"])
 def delete_notification(application_id):
+
+    """
+    after giving the response in that applications
+    admin can delete the notification as it already stored
+    for history section
+
+    """
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
