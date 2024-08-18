@@ -1,4 +1,3 @@
-
       const sub = document.getElementById('sub');
       const delayTime = {{ delay }};
       const username = document.querySelector('input[name="username"]').value;

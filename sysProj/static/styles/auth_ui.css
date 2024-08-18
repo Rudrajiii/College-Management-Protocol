@@ -1,3 +1,7 @@
+      :root{
+        --clr-success:#4be250;
+        --clr-error:#ff2323;
+      }
       body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -69,6 +73,15 @@
         color: #fff;
         cursor: pointer;
       }
+
+      /* Extra Feedback */
+      input:user-valid{
+        outline-color: var(--clr-success);
+      }
+      input:user-invalid{
+        outline-color: var(--clr-error);
+      }
+
 
       .login-form input[type="submit"]:hover {
         background-color: #3e8e41;
