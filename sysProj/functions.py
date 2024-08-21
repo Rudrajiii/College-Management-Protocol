@@ -142,7 +142,7 @@ def edit_student_update_db(enrollment_no,username,password,email,branch,year,gen
         "username" : username ,
         "email" : email ,
         "branch" : branch ,
-        "academic_year" : int(year) ,
+        "academic_year" : int(year) ,                                             
         "gender" : gender ,
         "phone_no" : phone ,
         "dob" : dob ,

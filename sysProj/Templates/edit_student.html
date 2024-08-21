@@ -4,26 +4,291 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Students</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        body {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: black;
+            border-radius: 10px;
+            padding: 20px;
+            width: 60%;
+            max-width: 800px; /* Increased the width for better spacing */
+            transition: transform 0.3s;
+        }
+
+        h1, h3 {
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background-color: gray;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        #submitBtn {
+            background-color: #2ecc71;
+            cursor: pointer;
+            border: none;
+            font-weight: bolder;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        } 
+
+        #submitBtn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        img {
+            width: 100%;
+            max-width: 200px;
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 22px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            input, select {
+                font-size: 14px;
+            }
+
+            #submitBtn {
+                font-size: 15px;
+            }
+
+            .card {
+                padding: 15px;
+                width: 90%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr; /* Make grid single column on small screens */
+            }
+        }
+
+        .parentsPhone, .userPhone, .passwordText {
+            color: rgb(211, 18, 18);
+            font-size: 13px bolder;
+            
+        }
+    </style>
 </head>
 <body>
-    <h1>This the the Data of student with enrollment no. : {{student_record['enrollment_no']}}</h1>
-    <h3>Please edit the required fields only</h3>
-    <form method="post" action="/edit_student" enctype="multipart/form-data">
-        <p>username:</p><input type="text" name="username" placeholder="Student Username" required="yes" value="{{student_record['username']}}" /><br>
-        <p>password:</p><input type="text" name="password" placeholder="Enter Password" required="yes" value="{{student_record['password']}}"/><br>
-        <p>email:</p><input type="email" name="email" placeholder="Student Email" required="yes" value="{{student_record['email']}}" /><br>
-        <p>branch:</p><input type="text"  name="branch" placeholder="Enter branch" required="yes" value="{{student_record['branch']}}"/><br>
-        <p>year:</p><input type="number" name="year" placeholder="Student Year" required="yes" value="{{student_record['academic_year']}}"/><br>
-        <p>gender:</p><input type="text" name="gender" placeholder="Student Gender" required="yes" value="{{student_record['gender']}}"/><br>
-        <p>phone:</p><input type="text" name="phone" placeholder="Student Phone no." required="yes" value="{{student_record['phone_no']}}"/><br>
-        <p>DOB:</p><input type="date" name="dob" placeholder="Student date of birth" required="yes" value="{{student_record['dob']}}"/><br>
-        <p>Parents Name:</p><input type="text" name="parent_name" placeholder="Parents Name" required="yes" value="{{student_record['parent_name']}}" /><br>
-        <p>Parents No. :</p><input type="text" name="parent_no" placeholder="Parents No." required="yes" value="{{student_record['parent_no']}}" /><br>
-        <p>Address:</p><input type="text" name="address" placeholder="Enter Current address" required="yes" value="{{student_record['current_address']}}"/><br>
-        <h3>Only Upload another profile pic if needed otherwise leave it as it is</h3>
-        <img src="../static/Uploads/{{student_record['profile_pic']}}" alt="">
-        <p>Profile pic:</p><input type="file" name="profile_pic" placeholder="Select Student profile pic" accept=".jpg, .jpeg, .png" /><br>
-        <input type="submit" value="Upload" />
-    </form>
+    <div class="card">
+        <h1>Student Records</h1>
+        <br>
+        <h3>Please edit the required fields only</h3>
+        <br>
+        <form method="post" action="/edit_student" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div>
+                    <p>Username</p>
+                    <input type="text" id="userInput" name="username" placeholder="Student Username" required="yes" value="{{student_record['username']}}" />
+                    <p id="message"></p>
+                </div>
+                <div>
+                    <p>Password</p>
+                    <input type="text" id="passwordInput" name="password" placeholder="Enter Password" required="yes" value="{{student_record['password']}}" />
+                    <p class="passwordText"> </p>
+                </div>
+                <div>
+                    <p>Email</p>
+                    <input type="email" name="email" placeholder="Student Email" required="yes" value="{{student_record['email']}}" />
+                </div>
+                <div>
+                    <p>Branch</p>
+                    <input type="text" name="branch" placeholder="Enter Branch" required="yes" value="{{student_record['branch']}}" />
+                </div>
+                <div>
+                    <p>year</p>
+                    <!-- <input type="number" name="year" placeholder="Student Year" required="yes" value="{{student_record['academic_year']}}" /> -->
+                
+                     <select name="year">
+                        <option value="{{student_record['academic_year']}}">{{student_record['academic_year']}}</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select> 
+                </div>
+
+                <div>
+                    <p>Gender</p>s
+                <select name="gender">
+                    <option value="{{student_record['gender']}}">{{student_record['gender']}}</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="others">Others</option>
+                </select>
+             </div>
+            
+             <div>
+                    <p>Phone</p>
+                    <input type="text" id="contact" name="phone" placeholder="Student Phone No." required="yes" value="{{student_record['phone_no']}}" />
+                    <p class="userPhone" id="phoneBug">  </p>
+
+                </div>
+                <div>
+                    <p>DOB</p>
+                    <input type="date" name="dob" placeholder="Student Date of Birth" required="yes" value="{{student_record['dob']}}" />
+                </div>
+                <div>
+                    <p>Parents Name</p>
+                    <input type="text" name="parent_name" placeholder="Parents Name" required="yes" value="{{student_record['parent_name']}}" />
+                </div>
+                <div>
+                    <p>Parents No</p>
+                    <input type="text" id="parentsContact" name="parent_no" placeholder="Parents No." required="yes" value="{{student_record['parent_no']}}" />
+                    <p class="parentsPhone" id="parentsPhoneBug">  </p>
+                </div>
+                <div>
+                    <p>Address</p>
+                    <input type="text" name="address" placeholder="Enter Current Address" required="yes" value="{{student_record['current_address']}}" />
+                </div>
+                <div>
+                    <img src="../static/Uploads/{{student_record['profile_pic']}}" alt="Profile Picture">
+                    <p>Profile Pic</p>
+                    <input type="file" name="profile_pic" accept=".jpg, .jpeg, .png" />
+                </div>
+            </div>
+            <input id="submitBtn" type="submit" value="Upload" />
+
+           
+        </form>
+    </div>
+
+      <script>
+
+
+
+
+// elements accessing :-
+          const phoneInput = document.getElementById('contact');
+          const phoneError = document.getElementById('phoneBug');
+         
+          const parentsPhone = document.getElementById('parentsContact');
+          const parentsPhoneError = document.getElementById('parentsPhoneBug');
+
+          const userInput = document.getElementById('userInput');
+          const message = document.getElementById('message');
+
+          const passwordInput = document.getElementById('passwordInput');
+          const passwordText = document.querySelector('.passwordText');
+        
+
+          
+
+ // encoding functions :-
+
+        // user ph no 
+           phoneInput.addEventListener('input', function(event) {
+            event.preventDefault();
+            const value = phoneInput.value.trim();
+
+            if(value.length === 10) {
+                phoneError.textContent = "Recorded Characters";
+                phoneError.style.color = "green";
+            } else {
+                phoneError.textContent = "Un-Recorded Characters";
+                phoneError.style.color = "red";
+            }
+           })
+
+        // parents ph no   
+           parentsPhone.addEventListener('input', function(event) {
+            event.preventDefault();
+            const value = parentsPhone.value.trim();
+
+            if(value.length === 10) {
+                    parentsPhoneError.textContent = "Recorded Characters";
+                    parentsPhoneError.style.color = "green";
+            } else {               
+                    parentsPhoneError.textContent = "Un-Recorded Characters";
+                    parentsPhoneError.style.color = "red";
+            }
+           })
+
+           // username 
+            userInput.addEventListener('input', function(event) {
+               event.preventDefault();
+
+               const username = userInput.value.trim();
+               const userPattern = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/;
+               
+               if(userPattern.test(username)) {
+                message.textContent = "Username is valid!";
+                message.style.color = "green";
+               } else {
+                message.textContent = "Username is invalid!";
+                message.style.color = "red";
+               }
+            });           
+        
+            // password
+
+             passwordInput.addEventListener('input', function(event) {
+                event.preventDefault();
+
+                const password = passwordInput.value.trim();
+                const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                
+                if(isValidPassword.test(password)) {
+                    passwordText.textContent = "Looks strong!";
+                    passwordText.style.color = "green";
+                } else {
+                    passwordText.textContent = "Please match the below criteria!";
+                    passwordText.style.color = "red";
+                }
+
+             })
+
+      </script>
+
 </body>
 </html>
