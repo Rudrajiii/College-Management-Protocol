@@ -3,15 +3,13 @@ from data import get_data , Enrollment_logs
 from resizeimage import resizeimage  # type: ignore
 from pymongo import MongoClient # type: ignore
 from flask_caching import Cache # type: ignore
-from datetime import  datetime
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import sqlite3
-import random
-import time 
+import random 
 import glob
 from datetime import datetime ,timezone
 import timeago # type: ignore
@@ -32,6 +30,7 @@ from db_config import *
 from caching import user_cache
 from admin_function import *
 from graphical_analysis import *
+from support_funcs import *
 
 class DataStore():
     a = None
@@ -811,28 +810,8 @@ def delete_notification(application_id):
     else:
         return jsonify({'success': False, 'error': 'Failed to delete notification'}), 500
 
-def update_temporary_queue():
-    accepted_applications = history_collection.find({'status': 'Accepted'})
-    for app in accepted_applications:
-        if app['requested_gap'] >= 0:
-            temporary_application_queue.update_one(
-                {'application_id': app['application_id']},
-                {'$set': app},
-                upsert=True
-            )
-    # Remove entries from temporary queue if they are not in accepted state anymore
-    all_temp_entries = temporary_application_queue.find()
-    for entry in all_temp_entries:
-        if history_collection.find_one({'application_id': entry['application_id'], 'status': 'Accepted'}) is None:
-            temporary_application_queue.delete_one({'application_id': entry['application_id']})
 
-def delete_expired_documents():
-    current_time = datetime.now()
-    result = temporary_application_queue.delete_many({'deleted_at': {'$lte': current_time}})
-    if result.deleted_count > 0:
-        print(f"Deleted {result.deleted_count} expired document(s)")
-
-
+#? Till done!!
 @app.route("/update_status/<application_id>", methods=["PUT"])
 def update_status(application_id):
     if 'username' not in session or session['role'] != 'admin':
