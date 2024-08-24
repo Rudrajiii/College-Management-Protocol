@@ -1,5 +1,5 @@
 # College Management Ecosystem -2.0
-
+------------------------------------
 ## Overview
 This project is a web-based student management system designed to streamline various administrative tasks for a college. It leverages a combination of HTML, CSS, JavaScript, Flask, and MongoDB to provide a robust and interactive user experience.
 
