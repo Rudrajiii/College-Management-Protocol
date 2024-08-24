@@ -3,135 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>manage student</title>
+    <title>Manage Student</title>
 
-  <style>
-
-    body {
+    <style>
         
-        background-color: black;
-        font-family: sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-     .card {
-        height: 500px;
-        width: 300px;
-        background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
-        margin-top: 50px;
-        
-        justify-content: center;
-        align-items: center;
-        border-radius: 20px;
-
-        
-     }
-
-     .inner-card {
-          margin-left: 58px;
-          margin-top: 150px;
-     }
-    
-
-      .fr1 {
-         
-        height: 80px;
-        width: 180px;
-      
-        
-        border-radius: 20px;
-
-     } 
-
-     .remove {
-        background-color: #00008B;
-        position: absolute;
-        margin-top: 100px;
-        margin-left: -10px;
-        border-radius: 20px;
-        height: 40px;
-        width: 200px;
-        font-size: 16px;
-        color: white;
-     }
-
-     .edit {
-        background-color: #00008B;
-        position: absolute;
-        margin-top:30px;
-        margin-left: -10px;
-        border-radius: 20px;
-        height: 40px;
-        width: 200px;
-        font-size: 16px;
-        color: white;
-     }
-     
-     ::placeholder {
-            font-size: 20px;
-            opacity: 0.6;          
-            font-family: sans-serif;    
-            height: 200px;
-            width: 200px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
-         
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
 
-  </style>
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
 
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .inner-card {
+            margin-top: 20px;
+        }
+
+        .manageform {
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 48%;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .remove {
+            background-color: #95a5a6; 
+        }
+
+        .edit {
+            background-color: #2ecc71; 
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+       
+        @media (max-width: 768px) {
+            .card {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+            }
+
+            button {
+                width: 100%;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+        }
+
+        
+    </style>
 </head>
 <body>
 
-     <div class="card">
+    <div class="card">
+        <h1>Manage Student</h1>
         <div class="inner-card">
 
             <div class="manageform">
-    <form method="post" action="/manage_student">
+                <form method="post" action="/manage_student">
+                    <input class="fr1" type="text" name="enrollment" placeholder="Enrollment ID" required />
 
-     <input class="fr1" type="text" name="enrollment" placeholder=" Enrollment ID " required="yes"/> 
-         
-        
-       <div class="fr2"> 
-        <!-- <input type="submit" name="button" placeholder="remove student" value="remove"/>  -->
-                          <button type="submit" class="remove" value="remove" name="button">
-                              Remove
-                          </button> </div>
-        
-        
-                       <div class="fr3"> 
-                         <!-- <input type="submit" name="button" placeholder="edit student" value="edit"/>  -->
+                    <div class="fr2">
+                        <button type="submit" class="remove" value="remove" name="button">Remove</button>
+                    </div>
 
-                         <button type="submit" class="edit" name="button" value="edit">
-                            Edit
-                         </button>
-                </div>
-            </form>
-         </div>
-      </div>
-  </div>
+                    <div class="fr3">
+                        <button type="submit" class="edit" name="button" value="edit">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-
-
-
-  <script src=" " class="Js.file">
-         
-                         
-
-  </script>
+    <script src="" class="Js.file"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
