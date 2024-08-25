@@ -5,7 +5,7 @@
 }
 
 body {
-    background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    background-color: #333;
     font-family: sans-serif;
     margin: 0;
     padding: 0;
@@ -18,7 +18,7 @@ body {
 .card {
     max-width: 500px;
     width: 90%;
-    background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+    background-color: black;
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     padding: 20px;
@@ -51,7 +51,7 @@ body {
 }
 
 .card button {
-    background-image: linear-gradient(-20deg, #6e45e2 0%, #88d3ce 100%);
+    background-color: #2ecc71;
     color: white;
     cursor: pointer;
     display: flex;

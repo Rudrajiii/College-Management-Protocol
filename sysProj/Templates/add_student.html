@@ -4,123 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Add UI</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/add_student.css')}}">
     <script src="{{ url_for('static', filename='javascripts/add_student.js') }}" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #333;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .card {
-            max-width: 500px;
-            width: 90%;
-            background-color: black;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            box-sizing: border-box;
-            color: white;
-            overflow-y: auto;
-            max-height: 90vh;
-        }
-
-        .card h1 {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            margin: 10px 0 5px;
-            font-size: 14px;
-        }
-
-        .card input,
-        .card button,
-        .card select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: none;
-            box-sizing: border-box;
-        }
-
-        .card button {
-            background-color: #2ecc71;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-        }
-
-        .card button i {
-            margin-right: 5px;
-        }
-
-        @media (max-width: 600px) {
-            .card h1 {
-                font-size: 20px;
-            }
-
-            .card h3 {
-                font-size: 12px;
-            }
-        }  
-
-        .case {
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .case span {
-            margin-left: 10px;
-            color: gray; /* Neutral color */
-        }
-
-        .valid {
-            color: #4caf50; /* Green color */
-        }
-
-        .invalid {
-            color: #f44336; /* Red color */
-        }
-
-        .gender-choose {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .gender-label {
-            font-weight: bolder;
-        }
-
-        .phone-error {
-            color: #f44336; /* Red color */
-            font-size: 13px;
-            margin-top: 5px;
-            display: none;
-        }
-    </style>
-
 </head>
 <body>
     <div class="card">
@@ -149,9 +35,7 @@
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
-                
             </select>
-
             <h3>Gender</h3>
             <label class="gender-label" for="gender"></label>
             <select class="gender-choose" name="gender">
@@ -159,7 +43,6 @@
                 <option value="male">Male</option>
                <option value="other">Other</option>
             </select>
-            
             <h3>Student Phone Code</h3>
             <input type="text" name="phone" id="phone" placeholder="Student Phone no." required />
             <p class="phone-error" id="phoneError">Phone number must be 10 digits.</p>
@@ -187,89 +70,6 @@
                 <i class="fa-solid fa-upload"></i> Upload
             </button>
         </form>
-
-
-        <script>
-            const passwordInput = document.getElementById('password');
-            const lowercaseIndicator = document.getElementById('lowercase').querySelector('span');
-            const uppercaseIndicator = document.getElementById('uppercase').querySelector('span');
-            const digitIndicator = document.getElementById('digit').querySelector('span');
-            const specialIndicator = document.getElementById('special').querySelector('span');
-            const phoneInput = document.getElementById('phone');
-            const phoneInput1 = document.getElementById('phone1');
-            const phoneError = document.getElementById('phoneError');
-            const phoneError1 = document.getElementById('phoneError1');
-            
-
-            passwordInput.addEventListener('input', function() {
-                const value = passwordInput.value;
-                const hasLowercase = /[a-z]/.test(value);
-                const hasUppercase = /[A-Z]/.test(value);
-                const hasDigit = /\d/.test(value);
-                const hasSpecial = /[@$]/.test(value);
-
-                updateIndicator(lowercaseIndicator, hasLowercase);
-                updateIndicator(uppercaseIndicator, hasUppercase);
-                updateIndicator(digitIndicator, hasDigit);
-                updateIndicator(specialIndicator, hasSpecial);
-            });
-
-            function updateIndicator(indicator, isValid) {
-                if (isValid) {
-                    indicator.innerHTML = '&#10004;';
-                    indicator.classList.remove('invalid');
-                    indicator.classList.add('valid'); 
-                } else {
-                    indicator.innerHTML = '&#10060;';
-                    indicator.classList.remove('valid');
-                    indicator.classList.add('invalid');
-                }
-            }
-
-            document.getElementById('studentForm').addEventListener('submit', function(event) {
-                const password = passwordInput.value;
-                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$])[A-Za-z\d@$]{8,}$/;
-
-                if (!passwordRegex.test(password)) {
-                    alert('Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@ or $).');
-                    event.preventDefault();
-                }
-            });
-
-            phoneInput.addEventListener('input', function() {
-                const value = phoneInput.value.trim();
-                if (value.length > 10) {
-                    phoneError.style.display = 'block';
-                } else {
-                    phoneError.style.display = 'none';
-                }
-            });
-
-            phoneInput1.addEventListener('input', function() {
-                const value = phoneInput1.value.trim();
-                if (value.length > 10) {
-                    phoneError1.style.display = 'block';
-                } else {
-                    phoneError1.style.display = 'none';
-                }
-            });
-
-            document.getElementById('studentForm').addEventListener('submit', function(event) {
-                const phone = phoneInput.value.trim();
-                const phone1 = phoneInput1.value.trim();
-                if (phone.length !== 10) {
-                    phoneError.style.display = 'block';
-                    event.preventDefault();
-                }
-                 if (phone1.length !== 10) {
-                    phoneError1.style.display = 'block';
-                    event.preventDefault();
-                }
-            });
-            
-
-        </script>
-
     </div>
 </body>
 </html>
