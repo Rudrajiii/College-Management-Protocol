@@ -4,119 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Students</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            color: white;
-        }
-
-        body {
-            background-color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 20px;
-        }
-
-        .card {
-            background-color: black;
-            border-radius: 10px;
-            padding: 20px;
-            width: 60%;
-            max-width: 800px; /* Increased the width for better spacing */
-            transition: transform 0.3s;
-        }
-
-        h1, h3 {
-            text-align: center;
-        }
-
-        p {
-            margin-bottom: 8px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            background-color: gray;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            color: white;
-        }
-
-        input::placeholder {
-            color: #ccc;
-        }
-
-        #submitBtn {
-            background-color: #2ecc71;
-            cursor: pointer;
-            border: none;
-            font-weight: bolder;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 18px;
-            width: 100%;
-            margin-top: 20px;
-        } 
-
-        #submitBtn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-
-        img {
-            width: 100%;
-            max-width: 200px;
-            display: block;
-            margin: 20px auto;
-            border-radius: 8px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 22px;
-            }
-
-            h3 {
-                font-size: 18px;
-            }
-
-            input, select {
-                font-size: 14px;
-            }
-
-            #submitBtn {
-                font-size: 15px;
-            }
-
-            .card {
-                padding: 15px;
-                width: 90%;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr; /* Make grid single column on small screens */
-            }
-        }
-
-        .parentsPhone, .userPhone, .passwordText {
-            color: rgb(211, 18, 18);
-            font-size: 13px bolder;
-            
-        }
-    </style>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/edit_student.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/edit_student.js') }}" defer></script>
 </head>
 <body>
     <div class="card">
@@ -154,7 +43,6 @@
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
-                        <option value="5">5</option>
                     </select> 
                 </div>
 
@@ -197,98 +85,8 @@
                     <input type="file" name="profile_pic" accept=".jpg, .jpeg, .png" />
                 </div>
             </div>
-            <input id="submitBtn" type="submit" value="Upload" />
-
-           
+            <input id="submitBtn" type="submit" value="Upload" />           
         </form>
     </div>
-
-      <script>
-
-
-
-
-// elements accessing :-
-          const phoneInput = document.getElementById('contact');
-          const phoneError = document.getElementById('phoneBug');
-         
-          const parentsPhone = document.getElementById('parentsContact');
-          const parentsPhoneError = document.getElementById('parentsPhoneBug');
-
-          const userInput = document.getElementById('userInput');
-          const message = document.getElementById('message');
-
-          const passwordInput = document.getElementById('passwordInput');
-          const passwordText = document.querySelector('.passwordText');
-        
-
-          
-
- // encoding functions :-
-
-        // user ph no 
-           phoneInput.addEventListener('input', function(event) {
-            event.preventDefault();
-            const value = phoneInput.value.trim();
-
-            if(value.length === 10) {
-                phoneError.textContent = "Recorded Characters";
-                phoneError.style.color = "green";
-            } else {
-                phoneError.textContent = "Un-Recorded Characters";
-                phoneError.style.color = "red";
-            }
-           })
-
-        // parents ph no   
-           parentsPhone.addEventListener('input', function(event) {
-            event.preventDefault();
-            const value = parentsPhone.value.trim();
-
-            if(value.length === 10) {
-                    parentsPhoneError.textContent = "Recorded Characters";
-                    parentsPhoneError.style.color = "green";
-            } else {               
-                    parentsPhoneError.textContent = "Un-Recorded Characters";
-                    parentsPhoneError.style.color = "red";
-            }
-           })
-
-           // username 
-            userInput.addEventListener('input', function(event) {
-               event.preventDefault();
-
-               const username = userInput.value.trim();
-               const userPattern = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/;
-               
-               if(userPattern.test(username)) {
-                message.textContent = "Username is valid!";
-                message.style.color = "green";
-               } else {
-                message.textContent = "Username is invalid!";
-                message.style.color = "red";
-               }
-            });           
-        
-            // password
-
-             passwordInput.addEventListener('input', function(event) {
-                event.preventDefault();
-
-                const password = passwordInput.value.trim();
-                const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                
-                if(isValidPassword.test(password)) {
-                    passwordText.textContent = "Looks strong!";
-                    passwordText.style.color = "green";
-                } else {
-                    passwordText.textContent = "Please match the below criteria!";
-                    passwordText.style.color = "red";
-                }
-
-             })
-
-      </script>
-
 </body>
 </html>

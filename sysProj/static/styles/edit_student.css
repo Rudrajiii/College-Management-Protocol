@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+body {
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.card {
+    background-color: black;
+    border-radius: 10px;
+    padding: 20px;
+    width: 60%;
+    max-width: 800px; /* Increased the width for better spacing */
+    transition: transform 0.3s;
+}
+
+h1, h3 {
+    text-align: center;
+}
+
+p {
+    margin-bottom: 8px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    background-color: gray;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+}
+
+input::placeholder {
+    color: #ccc;
+}
+
+#submitBtn {
+    background-color: #2ecc71;
+    cursor: pointer;
+    border: none;
+    font-weight: bolder;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 100%;
+    margin-top: 20px;
+} 
+
+#submitBtn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+img {
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    input, select {
+        font-size: 14px;
+    }
+
+    #submitBtn {
+        font-size: 15px;
+    }
+
+    .card {
+        padding: 15px;
+        width: 90%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr; /* Make grid single column on small screens */
+    }
+}
+
+.parentsPhone, .userPhone, .passwordText {
+    color: rgb(211, 18, 18);
+    font-size: 13px bolder;
+    
+}
