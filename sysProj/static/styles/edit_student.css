@@ -7,7 +7,6 @@
 }
 
 body {
-    background-color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,20 +15,26 @@ body {
 }
 
 .card {
-    background-color: black;
+    background-color: rgb(236, 234, 234);
     border-radius: 10px;
     padding: 20px;
     width: 60%;
     max-width: 800px; /* Increased the width for better spacing */
     transition: transform 0.3s;
+    box-shadow: 7px 7px 15px #45566754,
+    -8px -8px 15px rgb(81 101 121 / 35%),
+    inset -5px -4px 13px 0px rgb(81 101  121 / 35%),
+    inset 6px 7px 12px 0px rgb(255 255 255 / 94%);
 }
 
-h1, h3 {
+h1, h3 , #dash{
     text-align: center;
+    color: #6B686A;
 }
 
 p {
     margin-bottom: 8px;
+    color: #6B686A;
 }
 
 input, select {
@@ -40,6 +45,7 @@ input, select {
     border-radius: 8px;
     font-size: 16px;
     color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
 
 input::placeholder {

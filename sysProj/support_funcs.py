@@ -3,7 +3,7 @@ from db_config import *
 def delete_expired_documents():
     current_time = datetime.now()
     result = temporary_application_queue.delete_many({'deleted_at': {'$lte': current_time}})
-    if result.deleted_count > 0:
+    if result.deleted_count > 0:            
         print(f"Deleted {result.deleted_count} expired document(s)")
 
 def update_temporary_queue():

@@ -2,7 +2,7 @@ import csv
 import random
 def read_csv(your_csv_file):
     with open(your_csv_file, "r") as csv_reader:
-        csv_file = csv.DictReader(csv_reader)
+        csv_file = csv.DictReader(csv_reader)  
         data = [row for row in csv_file]
     return data
 

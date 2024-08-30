@@ -740,9 +740,9 @@ def access_data():
     return jsonify(student_data)
 
 #* -----------------------------------------------------------------
-# todo Notification Section Where admin will able too see the all
-# todo necessary notifications releated to teacher applications.
-#* ------------------------------------------------------------------
+# todo Notification Section Where admin will able too see the all.
+# todo necessary notifications releated to teacher applications.  
+#* -----------------------------------------------------------------
 
 @app.route("/view_all_notifications" , methods=["GET", "POST"])
 def view_all_notifications():
@@ -812,8 +812,19 @@ def delete_notification(application_id):
 
 
 #? Till done!!
+#? Start Now
 @app.route("/update_status/<application_id>", methods=["PUT"])
 def update_status(application_id):
+    """
+    when a teacher apply for a leave application
+    then the first status that is shown in teacher dashboard is
+    "pending".
+    but as soon as admin give the response in that 
+    application either in form of accept or reject
+    status get changed in that way.
+    and this route is performing this operation.
+    
+    """
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
@@ -882,6 +893,11 @@ def update_status(application_id):
 #EMAIL FEATURE
 @app.route("/send_email/<application_id>", methods=["POST"])
 def send_email(application_id):
+    """
+    made for sending emails to teachers and students
+
+    """
+
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
 
@@ -906,6 +922,11 @@ def send_email(application_id):
 
 @app.route('/submit_application' , methods=['POST'])
 def submit_application():
+    """
+    made for the leave application submissions
+    for teachers.
+
+    """
     if 'username' not in session or session['role'] != 'teacher':
         return redirect(url_for('teacher_login'))
     try:
@@ -1023,4 +1044,3 @@ if __name__ == "__main__":
     socketio.run(app , debug = True)
     modified_csv_data()
     test('Rudra')
-

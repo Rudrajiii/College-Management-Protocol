@@ -7,11 +7,13 @@
     <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/edit_student.css')}}">
     <script src="{{ url_for('static', filename='javascripts/edit_student.js') }}" defer></script>
 </head>
-<body>
+<body> 
     <div class="card">
         <h1>Student Records</h1>
         <br>
         <h3>Please edit the required fields only</h3>
+        <br>
+        <p style="text-align: center;"><a id="dash" style="text-decoration: none;" href="/admin_dashboard">Move to dashboard</a></p>
         <br>
         <form method="post" action="/edit_student" enctype="multipart/form-data">
             <div class="form-grid">
@@ -35,8 +37,6 @@
                 </div>
                 <div>
                     <p>year</p>
-                    <!-- <input type="number" name="year" placeholder="Student Year" required="yes" value="{{student_record['academic_year']}}" /> -->
-                
                      <select name="year">
                         <option value="{{student_record['academic_year']}}">{{student_record['academic_year']}}</option>
                         <option value="1">1</option>
