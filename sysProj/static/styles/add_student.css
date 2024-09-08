@@ -1,11 +1,12 @@
-* {
+
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    background-color: #333;
+    background-color: white;
     font-family: sans-serif;
     margin: 0;
     padding: 0;
@@ -16,27 +17,39 @@ body {
 }
 
 .card {
-    max-width: 500px;
+    max-width: 900px;
     width: 90%;
-    background-color: black;
+    background-color: rgb(236, 234, 234);
     border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 7px 7px 15px #45566754,
+    -8px -8px 15px rgb(81 101 121 / 35%),
+    inset -5px -4px 13px 0px rgb(81 101 121 / 35%),
+    inset 6px 7px 12px 0px rgb(255 255 255 / 94%);
     padding: 20px;
+    color: #6B686A;
     box-sizing: border-box;
-    color: white;
-    overflow-y: auto;
-    max-height: 90vh;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-column, .right-column {
+    width: 48%; 
 }
 
 .card h1 {
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;
+    color: #6B686A;
 }
 
 .card h3 {
     margin: 10px 0 5px;
     font-size: 14px;
+    color: #6B686A;
 }
 
 .card input,
@@ -48,6 +61,8 @@ body {
     border-radius: 5px;
     border: none;
     box-sizing: border-box;
+    background-color: #6B686A;
+    color: white;
 }
 
 .card button {
@@ -64,16 +79,6 @@ body {
     margin-right: 5px;
 }
 
-@media (max-width: 600px) {
-    .card h1 {
-        font-size: 20px;
-    }
-
-    .card h3 {
-        font-size: 12px;
-    }
-}  
-
 .case {
     font-size: 13px;
     display: flex;
@@ -82,29 +87,23 @@ body {
 
 .case span {
     margin-left: 10px;
-    color: gray; /* Neutral color */
-}
-
-.valid {
-    color: #4caf50; /* Green color */
-}
-
-.invalid {
-    color: #f44336; /* Red color */
-}
-
-.gender-choose {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.gender-label {
-    font-weight: bolder;
+    color: gray;
 }
 
 .phone-error {
-    color: #f44336; /* Red color */
+    color: #f44336;
     font-size: 13px;
     margin-top: 5px;
     display: none;
+}
+
+
+@media (max-width: 600px) {
+    .form-container {
+        flex-direction: column;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+    }
 }
