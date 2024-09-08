@@ -919,7 +919,6 @@ def send_email(application_id):
     except smtplib.SMTPException as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-
 @app.route('/submit_application' , methods=['POST'])
 def submit_application():
     """
@@ -989,7 +988,6 @@ def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
     return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
-
 
 @app.route("/exam" , methods=["GET", "POST"])
 def exam():
