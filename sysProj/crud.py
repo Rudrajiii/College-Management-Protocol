@@ -594,10 +594,9 @@ def add_student():
         filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
         file.save(filename)
         x = add_student_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-        if x == 1:
-            return f'''<h1>student Record Successfully added!!</h1>'''
-        else:
-            return f'''<h1>Enrollment No. is already present in database!!</h1>'''
+        
+        return render_template('admin_dashboard.html' , result = x)
+    
     return render_template('add_student.html')
 
 
