@@ -8,68 +8,76 @@
     <script src="{{ url_for('static', filename='javascripts/add_student.js') }}" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
+   <style>
+       
+   </style>
+   
 <body>
     <div class="card">
-        <h1>Credentials</h1>
+        <h1>Student Registration</h1>
         <form id="studentForm" method="post" action="/add_student" enctype="multipart/form-data">
-            <h3>Enrollment number</h3>
-            <input type="text" name="enrollment" placeholder="Enter Enrollment Number" required />
-            
-            <h3>Student Email</h3>
-            <input type="email" name="email" placeholder="Student Email" required />
-            
-            <h3>Student Username</h3>
-            <input type="text" name="username" placeholder="Student Username" required />
-            
-            <h3>Password</h3>
-            <input type="text" name="password" id="password" placeholder="Enter Password" required />
-            <p class="case" id="lowercase">Must contain a lowercase letter<span></span></p>
-            <p class="case" id="uppercase">Must contain an uppercase letter<span></span></p>
-            <p class="case" id="digit">Must contain a digit<span></span></p>
-            <p class="case" id="special">Must contain a special character (@, $)<span></span></p>
-            
-            <h3>Student Year</h3>
-            <label class="grade-label" for="year"></label>
-            <select class="grade-choose" name="year">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-            <h3>Gender</h3>
-            <label class="gender-label" for="gender"></label>
-            <select class="gender-choose" name="gender">
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-               <option value="other">Other</option>
-            </select>
-            <h3>Student Phone Code</h3>
-            <input type="text" name="phone" id="phone" placeholder="Student Phone no." required />
-            <p class="phone-error" id="phoneError">Phone number must be 10 digits.</p>
-            
-            <h3>Enter Branch</h3>
-            <input type="text" name="branch" placeholder="Enter branch" required />
-            
-            <h3>DOB</h3>
-            <input type="date" name="dob" placeholder="Student date of birth" required />
-            
-            <h3>Parent's Name</h3>
-            <input type="text" name="parent_name" placeholder="Parents Name" required />
-            
-            <h3>Parent's No.</h3>
-            <input type="text" name="parent_no" id="phone1" placeholder="Parents No." required />    
-            <p class="phone-error" id="phoneError1">Phone number must be 10 digits.</p>               
+            <div class="form-container">
+                <div class="left-column">
+                    <h3>Enrollment number</h3>
+                    <input type="text" name="enrollment" required />
 
-            <h3>Address</h3>
-            <input type="text" name="address" placeholder="Enter Current address" required />
-            
-            <h3>Select Student profile pic</h3>
-            <input type="file" name="profile_pic" required accept=".jpg, .jpeg, .png" />
-            
+                    <h3>Student Username</h3>
+                    <input type="text" name="username" required />
+
+                    <h3>Password</h3>
+                    <input type="password" name="password" id="password" required />
+                    <p class="case" id="lowercase">Must contain a lowercase letter<span></span></p>
+
+                    <h3>Student Year</h3>
+                    <select name="year">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <h3>Gender</h3>
+                    <select name="gender">
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <h3>Phone Code</h3>
+                    <input type="text" name="phone" id="phone" required />
+                </div>
+
+                <div class="right-column">
+                    <h3>Student Email</h3>
+                    <input type="email" name="email" required />
+
+                    <h3>Enter Branch</h3>
+                    <input type="text" name="branch" required />
+
+                    <h3>DOB</h3>
+                    <input type="date" name="dob" required />
+
+                    <h3>Parent's Name</h3>
+                    <input type="text" name="parent_name" required />
+
+                    <h3>Parent's No.</h3>
+                    <input type="text" name="parent_no" id="phone1" required />
+
+                    <h3>Address</h3>
+                    <input type="text" name="address" required />
+                    
+                    <h3>Select Student profile pic</h3>
+                    <input type="file" name="profile_pic" required accept=".jpg, .jpeg, .png" />
+                </div>
+            </div>
             <button type="submit">
                 <i class="fa-solid fa-upload"></i> Upload
             </button>
         </form>
     </div>
 </body>
+
+
+
 </html>
