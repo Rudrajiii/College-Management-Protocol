@@ -27,7 +27,10 @@
 
                     <h3>Password</h3>
                     <input type="password" name="password" id="password" required />
-                    <p class="case" id="lowercase">Must contain a lowercase letter<span></span></p>
+                    <p class="case" id="lowercase">Must contain a lowercase letter <span></span></p>
+                    <p class="case" id="uppercase">Must contain an uppercase letter <span></span></p>
+                    <p class="case" id="digit">Must contain a digit <span></span></p>
+                    <p class="case" id="special">Must contain a special character (@ or $) <span></span></p>
 
                     <h3>Student Year</h3>
                     <select name="year">
@@ -45,7 +48,8 @@
                     </select>
 
                     <h3>Phone Code</h3>
-                    <input type="text" name="phone" id="phone" required />
+                    <input type="text" name="phone" id="phone" pattern="\d{10}" title="Please enter a valid 10-digit phone number" required />
+                    <p id="phoneError" style="display:none; color:red;">Phone number must be exactly 10 digits</p>
                 </div>
 
                 <div class="right-column">
@@ -62,8 +66,9 @@
                     <input type="text" name="parent_name" required />
 
                     <h3>Parent's No.</h3>
-                    <input type="text" name="parent_no" id="phone1" required />
-
+                    <input type="text" name="parent_no" id="phone1" pattern="\d{10}" title="Please enter a valid 10-digit phone number" required />
+                    <p id="phoneError1" style="display:none; color:red;">Phone number must be exactly 10 digits</p>
+                    
                     <h3>Address</h3>
                     <input type="text" name="address" required />
                     
