@@ -26,13 +26,6 @@ import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 import uuid
 
-class DataStore():
-    a = None
-    b = None
-    c = None
-
-data = DataStore()
-
 
 app = Flask(__name__)
 CORS(app)
@@ -594,8 +587,8 @@ def add_student():
         filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
         file.save(filename)
         x = add_student_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-        
-        return render_template('admin_dashboard.html' , result = x)
+        flash(f"{x}")  # Flash success message
+        return redirect(url_for('admin_dashboard'))
     
     return render_template('add_student.html')
 
