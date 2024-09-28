@@ -22,9 +22,17 @@
       function showNotification(message) {
           if (message == "1") {
             console.log("Success");
+            document.getElementsByClassName("pussy")[0].style.display = 'block';
+            const myTimeout = setTimeout(hidenotification, 5000);
           } else {
             console.log("failure");
+            document.getElementsByClassName("laura")[0].style.display = 'block';
+            const myTimeout = setTimeout(hidenotification, 5000);
           }
+      }
+      function hidenotification() {
+        document.getElementsByClassName("pussy")[0].style.display = 'none';
+        document.getElementsByClassName("laura")[0].style.display = 'none';
       }
   </script>
 </head>
@@ -40,6 +48,12 @@
     }
 </style>
 <body>
+  <div class="alert alert-success pussy" style="display: none;">
+    <strong>Success!</strong> Indicates a SEXY or PUSSY action.
+  </div>
+  <div class="alert alert-danger laura" style="display: none;">
+    <strong>Danger!</strong> Indicates a BAAL or LAURA action.
+  </div>
   <svg id="svg" >
     <symbol id="logo" viewBox="0 0 140 59">
       <g>
