@@ -40,13 +40,9 @@ fetch("/access_data")
       options: {
         responsive: false, 
         scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true,
-              },
-            },
-          ],
+          y: {
+            beginAtZero: true
+        },
         },
         plugins: {
           legend: {

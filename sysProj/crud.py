@@ -233,7 +233,6 @@ def student_login():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
-
     if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
         return redirect(url_for('admin_login'))
     total_student_count = count_students()

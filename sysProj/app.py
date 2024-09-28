@@ -419,9 +419,9 @@ def add_student():
         file.save(filename)
         x = add_student_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
         if x == 1:
-            return f'''<h1>student Record Successfully added!!</h1>'''
+            return jsonify({'status': 'success', 'message': '✅ Student record successfully added!'})
         else:
-            return f'''<h1>Enrollment No. is already present in database!!</h1>'''
+            return jsonify({'status': 'error', 'message': '⚠️ Enrollment No. is already present in the database.'})
     return render_template('add_student.html')
 
 #? Route to put all details about students for admins
