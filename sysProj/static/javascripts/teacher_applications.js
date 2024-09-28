@@ -115,8 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
           alertDiv.remove();
         }, 3000);
       }
-
-
-  });
+});
 
 
