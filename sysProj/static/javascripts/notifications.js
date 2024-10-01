@@ -8,8 +8,8 @@ window.addEventListener('DOMContentLoaded', function() {
     if (toastMessage) {
         showToast(toastMessage, toastType);
         // Clear the message from sessionStorage after showing
-        // sessionStorage.removeItem('toastMessage');
-        // sessionStorage.removeItem('toastType');
+        sessionStorage.removeItem('toastMessage');
+        sessionStorage.removeItem('toastType');
     }
 });
 
