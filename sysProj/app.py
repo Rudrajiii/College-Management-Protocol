@@ -285,7 +285,7 @@ def register_a_staff():
         }
         res = collection.insert_one(teacher)
         print(res)
-        return 'Success'
+        return jsonify({'status': 'success', 'message': '✅ Teacher records added successfully!'})
 
     return render_template('register_a_staff.html')
 
@@ -383,7 +383,7 @@ def update_a_staff():
             
             flash('Staff ID not provided.', 'error')
 
-        return 'updated'  # Redirect to an appropriate route
+        return jsonify({'status': 'success', 'message': '✅ Staff records successfully updated!'})  # Redirect to an appropriate route
 
     return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
 
@@ -436,7 +436,7 @@ def manage_student():
             # y contains 0 if no student found with that no. or if found it contains profile_pic name
             y = remove_student_db(enrollment_no)
             if y == 0:
-                return f'''<h1>Student not found to be Removed</h1>'''
+                return jsonify({'status': 'error', 'message': '⚠️ Student not found.'})
             else:
                 # Specify the path to the image file
                 filename = os.path.join(app.config['UPLOAD_DIR'], y)
@@ -445,13 +445,13 @@ def manage_student():
                 try:
                     os.remove(filename)
                 except FileNotFoundError:
-                    return f'''<h1>Image File of student not found</h1>'''
-                return f'''<h1>Student removed successfully</h1>'''
+                    return jsonify({'status': 'error', 'message': '⚠️ Image file of student not found.'})
+                return jsonify({'status': 'success', 'message': '✅ Student removed successfully!'})
         if val == "edit":
             # y contains 0 if no student found with that enroll no. else it contains the record of student
             y = edit_student_get_db(enrollment_no)
             if y == 0:
-                return f'''<h1>Student not found to be edited</h1>'''
+                return jsonify({'status': 'error', 'message': '⚠️ student not found to edit.'})
             else:
                 # student_record variable is considered as global to use it in edit route functions
                 global student_record
@@ -481,7 +481,7 @@ def edit_student():
         if file.filename == '':
             profile_pic_location = student_record['profile_pic']
             edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-            return f'''<h1>Student record Successfully edited</h1>'''
+            return jsonify({'status': 'success', 'message': '✅ Student records successfully edited!'})
         else:
             # Specify the path to the image file
             filename = os.path.join(app.config['UPLOAD_DIR'], student_record['profile_pic'])
@@ -490,16 +490,16 @@ def edit_student():
             try:
                 os.remove(filename)
             except FileNotFoundError:
-                return f'''<h1>Image File of student not found</h1>'''
+                return jsonify({'status': 'error', 'message': '⚠️ Image file of student not found.'})
             file_extension = os.path.splitext(file.filename)[1].lower()
             if file_extension not in [".png" , ".jpg" , ".jpeg"]:
-                return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
+                return jsonify({'status': 'error', 'message': '⚠️ student image file is not jpg , jpeg or png.'})
             profile_pic_location = student_record['enrollment_no'] + file_extension
             # Save the uploaded image file to the static folder
             filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
             file.save(filename)
             edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-            return f'''<h1>Student record updated with Updated pic</h1>'''
+            return jsonify({'status': 'success', 'message': '✅ Student records successfully edited!'})
     return render_template('edit_student.html' , student_record = student_record)
 
 
@@ -521,10 +521,10 @@ def announcement():
         recipient = recipient + " " + student_year
         print(recipient)
         if message == "" or set_time == "" or student_year == "":
-            return f'''<h1>Input fields are empty</h1>'''
+            return jsonify({'status': 'error', 'message': '⚠️ input fields are empty.'})
         else:
             announcement_db(recipient,message,set_time)
-    return f'''<h1>Message recorded sucessfully</h1>'''
+    return jsonify({'status': 'success', 'message': '✅ Message recorded successfully!'})
 
 # --------------------------------------------------
 #* Route function of teacher login

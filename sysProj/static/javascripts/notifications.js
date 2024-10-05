@@ -29,7 +29,7 @@ function showToast(message, type) {
         successToast.style.display = 'none'; 
     }
 
-    // Display for 5 seconds
+    // Display for 7 seconds
     setTimeout(() => {
         if (type === 'success') {
             successToast.style.display = 'none'; 
@@ -38,5 +38,5 @@ function showToast(message, type) {
             failureToast.style.display = 'none'; 
             console.log('Hiding the failure toast...');
         }
-    }, 5000); 
+    }, 7000); 
 }
