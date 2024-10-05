@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.inner-card {
+    margin-top: 20px;
+}
+
+.manageform {
+    width: 100%;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    width: 48%;
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #fff;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.remove {
+    background-color: #95a5a6; 
+}
+
+.edit {
+    background-color: #2ecc71; 
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 22px;
+    }
+    input[type="text"] {
+        font-size: 14px;
+    }
+    button {
+        width: 100%;
+        margin: 10px 0;
+        font-size: 14px;
+    }
+}
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+.flashes li {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+.flashes li.success {
+    background-color: #D1E7DD;
+    color:#3B6250;
+}
+.flashes li.error {
+    background-color: #F8D7DA;
+    color:#58151C;
+}
+.flashes li.warning {
+    background-color: #ffc107; 
+}

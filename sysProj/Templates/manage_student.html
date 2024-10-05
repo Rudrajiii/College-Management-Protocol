@@ -4,131 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Student</title>
-
-    <style>
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
-
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-
-        .inner-card {
-            margin-top: 20px;
-        }
-
-        .manageform {
-            width: 100%;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        button {
-            width: 48%;
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .remove {
-            background-color: #95a5a6; 
-        }
-
-        .edit {
-            background-color: #2ecc71; 
-        }
-
-        button:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-
-       
-        @media (max-width: 768px) {
-            .card {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            input[type="text"] {
-                font-size: 14px;
-            }
-
-            button {
-                width: 100%;
-                margin: 10px 0;
-                font-size: 14px;
-            }
-        }
-
-        
-    </style>
+    <script src="{{ url_for('static', filename='javascripts/manage_notification.js') }}" defer></script>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/manage_student.css')}}">
 </head>
 <body>
-
     <div class="card">
         <h1>Manage Student</h1>
+        <p style="text-align: center;"><a id="dash" style="text-decoration: none;" href="/admin_dashboard">Move to dashboard</a></p>
+        <!-- Displaying Flash Messages -->
+        <div id="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
         <div class="inner-card">
-
             <div class="manageform">
-                <form method="post" action="/manage_student">
-                    <input class="fr1" type="text" name="enrollment" placeholder="Enrollment ID" required />
-
+                <form id="manageForm" method="post" action="/manage_student" enctype="multipart/form-data">
+                    <input class="fr1" type="text" id="enrollment" name="enrollment" placeholder="Enrollment ID" required />
                     <div class="fr2">
-                        <button type="submit" class="remove" value="remove" name="button">Remove</button>
+                        <button id="remove-student" type="submit" class="remove" value="remove" name="button">Remove</button>
                     </div>
-
                     <div class="fr3">
-                        <button type="submit" class="edit" name="button" value="edit">Edit</button>
+                        <button id="edit-student" type="submit" class="edit" name="button" value="edit">Edit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="" class="Js.file"></script>
 
 </body>
 </html>

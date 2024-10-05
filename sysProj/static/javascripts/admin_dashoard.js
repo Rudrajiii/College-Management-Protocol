@@ -18,9 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('DOMContentLoaded', function() {
           const toastMessage = sessionStorage.getItem('toastMessage');
           const toastType = sessionStorage.getItem('toastType');
+
   
           console.log('Toast message retrieved:', toastMessage);
           console.log('Toast type retrieved:', toastType);
+
   
           if (toastMessage) {
               showToast(toastMessage, toastType);
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
               failureToast.style.display = 'block'; 
               successToast.style.display = 'none'; 
           }
-  
+
           // Display for 5 seconds
           setTimeout(() => {
               if (type === 'success') {

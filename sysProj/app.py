@@ -296,6 +296,9 @@ def update_a_staff():
     by this func admin will able to update 
     existing infomations about a stuff
     """
+    #clear previous flash msgs
+    get_flashed_messages()
+
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     staff_id = request.args.get('id')
@@ -387,7 +390,6 @@ def update_a_staff():
 
     return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
 
-
 #* All Routes for all student controlled by the admin
 #? Route to register a new student in DB
 @app.route('/add_student', methods=['POST' , 'GET'])
@@ -424,40 +426,43 @@ def add_student():
     return render_template('add_student.html')
 
 #? Route to put all details about students for admins
-@app.route('/manage_student', methods=['POST' , 'GET'])
+@app.route('/manage_student', methods=['POST', 'GET'])
 def manage_student():
+    #clear the previous flash msgs
+    # get_flashed_messages()
+
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
-    if(request.method == 'POST'):
+    if request.method == 'POST':
         enrollment_no = request.form.get('enrollment')
         val = request.form.get('button')
+        
         if val == "remove":
-            # y contains 0 if no student found with that no. or if found it contains profile_pic name
             y = remove_student_db(enrollment_no)
             if y == 0:
-                return jsonify({'status': 'error', 'message': '⚠️ Student not found.'})
+                flash('⚠️ Student not found.', 'error')  
             else:
-                # Specify the path to the image file
-                filename = os.path.join(app.config['UPLOAD_DIR'], y)
-
-                # Remove the file
                 try:
+                    filename = os.path.join(app.config['UPLOAD_DIR'], y)
                     os.remove(filename)
+                    flash('✅ Student removed successfully!', 'success')  
                 except FileNotFoundError:
-                    return jsonify({'status': 'error', 'message': '⚠️ Image file of student not found.'})
-                return jsonify({'status': 'success', 'message': '✅ Student removed successfully!'})
+                    flash('⚠️ Image file of student not found.', 'error')  #! Image file of student not found.
+        
         if val == "edit":
-            # y contains 0 if no student found with that enroll no. else it contains the record of student
             y = edit_student_get_db(enrollment_no)
             if y == 0:
-                return jsonify({'status': 'error', 'message': '⚠️ student not found to edit.'})
+                flash('⚠️ Student not found to edit.', 'error')  
             else:
-                # student_record variable is considered as global to use it in edit route functions
                 global student_record
                 student_record = y
-                return redirect(url_for('edit_student'))
+                return redirect(url_for('edit_student', enrollment=enrollment_no))
+            
+            return redirect(url_for('manage_student'))  
+
     return render_template('manage_student.html')
+
 
 #? Route to edit any existing informations of a student
 @app.route('/edit_student', methods=['POST' , 'GET'])
