@@ -1,6 +1,6 @@
 # College Management Ecosystem -2.0
-------------------------------------
-## Overview
+-----------------------------------
+## Overview 
 This project is a web-based student management system designed to streamline various administrative tasks for a college. It leverages a combination of HTML, CSS, JavaScript, Flask, and MongoDB to provide a robust and interactive user experience.
 
 ## Features
@@ -39,8 +39,6 @@ This project is a web-based student management system designed to streamline var
     source venv/bin/activate   # On Windows, use `venv\Scripts\activate`
     ```
 
-
-
 3. **Set Up MongoDB**
     - Ensure MongoDB is installed and running.
     - Update the MongoDB connection string in the Flask app configuration if necessary.
@@ -52,7 +50,6 @@ This project is a web-based student management system designed to streamline var
 5. **Access the Application**
     Open your web browser and go to `http://127.0.0.1:5000`.
 
-## Project Structure
 ## Project Structure
 **Features**
 - Admin Dashboard
@@ -71,10 +68,6 @@ The data flow diagram illustrates how student data is managed within the system,
 Notifications are handled using WebSockets for real-time updates. This feature is crucial for applications like teacher leave requests, ensuring that administrators and teachers are promptly informed of any changes.
 ![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171534.png?raw=true)
 
-
-
 **Teacher Applications**
 The system processes teacher applications in real-time, with features to accept, reject, and send emails using Flask-Mail. Administrators can also clear notifications once actions are taken.
 ![DB Structure](https://github.com/Rudrajiii/student_management_app2.0/blob/main/config/Screenshot%202024-06-23%20171621.png?raw=true)
-
-

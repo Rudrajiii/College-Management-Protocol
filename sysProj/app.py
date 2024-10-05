@@ -295,7 +295,6 @@ def update_a_staff():
     """
     by this func admin will able to update 
     existing infomations about a stuff
-
     """
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
