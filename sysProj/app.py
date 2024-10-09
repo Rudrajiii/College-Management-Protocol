@@ -285,8 +285,9 @@ def register_a_staff():
         }
         res = collection.insert_one(teacher)
         print(res)
-        return jsonify({'status': 'success', 'message': '✅ Teacher records added successfully!'})
-
+        flash('✅ Teacher records added successfully!' , 'success')
+        return redirect(url_for('admin_dashboard'))
+    
     return render_template('register_a_staff.html')
 
 #? Route function to update the information of registered teacher
@@ -386,8 +387,8 @@ def update_a_staff():
             
             flash('Staff ID not provided.', 'error')
 
-        return jsonify({'status': 'success', 'message': '✅ Staff records successfully updated!'})  # Redirect to an appropriate route
-
+        flash('✅ Staff records successfully updated!' , 'success')  # Redirect to an appropriate route
+        return redirect(url_for('admin_dashboard'))
     return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
 
 #* All Routes for all student controlled by the admin
@@ -486,7 +487,8 @@ def edit_student():
         if file.filename == '':
             profile_pic_location = student_record['profile_pic']
             edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-            return jsonify({'status': 'success', 'message': '✅ Student records successfully edited!'})
+            flash('✅ Student records successfully edited!' , 'success')                #success on edit student record
+            return redirect(url_for('admin_dashboard'))
         else:
             # Specify the path to the image file
             filename = os.path.join(app.config['UPLOAD_DIR'], student_record['profile_pic'])
@@ -495,16 +497,19 @@ def edit_student():
             try:
                 os.remove(filename)
             except FileNotFoundError:
-                return jsonify({'status': 'error', 'message': '⚠️ Image file of student not found.'})
+                flash('⚠️ Image file of student not found.' , 'error')
+                return redirect(url_for('admin_dashboard'))
             file_extension = os.path.splitext(file.filename)[1].lower()
             if file_extension not in [".png" , ".jpg" , ".jpeg"]:
-                return jsonify({'status': 'error', 'message': '⚠️ student image file is not jpg , jpeg or png.'})
+                flash('⚠️ student image file is not jpg , jpeg or png.' , 'error')
+                return redirect(url_for('admin_dashboard'))
             profile_pic_location = student_record['enrollment_no'] + file_extension
             # Save the uploaded image file to the static folder
             filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
             file.save(filename)
             edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-            return jsonify({'status': 'success', 'message': '✅ Student records successfully edited!'})
+            flash('✅ Student records successfully edited!' , 'success')                #success on edit student record
+            return redirect(url_for('admin_dashboard'))
     return render_template('edit_student.html' , student_record = student_record)
 
 
@@ -526,11 +531,12 @@ def announcement():
         recipient = recipient + " " + student_year
         print(recipient)
         if message == "" or set_time == "" or student_year == "":
-            return jsonify({'status': 'error', 'message': '⚠️ input fields are empty.'})
+            flash('⚠️ input fields are empty.' , 'error')
         else:
             announcement_db(recipient,message,set_time)
-    return jsonify({'status': 'success', 'message': '✅ Message recorded successfully!'})
-
+            flash('✅ Message recorded successfully!' , 'success')
+        return redirect(url_for('admin_dashboard'))
+    
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
