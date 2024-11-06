@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College_Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="exam_scheduler.css">
+</head>
+<body>
+    <h1>Exam Scheduler</h1>
+
+    <div class="modal" id="addExamModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <form id="examForm">
+                <div class="form-group">
+                    <label for="examName">Exam Name:</label>
+                    <input type="text" id="examName" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentYear">Student Year:</label>
+                    <input type="number" id="studentYear" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentBranch">Student Branch:</label>
+                    <input type="text" id="studentBranch" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="examDate">Exam Date:</label>
+                    <input type="date" id="examDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Start Time:</label>
+                    <input type="time" id="startTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="endTime">End Time:</label>
+                    <input type="time" id="endTime" required>
+                </div>
+                <button type="button" id="formActionBtn" class="add-data-btn" onclick="addExam()">Add Exam</button>
+            </form>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Exam Name</th>
+                <th>Student Year</th>
+                <th>Student Branch</th>
+                <th>Subject</th>
+                <th>Exam Date</th>
+                <th>Time</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="examTableBody"></tbody>
+    </table>
+    <button class="add-data-btn" onclick="openModal()">Add Exam</button>
+
+    <div class="toggle-container">
+        <label class="switch">
+            <input type="checkbox" onchange="toggleTheme()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <script src="exam_scheduler.js"></script>
+</body>
+</html>
