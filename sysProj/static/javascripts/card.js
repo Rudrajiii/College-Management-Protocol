@@ -1,15 +1,3 @@
-// Sample data
-// const cardData = {
-//     imgSrc: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTY0Mzk4NjU1Mw&ixlib=rb-1.2.1&q=80&w=200",
-//     name: "David Grant",
-//     skill: "3D artist",
-//     rating: "4.7 Rating",
-//     reviews: "4,447 Reviews",
-//     students: "478 Students",
-//     description: "john_doe is a passionate elementary school teacher dedicated to fostering a nurturing and stimulating classroom environment. With over eight years of experience, she excels in creating engaging lesson plans that cater to diverse learning styles. Her commitment to student growth is evident in her interactive teaching methods and personalized approach to education."
-// };
-
-// Function to create a user card
 // Function to create a user card
 function createUserCard(data) {
     const card = document.createElement('div');
