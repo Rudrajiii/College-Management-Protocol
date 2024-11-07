@@ -16,11 +16,20 @@ data.py -> Decorator Functions
 Main -> 
 crud.py
 functions.py
+---------------------------
+app.py --> all routes
 
-app.py --> all routes 
 admin_function.py
 teacher_function.py
 students_function.py
+support_func.py
+
+
+graphical_analysis.py
+payment_gateway.py
+sentiment_analysis.py
+
+test_func.py
 
 
 

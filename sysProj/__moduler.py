@@ -97,67 +97,39 @@ def index():
 # -------------------------------------------------------
 
 #? admin login route
-@app.route('/admin_login', methods = ['POST', 'GET'])
+@app.route('/admin_login', methods=['POST', 'GET'])
 def admin_login():
-    print("Admin login function called") 
-    if(request.method == 'POST'):
-        start_time = time()  # Record the start time
+    print("Admin login function called")
+    if request.method == 'POST':
+        start_time = time()
 
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
         password = request.form.get('password')
 
+        #*log the admin in and get the user profile
+        user_profile = login_admin(username, password, enrollment_no, cache)
 
-        # Check if admin's info is in the cache and not expired
-        user_profile = cache.get(username)
-
-        
         if user_profile is None:
-            # Fetch admin's info from MongoDB if not found in cache or expired
-            user_profile = user_cache.get_user(username)
-            # Cache the admin's info
-            cache.set(username, user_profile, timeout=300)
-            print(f"Admin's info fetched from MongoDB: {user_profile}")
-        else:
-            # Debug message: Data fetched from cache
-            print(f"Admin's info fetched from cache: {user_profile}")
+            flash('Invalid username, enrollment number, or password. Please try again. __moduler', 'error')
+            return redirect(url_for('admin_login'))
 
-        var1 =  admin_login_db(enrollment_no,username,password)
-        # user_profile = get_user(username)
-        # user_profile = test(username)
-        if user_profile is None:
-                flash('Invalid username. Please try again.', 'error')
-                return redirect(url_for('admin_login'))
+        #* Set session data for the logged-in user
+        set_session_data(user_profile)
 
-        # print(test(username))
-        print(count_students())
-        print(count_teachers())
-        check = user_profile['profilepic']
-        print("Profile pic value:", check)
-        session['username'] = user_profile['username']
-        session['password'] = user_profile['password']
-        session['enrollment_no'] = user_profile['enrollment_no']
-        session['profilepic'] = user_profile['profilepic']
-        if check != 'None' :
-            session['profilepic'] = user_profile['profilepic']
-        else:
-            session['profilepic'] = 'https://github.com/Rudrajiii/Recipe-App/blob/main/public/images/uploads/default.jpg?raw=true'
-
-
-        if var1:
-            session['username'] = username
-            session['role'] = 'admin'
-
-            loading_time = time() - start_time
-            delay = max(0, loading_time) 
-            print(delay)
-            session['delay'] = delay
-            return redirect(url_for('admin_dashboard'))
-        else:
-            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
-            return redirect(url_for('admin_login'))    #if the username or password does not matches 
+        #* Fetch dashboard data (e.g., student and teacher count)
+        student_count, teacher_count = fetch_dashboard_data()
         
-    return render_template("admin_login.html" , delay=session.get('delay', 0))
+        #* Calculate loading time
+        delay = get_loading_time(start_time)
+        session['delay'] = delay
+        
+        print(f"Students: {student_count}, Teachers: {teacher_count}")
+        
+        #* Redirect to admin dashboard after successful login
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template("admin_login.html", delay=session.get('delay', 0))
 
 #? admin dashboard route
 @app.route('/admin_dashboard')
