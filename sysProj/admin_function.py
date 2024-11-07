@@ -52,3 +52,7 @@ def get_loading_time(start_time):
 def fetch_dashboard_data():
     """Fetch and return dashboard-related data."""
     return count_students(), count_teachers()
+
+def get_session_data():
+    """Get the session data items."""
+    return session['username'] , session['password'] , session['enrollment_no'] , session['profilepic'] , session['role']

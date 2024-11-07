@@ -30,6 +30,7 @@ from caching import user_cache
 from admin_function import *
 from graphical_analysis import *
 from support_funcs import *
+from __ADMIN__ import AdminFuncs
 
 class DataStore():
     a = None
@@ -69,6 +70,10 @@ app.config['CACHE_TYPE'] = 'SimpleCache'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
 
+#* initialization of the AdminFuncs class
+admin_funcs = AdminFuncs(cache)
+
+
 @app.route('/view_cache')
 def view_cache():
     cached_items = []
@@ -95,6 +100,43 @@ def index():
 #* Route fuction of admin login
 #* all admin route's are listed down here
 # -------------------------------------------------------
+
+#? Test Trial For Modular Structure [✅ ROUTE PASSES]
+# @app.route('/admin_login', methods=['POST', 'GET'])
+# def admin_login():
+#     print("Admin login function called")
+#     if request.method == 'POST':
+#         start_time = time()
+
+#         enrollment_no = request.form.get('enrollment')
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+
+#         #* Use the AdminFuncs class to log the admin in and get the user profile
+#         user_profile = admin_funcs.login_admin(username, password, enrollment_no)
+
+#         if user_profile is None:
+#             flash('Invalid username, enrollment number, or password. Please try again. __moduler', 'error')
+#             return redirect(url_for('admin_login'))
+
+#         #* Set session data for the logged-in user
+#         admin_funcs.set_session_data(user_profile)
+
+#         #* Fetch dashboard data (e.g., student and teacher count)
+#         student_count, teacher_count = admin_funcs.fetch_dashboard_data()
+        
+#         #* Calculate loading time
+#         delay = admin_funcs.get_loading_time(start_time)
+#         session['delay'] = delay
+        
+#         print(f"Students: {student_count}, Teachers: {teacher_count}")
+        
+#         #* Redirect to admin dashboard after successful login
+#         return redirect(url_for('admin_dashboard'))
+    
+#     return render_template("admin_login.html", delay=session.get('delay', 0))
+
+
 
 #? admin login route
 @app.route('/admin_login', methods=['POST', 'GET'])
@@ -134,15 +176,13 @@ def admin_login():
 #? admin dashboard route
 @app.route('/admin_dashboard')
 def admin_dashboard():
-
     if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
         return redirect(url_for('admin_login'))
-    total_student_count = count_students()
-    total_teacher_count = count_teachers()
-    admin_profile_image = session['profilepic']
-    application = db['teacherApplications']
+    total_student_count , total_teacher_count = fetch_dashboard_data()
+    _ , _ , _ , admin_profile_image , _ = get_session_data()
     count = application.count_documents({})
-    print(admin_profile_image)
+    print("working...1")
+    print(admin_profile_image) #! image coming from my github here it is -> https://github.com/Rudrajiii/Recipe-App/blob/main/public/images/uploads/profilePic1717597921734.jpeg?raw=true
     return render_template('admin_dashboard.html', 
             username=session['username'] ,
             total_student_count=total_student_count,
@@ -151,16 +191,13 @@ def admin_dashboard():
             count=count
                         )
 
-#? admin profile route
+#? admin profile route [date : 07/11/2024 Modular CodeBase Checked ✅]
 @app.route('/admin_profile')
 def admin_profile():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    
-    admin_username = session['username']
-    admin_password = session['password']
-    admin_enrollment = session['enrollment_no']
-    admin_profile_image = session['profilepic']
+    admin_username , admin_password , admin_enrollment , admin_profile_image , _ = get_session_data()
+    print("working...2")
     return render_template('admin_profile.html',
                         admin_username=admin_username,
                         admin_password=admin_password,
