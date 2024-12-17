@@ -1,114 +1,138 @@
 let examList = [];
-let count = 1;
-let editingExamId = null;
-let isDarkMode = true;
+let idCounter = 1;
+let mainDetailsSet = false;
+let editExamId = null;
 
-function openModal() {
-    document.getElementById('addExamModal').style.display = 'block';
-}
-
-function closeModal() {
-    document.getElementById('addExamModal').style.display = 'none';
-    resetForm();
-}
-
-function addExam() {
+// Set Main Exam Details
+function setMainDetails() {
     const examName = document.getElementById('examName').value;
     const studentYear = document.getElementById('studentYear').value;
     const studentBranch = document.getElementById('studentBranch').value;
-    const subject = document.getElementById('subject').value;
-    const examDate = document.getElementById('examDate').value;
-    const startTime = document.getElementById('startTime').value;
-    const endTime = document.getElementById('endTime').value;
 
-    if (!Number.isInteger(+studentYear) || +studentYear <= 0) {
-        alert('Student Year must be a positive integer!');
-        return;
-    }
+    if (examName && studentYear && studentBranch) {
+        document.getElementById('examTitle').innerText = 
+            `Exam Name: ${examName} | Year: ${studentYear} | Branch: ${studentBranch}`;
+        document.getElementById('examHeader').style.display = 'block';
+        mainDetailsSet = true;
 
-    if (examName && studentYear && studentBranch && subject && examDate && startTime && endTime) {
-        const examDetails = {
-            id: count,
-            examName,
-            studentYear,
-            studentBranch,
-            subject,
-            examDate,
-            startTime,
-            endTime
-        };
-
-        examList.push(examDetails);
-        renderTable();
-        count++;
-        resetForm();
-        closeModal();
+        document.getElementById('examName').disabled = false;
+        document.getElementById('studentYear').disabled = false;
+        document.getElementById('studentBranch').disabled = false;
     } else {
-        alert('Please fill in all the fields!');
+        alert('Please enter Exam Name, Student Year, and Branch.');
     }
 }
 
+// Open Modal for Adding Data
+function openModal() {
+    if (!mainDetailsSet) {
+        alert('Set Exam Name, Student Year, and Branch first!');
+        return;
+    }
+    editExamId = null;
+    document.getElementById('modalTitle').innerText = 'Add Exam Details';
+    document.getElementById('modalForm').reset();
+    document.getElementById('modal').style.display = 'flex';
+}
+
+// Close Modal
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+// Submit Data (Add or Edit)
+function submitData() {
+    const subject = document.getElementById('modalSubject').value;
+    const examDate = document.getElementById('modalExamDate').value;
+    const startTime = document.getElementById('modalStartTime').value;
+    const endTime = document.getElementById('modalEndTime').value;
+
+    if (subject && examDate && startTime && endTime) {
+        const examTime = `${startTime} - ${endTime}`;
+
+        if (editExamId !== null) {
+            // Edit existing exam
+            const index = examList.findIndex(exam => exam.id === editExamId);
+            examList[index] = { id: editExamId, subject, examDate, time: examTime };
+            editExamId = null;
+        } else {
+            // Add new exam
+            const newExam = {
+                id: idCounter++,
+                subject,
+                examDate,
+                time: examTime
+            };
+            examList.push(newExam);
+        }
+
+        renderTable();
+        closeModal();
+    } else {
+        alert('Please fill in all fields!');
+    }
+}
+
+// Render Table
+// Render Table
 function renderTable() {
     const tableBody = document.getElementById('examTableBody');
     tableBody.innerHTML = '';
 
     examList.forEach((exam) => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-            <td>${exam.examName}</td>
-            <td>${exam.studentYear}</td>
-            <td>${exam.studentBranch}</td>
-            <td>${exam.subject}</td>
-            <td>${exam.examDate}</td>
-            <td>${exam.startTime} - ${exam.endTime}</td>
-            <td><button onclick="editExam(${exam.id})">Edit</button></td>
-            <td><button onclick="deleteExam(${exam.id})">Delete</button></td>
-        `;
-
-        tableBody.appendChild(row);
+        const row = `
+            <tr>
+                <td>${exam.subject}</td>
+                <td>${exam.examDate}</td>
+                <td>${exam.time}</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editExam(${exam.id})">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteExam(${exam.id})">Delete</button>
+                </td>
+            </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
     });
 }
 
-function editExam(id) {
-    const exam = examList.find(exam => exam.id === id);
-    if (exam) {
-        document.getElementById('examName').value = exam.examName;
-        document.getElementById('studentYear').value = exam.studentYear;
-        document.getElementById('studentBranch').value = exam.studentBranch;
-        document.getElementById('subject').value = exam.subject;
-        document.getElementById('examDate').value = exam.examDate;
-        document.getElementById('startTime').value = exam.startTime;
-        document.getElementById('endTime').value = exam.endTime;
 
-        editingExamId = id;
-        document.getElementById('formActionBtn').textContent = 'Save Exam';
-        openModal();
+// Edit Exam
+function editExam(id) {
+    const exam = examList.find(item => item.id === id);
+
+    if (exam) {
+        editExamId = id;
+        document.getElementById('modalTitle').innerText = 'Edit Exam Details';
+        document.getElementById('modalSubject').value = exam.subject;
+        document.getElementById('modalExamDate').value = exam.examDate;
+        document.getElementById('modalStartTime').value = exam.time.split(' - ')[0];
+        document.getElementById('modalEndTime').value = exam.time.split(' - ')[1];
+        document.getElementById('modal').style.display = 'flex';
     }
 }
 
+// Delete Exam
 function deleteExam(id) {
     examList = examList.filter(exam => exam.id !== id);
     renderTable();
 }
 
-function resetForm() {
-    document.getElementById('examForm').reset();
-    document.getElementById('formActionBtn').textContent = 'Add Exam';
-    editingExamId = null;
-}
-
-function toggleTheme() {
-    const root = document.documentElement;
-    isDarkMode = !isDarkMode;
-
-    if (isDarkMode) {
-        root.style.setProperty('--background-color', 'black');
-        root.style.setProperty('--text-color', 'white');
-        root.style.setProperty('--button-bg-color', 'grey');
+// Submit All Data
+function submitAllData() {
+    if (examList.length > 0) {
+        alert('All data submitted successfully!');
+        console.log('Exam Data:', examList);
     } else {
-        root.style.setProperty('--background-color', 'white');
-        root.style.setProperty('--text-color', 'black');
-        root.style.setProperty('--button-bg-color', 'grey');
+        alert('No data to submit!');
     }
 }
+
+// Toggle Dark/Light Mode
+// Toggle Dark/Light Mode
+
+// Toggle dark and light mode on checkbox change
+document.getElementById('toggleMode').addEventListener('change', function () {
+    document.body.classList.toggle('light-mode', this.checked);
+});
+
+
+

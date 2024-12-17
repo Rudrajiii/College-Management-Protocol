@@ -3,74 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College_Website</title>
+    <title>Exam Scheduler</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="exam_scheduler.css">
+    <link rel="stylesheet" href="C:\Users\DELL\Desktop\projects\college website\sysProj\static\styles\exam_scheduler.css">
 </head>
 <body>
-    <h1>Exam Scheduler</h1>
-
-    <div class="modal" id="addExamModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <form id="examForm">
-                <div class="form-group">
-                    <label for="examName">Exam Name:</label>
-                    <input type="text" id="examName" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentYear">Student Year:</label>
-                    <input type="number" id="studentYear" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentBranch">Student Branch:</label>
-                    <input type="text" id="studentBranch" required>
-                </div>
-                <div class="form-group">
-                    <label for="subject">Subject:</label>
-                    <input type="text" id="subject" required>
-                </div>
-                <div class="form-group">
-                    <label for="examDate">Exam Date:</label>
-                    <input type="date" id="examDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="startTime">Start Time:</label>
-                    <input type="time" id="startTime" required>
-                </div>
-                <div class="form-group">
-                    <label for="endTime">End Time:</label>
-                    <input type="time" id="endTime" required>
-                </div>
-                <button type="button" id="formActionBtn" class="add-data-btn" onclick="addExam()">Add Exam</button>
-            </form>
-        </div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Exam Name</th>
-                <th>Student Year</th>
-                <th>Student Branch</th>
-                <th>Subject</th>
-                <th>Exam Date</th>
-                <th>Time</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody id="examTableBody"></tbody>
-    </table>
-    <button class="add-data-btn" onclick="openModal()">Add Exam</button>
-
+    
     <div class="toggle-container">
-        <label class="switch">
-            <input type="checkbox" onchange="toggleTheme()">
+        <label class="toggle-switch">
+            <input type="checkbox" id="toggleMode" />
             <span class="slider"></span>
         </label>
     </div>
+    
 
-    <script src="exam_scheduler.js"></script>
+    <h1>Exam Scheduler</h1>
+
+    <!-- Main Input Section for Exam Name, Year, Branch -->
+    <div class="main-input-container">
+        <input type="text" id="examName" placeholder="Enter Exam Name" required>
+        <input type="number" id="studentYear" placeholder="Enter Student Year" required>
+        <input type="text" id="studentBranch" placeholder="Enter Student Branch" required>
+        <button onclick="setMainDetails()">Set Details</button>
+    </div>
+
+    <!-- Header for Exam Name -->
+    <!-- Header for Exam Name (Centered) -->
+<div id="examHeader" style="display: none;">
+    <h2 id="examTitle"></h2>
+</div>
+
+
+    <!-- Table Section -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                <th>Subject</th>
+                <th>Exam Date</th>
+                <th>Exam Time</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="examTableBody">
+                <tr>
+                    <td colspan="7" style="text-align: center; color: #888;">No Data Inserted</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Buttons Under Table -->
+    <div class="button-container">
+        <button id="openModalBtn" onclick="openModal()">Add Data</button>
+        <button id="submitButton" onclick="submitAllData()">Submit</button>
+    </div>
+
+    <!-- Modal for Input Form -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add Exam Details</h2>
+            <form id="modalForm">
+                <label for="modalSubject">Exam Subject Name</label>
+                <input type="text" id="modalSubject" placeholder="Enter Subject" required>
+
+                <label for="modalExamDate">Exam Date</label>
+                <input type="date" id="modalExamDate" required>
+
+                <label for="modalStartTime">Exam Start Time</label>
+                <input type="time" id="modalStartTime" required>
+
+                <label for="modalEndTime">Exam End Time</label>
+                <input type="time" id="modalEndTime" required>
+
+                <button type="button" class="submit-btn" onclick="submitData()">Submit</button>
+            </form>
+        </div>
+        
+    </div>
+
+    <script src="C:\Users\DELL\Desktop\projects\college website\sysProj\static\javascripts\exam_scheduler.js"></script>
 </body>
 </html>
