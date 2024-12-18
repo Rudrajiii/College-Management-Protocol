@@ -4,10 +4,10 @@ from packages import *
 #? Local Module's
 from db_config import *
 from caching import user_cache
-from admin_function import *
 from graphical_analysis import *
 from support_funcs import *
 from __ADMIN__ import AdminFuncs
+from __Utils__ import prepare_staff_data , prepare_student_data
 
 class DataStore():
     a = None
@@ -48,7 +48,7 @@ app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Cache timeout in seconds
 cache = Cache(app)
 
 #* initialization of the AdminFuncs class
-admin_funcs = AdminFuncs(cache)
+admin_funcs = AdminFuncs(cache , collection)
 
 
 @app.route('/view_cache')
@@ -78,43 +78,9 @@ def index():
 #* all admin route's are listed down here
 # -------------------------------------------------------
 
-#? Test Trial For Modular Structure [✅ ROUTE PASSES]
-# @app.route('/admin_login', methods=['POST', 'GET'])
-# def admin_login():
-#     print("Admin login function called")
-#     if request.method == 'POST':
-#         start_time = time()
+#? Test Trial For Modular Structure [✅CHECK ROUTE'S]
 
-#         enrollment_no = request.form.get('enrollment')
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-
-#         #* Use the AdminFuncs class to log the admin in and get the user profile
-#         user_profile = admin_funcs.login_admin(username, password, enrollment_no)
-
-#         if user_profile is None:
-#             flash('Invalid username, enrollment number, or password. Please try again. __moduler', 'error')
-#             return redirect(url_for('admin_login'))
-
-#         #* Set session data for the logged-in user
-#         admin_funcs.set_session_data(user_profile)
-
-#         #* Fetch dashboard data (e.g., student and teacher count)
-#         student_count, teacher_count = admin_funcs.fetch_dashboard_data()
-        
-#         #* Calculate loading time
-#         delay = admin_funcs.get_loading_time(start_time)
-#         session['delay'] = delay
-        
-#         print(f"Students: {student_count}, Teachers: {teacher_count}")
-        
-#         #* Redirect to admin dashboard after successful login
-#         return redirect(url_for('admin_dashboard'))
-    
-#     return render_template("admin_login.html", delay=session.get('delay', 0))
-
-
-
+#? Modular Structure [✅ ROUTE 1 CHECKED]
 #? admin login route
 @app.route('/admin_login', methods=['POST', 'GET'])
 def admin_login():
@@ -126,21 +92,21 @@ def admin_login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        #*log the admin in and get the user profile
-        user_profile = login_admin(username, password, enrollment_no, cache)
+        #* Use the AdminFuncs class to log the admin in and get the user profile
+        user_profile = admin_funcs.login_admin(username, password, enrollment_no)
 
         if user_profile is None:
             flash('Invalid username, enrollment number, or password. Please try again. __moduler', 'error')
             return redirect(url_for('admin_login'))
 
         #* Set session data for the logged-in user
-        set_session_data(user_profile)
+        admin_funcs.set_session_data(user_profile)
 
         #* Fetch dashboard data (e.g., student and teacher count)
-        student_count, teacher_count = fetch_dashboard_data()
+        student_count, teacher_count = admin_funcs.fetch_dashboard_data()
         
         #* Calculate loading time
-        delay = get_loading_time(start_time)
+        delay = admin_funcs.get_loading_time(start_time)
         session['delay'] = delay
         
         print(f"Students: {student_count}, Teachers: {teacher_count}")
@@ -150,62 +116,78 @@ def admin_login():
     
     return render_template("admin_login.html", delay=session.get('delay', 0))
 
+#? Modular Structure [✅ ROUTE 2 CHECKED]
 #? admin dashboard route
 @app.route('/admin_dashboard')
 def admin_dashboard():
     if 'username' not in session or session['role'] != 'admin' or 'profilepic' not in session:
         return redirect(url_for('admin_login'))
-    total_student_count , total_teacher_count = fetch_dashboard_data()
-    _ , _ , _ , admin_profile_image , _ = get_session_data()
+
+    #* Fetch dashboard data using AdminFuncs
+    student_count, teacher_count = admin_funcs.fetch_dashboard_data()
+
+    #* Retrieve admin profile image from session
+    admin_profile_image = session.get('profilepic', 'https://default-profile-image-url')
+    
+    #* Example count from some application logic (replace as needed)
     count = application.count_documents({})
+
     print("working...1")
-    print(admin_profile_image) #! image coming from my github here it is -> https://github.com/Rudrajiii/Recipe-App/blob/main/public/images/uploads/profilePic1717597921734.jpeg?raw=true
+    print(admin_profile_image)
+    
     return render_template('admin_dashboard.html', 
-            username=session['username'] ,
-            total_student_count=total_student_count,
-            total_teacher_count=total_teacher_count,
+            username=session['username'],
+            total_student_count=student_count,
+            total_teacher_count=teacher_count,
             admin_profile_image=admin_profile_image,
             count=count
-                        )
+    )
 
-#? admin profile route [date : 07/11/2024 Modular CodeBase Checked ✅]
+#? Modular Structure [✅ ROUTE 3 CHECKED]
+#? admin profile route
 @app.route('/admin_profile')
 def admin_profile():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    admin_username , admin_password , admin_enrollment , admin_profile_image , _ = get_session_data()
+    
+    #* Get admin session data
+    admin_username = session.get('username')
+    admin_password = session.get('password')
+    admin_enrollment = session.get('enrollment_no')
+    admin_profile_image = session.get('profilepic', 'https://default-profile-image-url')
+
     print("working...2")
+    
     return render_template('admin_profile.html',
                         admin_username=admin_username,
                         admin_password=admin_password,
                         admin_enrollment=admin_enrollment,
                         admin_profile_image=admin_profile_image
-                        )
+    )
 
 # --------------------------------------------------
 #todo all admin activites
 # --------------------------------------------------
 #* All Routes for a stuff controlled by the admin
+#? Modular Structure [✅ ROUTE 4 CHECKED]
 #? Teacher Data Retrival
+#! This Route is For Developer's of this software.
 @app.route('/teachers_data', methods=['GET'])
 def get_creators():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    teachers = collection.find({}) 
-    teacher_list = []
-    for teacher in teachers:
-        teacher['_id'] = str(teacher['_id'])  #string pr convert kr raha
-        teacher_list.append(teacher)
+    #* Use the AdminFuncs class to get teacher data
+    teacher_list = admin_funcs.get_teachers_data()
     return jsonify(teacher_list)
 
 #? Retreving Teacher information from out DB
+#? Modular Structure [✅ ROUTE 5 CHECKED]
 @app.route('/staff_informations')
 def staff_informations():
     """
     it retrieves the stuff data from teacher
     collection to show their information in this
     route
-
     """
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
@@ -213,6 +195,7 @@ def staff_informations():
     return render_template('manage_teachers.html' , teachers = teachers)
 
 #? Register a new teacher in the main DB
+#? Modular Structure [✅ ROUTE 6 CHECKED]
 @app.route('/register_a_staff', methods=['GET', 'POST'])
 def register_a_staff():
     """
@@ -225,191 +208,88 @@ def register_a_staff():
         return redirect(url_for('admin_login'))
     
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        gender = request.form.get('gender')
-        contact = request.form.get('contact')
-        enrollment_no = request.form.get('Enrollment_no')
-        current_address = request.form.get('current_address')
-        bio = request.form.get('bio')
-        description = request.form.get('description')
-        rating = request.form.get('rating')
-        reviews = request.form.get('reviews')
-        teaches_total_students = request.form.get('teaches_total_students')
-        dob = request.form.get('dob')
         profile_pic = request.files['profile_pic']
-
-
-        profile_pic_path = None
-        if profile_pic:
-            extension = os.path.splitext(profile_pic.filename)[1]
-            new_image_name = get_image_name(enrollment_no, extension)
-            profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
-            profile_pic.save(profile_pic_path)
-            profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')  # To create a relative path for HTML
-    
-
-        teacher = {
-            "enrollment_no": enrollment_no,
-            "password": password,
-            "username": name,
-            "email": email,
-            "gender": gender,
-            "phone_no": contact,
-            "dob": dob,
-            "profile_pic": profile_pic_path,
-            "current_address": current_address,
-            "teaching_subjects": {"subjects": ["English", "History"]},
-            "alloted_sections": {"sections": ["C", "D"]},  
-            "bio": bio,
-            "description": description,
-            "rating": int(rating) if rating else 0,
-            "reviews": int(reviews) if reviews else 0,
-            "teaches_total_students": int(teaches_total_students) if teaches_total_students else 0
-        }
-        res = collection.insert_one(teacher)
-        print(res)
-        flash('✅ Teacher records added successfully!' , 'success')
+        profile_pic_path = admin_funcs.save_profile_pic_of_teachers(profile_pic, request.form.get('Enrollment_no'), app.config['UPLOAD_FOLDER'])
+        admin_funcs.create_teacher_record(request.form, profile_pic_path)
+        flash('✅ Teacher records added successfully!', 'success')
         return redirect(url_for('admin_dashboard'))
     
     return render_template('register_a_staff.html')
 
+
+
 #? Route function to update the information of registered teacher
-@app.route('/update_a_staff', methods=['GET','POST'])
+#? Modular Structure [✅ ROUTE 7 CHECKED]
+@app.route('/update_a_staff', methods=['GET', 'POST'])
 def update_a_staff():
     """
-    by this func admin will able to update 
-    existing infomations about a stuff
+    Admin can update an existing teacher's information.
     """
-    #clear previous flash msgs
+    # Clear previous flash messages
     get_flashed_messages()
 
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
+
     staff_id = request.args.get('id')
-    # print(type(staff_id))
-    print(staff_id)
-    # teachers = collection.find_one({"_id": ObjectId(staff_id)})
-    # print(teachers['profile_pic'])
-    # print(type(teachers['profile_pic']))
     if not staff_id:
         flash('Staff ID is required.', 'error')
         return redirect(url_for('staff_informations'))
 
-    teacher = collection.find_one({"_id": ObjectId(staff_id)})
+    teacher = admin_funcs.get_teacher_by_id(staff_id)
     if not teacher:
         flash('Staff not found.', 'error')
         return redirect(url_for('staff_informations'))
 
     if request.method == 'POST':
-        staff_id = request.form.get('staff_id')
-        if not staff_id:
-            flash('Staff ID not provided.', 'error')
-            return redirect(url_for('update_a_staff', id=staff_id))
-        name = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        gender = request.form.get('gender')
-        contact = request.form.get('phone_no')
-        Enrollment_no = request.form.get('enrollment_no')
-        current_address = request.form.get('current_address')
-        bio = request.form.get('bio')
-        description = request.form.get('description')
-        rating = request.form.get('rating')
-        reviews = request.form.get('reviews')
-        teaches_total_students = request.form.get('teaches_total_students')
-        dob = request.form.get('dob')
+        form_data = request.form
         profile_pic = request.files['profile_pic']
+        #* Save the profile picture and get the updated path
+        profile_pic_path = admin_funcs.save_updated_profile_picture(
+            profile_pic,
+            form_data.get('enrollment_no'),
+            app.config['UPLOAD_FOLDER'],
+            teacher.get('profile_pic')
+        )
 
-        # files = os.listdir(app.config['UPLOAD_FOLDER'])
+        #* Use utility function to prepare the staff data
+        staff_data = prepare_staff_data(form_data, profile_pic_path)
 
-        profile_pic_path = teacher['profile_pic']  # Default to the current profile pic path
-
-        if profile_pic and profile_pic.filename:
-            # Delete the old profile picture
-            if teacher['profile_pic']:
-                old_profile_pic_path = os.path.join(app.root_path, teacher['profile_pic'][1:])  # Remove leading '/' from URL
-                if os.path.exists(old_profile_pic_path):
-                    os.remove(old_profile_pic_path)
-
-            # Save the new profile picture
-            extension = os.path.splitext(profile_pic.filename)[1]
-            new_image_name = get_image_name(Enrollment_no, extension, updated=True)
-            profile_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], new_image_name)
-            profile_pic.save(profile_pic_path)
-            profile_pic_path = url_for('static', filename=f'Uploads/teachers/{new_image_name}')
-
-        staff_data = {
-            "username": name,
-            "email": email,
-            "password": password,
-            "gender": gender,
-            "phone_no": contact,
-            "enrollment_no": Enrollment_no,
-            "current_address": current_address,
-            "bio": bio,
-            "description": description,
-            "rating": rating,
-            "reviews": reviews,
-            "teaches_total_students": teaches_total_students,
-            "dob": dob,
-            "profile_pic": profile_pic_path
-        }
-
-        if staff_id:
-            result = collection.update_one(
-                {"_id": ObjectId(staff_id)},
-                {"$set": staff_data}
-            )
-            # print(result)
-            # print('Updated name: ' + result.username)
-            if result.matched_count > 0:
-                flash('Staff information updated successfully!', 'success')
-            else:
-                flash('Staff not found.', 'error')
+        if admin_funcs.update_teacher_record(staff_id, staff_data):
+            flash('✅ Staff information updated1 successfully!', 'success')
         else:
-            
-            flash('Staff ID not provided.', 'error')
+            flash('❌ Failed to update staff information.', 'error')
 
-        flash('✅ Staff records successfully updated!' , 'success')  # Redirect to an appropriate route
         return redirect(url_for('admin_dashboard'))
-    return render_template('update_a_staff.html' , staff_id=staff_id , teacher = teacher)
+
+    return render_template('update_a_staff.html', staff_id=staff_id, teacher=teacher)
+
 
 #* All Routes for all student controlled by the admin
-#? Route to register a new student in DB
+#? Route to register a new student in 
+#? Modular Structure [✅ ROUTE 8 CHECKED]
 @app.route('/add_student', methods=['POST' , 'GET'])
 def add_student():
-    if 'username' not in session or session['role'] != 'admin':
-        return redirect(url_for('admin_login'))
-    
-    if(request.method == 'POST'):
-        enrollment_no = request.form.get('enrollment')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        email = request.form.get('email')
-        branch = request.form.get('branch')
-        year = request.form.get('year')
-        gender = request.form.get('gender')
-        phone = request.form.get('phone')
-        dob = request.form.get('dob')
-        parent_name = request.form.get('parent_name')
-        parent_no = request.form.get('parent_no')
-        address = request.form.get('address')
-        file = request.files['profile_pic']
-        file_extension = os.path.splitext(file.filename)[1].lower()
-        if file_extension not in [".png" , ".jpg" , ".jpeg"]:
-            return f'''<h1>Selected file is not a jpg or png or jpeg file please go back and upload correct file format</h1>''' 
-        profile_pic_location = enrollment_no + file_extension                                        
-        # Save the uploaded image file to the static folder
-        filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
-        file.save(filename)
-        x = add_student_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-        if x == 1:
-            return jsonify({'status': 'success', 'message': '✅ Student record successfully added!'})
-        else:
-            return jsonify({'status': 'error', 'message': '⚠️ Enrollment No. is already present in the database.'})
-    return render_template('add_student.html')
+    try:
+        if 'username' not in session or session['role'] != 'admin':
+            return redirect(url_for('admin_login'))
+        
+        if request.method == 'POST':
+            form_data = prepare_student_data(request.form)
+            #* making form data dictionary from the request
+            file = request.files['profile_pic']
+
+            #* initing the class
+            #* give actual instances for cache and db_collection
+            admin_functions = AdminFuncs(cache, collection)  
+            
+            result = admin_functions.add_student(form_data, file, app.config['UPLOAD_DIR'])
+            
+            return jsonify(result)
+
+        return render_template('add_student.html')
+    except Exception as e:
+        print("ERROR : ",e)
 
 #? Route to put all details about students for admins
 @app.route('/manage_student', methods=['POST', 'GET'])
