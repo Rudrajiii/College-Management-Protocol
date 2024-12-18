@@ -1,46 +1,104 @@
-:root {
-    --background-color: black;
-    --text-color: white;
-    --table-heading-color: green;
-    --button-bg-color: grey;
-    --button-hover-bg-color: darkgreen;
-    --modal-bg-color: rgba(196, 172, 80, 0.95);
-}
-
+/* General Styles */
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #111;
+    color: white;
     margin: 0;
     padding: 20px;
-    position: relative;
 }
 
 h1 {
-    font-family: 'Montserrat', sans-serif;
     text-align: center;
     margin-bottom: 20px;
-    color: red;
+    color: #00BFA6;
 }
 
-.add-data-btn {
-    background-color: var(--button-bg-color);
-    color: var(--text-color);
-    padding: 10px 20px;
+/* Main Input Section */
+.main-input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.main-input-container input {
+    padding: 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    margin-right: 10px;
+}
+
+.main-input-container button {
+    padding: 10px;
+    background-color: #00BFA6;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 16px;
-    display: block;
-    margin: 20px auto;
-    transition: background-color 0.3s, transform 0.3s;
 }
 
-.add-data-btn:hover {
-    background-color: red;
-    transform: translateY(-3px);
+.main-input-container button:hover {
+    background-color: #00A18E;
 }
 
+/* Table Section */
+.table-container {
+    margin: auto;
+    max-width: 90%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #222;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #333;
+    text-align: center;
+}
+
+th {
+    background-color: #00BFA6;
+    color: black;
+}
+
+tr:nth-child(even) {
+    background-color: #333;
+}
+
+/* Action Buttons (Delete and Edit) */
+button.action-btn {
+    margin: 2px;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+button.delete-btn {
+    background-color: #E74C3C;
+}
+
+button.delete-btn:hover {
+    background-color: #C0392B;
+}
+
+button.edit-btn {
+    background-color: #3498DB;
+}
+
+button.edit-btn:hover {
+    background-color: #2980B9;
+}
+
+/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -49,100 +107,231 @@ h1 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-    background-color: var(--modal-bg-color);
+    background-color: #333;
     margin: 10% auto;
     padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 8px;
 }
 
-.close-btn {
+.modal input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+button.submit-btn {
+    background-color: #E74C3C;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.submit-btn:hover {
+    background-color: #C0392B;
+}
+
+/* Button Container Styles */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#openModalBtn {
+    background-color: #3498DB;
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#openModalBtn:hover {
+    background-color: #2980B9;
+}
+
+#submitButton {
+    background-color: #E74C3C;
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#submitButton:hover {
+    background-color: #C0392B;
+}
+
+#examTitle {
+    color: #00BFA6;
+}
+
+/* Close Button */
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close-btn:hover,
-.close-btn:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
 }
 
-form {
-    padding: 20px;
-    margin-top: 10px;
-}
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: black;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.form-group input:focus {
-    border-color: green;
-    outline: none;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th {
-    background-color: var(--table-heading-color);
-    color: white;
-    padding: 10px;
-}
-
-td {
+/* Center the Exam Name, Year, and Branch Information */
+#examHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #00BFA6;
+    font-size: 1.5em;
     text-align: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+    width: 100%;
 }
 
-tr:hover {
-    background-color: rgba(0, 255, 0, 0.1);
+/* Default Dark Mode */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #111;
+    color: white;
+    margin: 0;
+    padding: 20px;
 }
 
+/* Light Mode */
+body.light-mode {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Button Styles */
+.toggle-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #00BFA6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.toggle-btn:hover {
+    background-color: #00A18E;
+}
+
+/* Light Mode */
+body.light-mode {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Set Details Input Fields in Light Mode */
+body.light-mode .modal input,
+body.light-mode .modal select {
+    background-color: #fff;  /* White background inside input boxes */
+    color: #333;             /* Black text in input boxes */
+    border: 1px solid #ddd; /* Light border for input fields */
+}
+
+/* Table Section in Light Mode */
+body.light-mode .table-container {
+    background-color: #fff; /* White background for table container */
+    color: #333; /* Black text */
+}
+
+body.light-mode table {
+    background-color: #fff; /* White background for table */
+    color: #333; /* Black text in table */
+}
+
+/* Table Header in Light Mode */
+body.light-mode th {
+    background-color: #00A18E; /* Sky Blue color for the header */
+    color: black; /* Black text for the header */
+}
+
+/* Table cells in Light Mode */
+body.light-mode td {
+    background-color: #fff; /* White background for table cells */
+    color: #333; /* Black text in cells */
+    border: 1px solid #ddd; /* Light border for cells */
+}
+
+body.light-mode tr:nth-child(even) {
+    background-color: #f9f9f9; /* Slightly gray background for alternate rows */
+}
+
+
+body.light-mode button.action-btn {
+    background-color: #3498DB;
+}
+
+body.light-mode button.delete-btn {
+    background-color: #C0392B;
+}
+
+body.light-mode button.edit-btn {
+    background-color: #040404;
+}
+
+/* Modal and Form Inputs in Light Mode */
+body.light-mode .modal-content {
+    background-color: #fff;
+    color: #333;
+}
+
+body.light-mode .modal input,
+body.light-mode .modal select {
+    background-color: #fff;
+    color: #333;
+}
+
+body.light-mode .modal button.submit-btn {
+    background-color: #C0392B;
+    color: white;
+}
+
+body.light-mode button.submit-btn:hover {
+    background-color: #E74C3C;
+}
+/* Toggle Container */
 .toggle-container {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-.switch {
+/* Toggle Switch */
+.toggle-switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 30px;
-    margin-bottom: 5px;
+    width: 50px;
+    height: 25px;
 }
 
-.switch input {
-    opacity: 0;
+.toggle-switch input {
+    opacity: 0; /* Hide the default checkbox */
     width: 0;
     height: 0;
 }
@@ -155,26 +344,32 @@ tr:hover {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
+    transition: 0.4s;
+    border-radius: 25px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 24px;
-    width: 24px;
-    left: 4px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
+    left: 4px;
+    bottom: 5px;
+    background-color: white;
+    transition: 0.4s;
 }
 
+/* When the checkbox is checked (Light mode) */
 input:checked + .slider {
-    background-color: black;
+    background-color: #040404; /* Light mode switch color */
 }
 
 input:checked + .slider:before {
-    transform: translateX(30px);
+    transform: translateX(25px); /* Move the slider to the right */
+}
+
+/* Add a shadow to the toggle in light mode */
+body.light-mode .toggle-switch input:checked + .slider {
+    background-color: #040404;
 }
