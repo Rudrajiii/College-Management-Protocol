@@ -7,7 +7,7 @@ from caching import user_cache
 from graphical_analysis import *
 from support_funcs import *
 from __ADMIN__ import AdminFuncs
-from __Utils__ import prepare_staff_data , prepare_student_data
+from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image
 
 class DataStore():
     a = None
@@ -292,11 +292,9 @@ def add_student():
         print("ERROR : ",e)
 
 #? Route to put all details about students for admins
+#? Modular Structure [✅ ROUTE 9 CHECKED]
 @app.route('/manage_student', methods=['POST', 'GET'])
 def manage_student():
-    #clear the previous flash msgs
-    # get_flashed_messages()
-
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
@@ -305,17 +303,8 @@ def manage_student():
         val = request.form.get('button')
         
         if val == "remove":
-            y = remove_student_db(enrollment_no)
-            if y == 0:
-                flash('⚠️ Student not found.', 'error')  
-            else:
-                try:
-                    filename = os.path.join(app.config['UPLOAD_DIR'], y)
-                    os.remove(filename)
-                    flash('✅ Student removed successfully!', 'success')  
-                except FileNotFoundError:
-                    flash('⚠️ Image file of student not found.', 'error')  #! Image file of student not found.
-        
+            remove_student(enrollment_no , app.config['UPLOAD_DIR'])
+
         if val == "edit":
             y = edit_student_get_db(enrollment_no)
             if y == 0:
@@ -324,67 +313,47 @@ def manage_student():
                 global student_record
                 student_record = y
                 return redirect(url_for('edit_student', enrollment=enrollment_no))
-            
             return redirect(url_for('manage_student'))  
 
     return render_template('manage_student.html')
 
 
 #? Route to edit any existing informations of a student
+#? Modular Structure [✅ ROUTE 10 CHECKED]
 @app.route('/edit_student', methods=['POST' , 'GET'])
 def edit_student():
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
     
     if(request.method == 'POST'):
-        username = request.form.get('username')
-        password = request.form.get('password')
-        email = request.form.get('email')
-        branch = request.form.get('branch')
-        year = request.form.get('year')
-        gender = request.form.get('gender')
-        phone = request.form.get('phone')
-        dob = request.form.get('dob')
-        parent_name = request.form.get('parent_name')
-        parent_no = request.form.get('parent_no')
-        address = request.form.get('address')
+        form_data = prepare_student_data(request.form)
         file = request.files['profile_pic']
         if file.filename == '':
             profile_pic_location = student_record['profile_pic']
-            edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
+            edit_student_update_db(student_record['enrollment_no'],form_data,profile_pic_location)
             flash('✅ Student records successfully edited!' , 'success')                #success on edit student record
             return redirect(url_for('admin_dashboard'))
         else:
-            # Specify the path to the image file
+            #* Specify the path to the image file
             filename = os.path.join(app.config['UPLOAD_DIR'], student_record['profile_pic'])
-
-            # Remove the file
+            en = student_record['enrollment_no']
+            #* Remove the file
             try:
                 os.remove(filename)
             except FileNotFoundError:
                 flash('⚠️ Image file of student not found.' , 'error')
                 return redirect(url_for('admin_dashboard'))
-            file_extension = os.path.splitext(file.filename)[1].lower()
-            if file_extension not in [".png" , ".jpg" , ".jpeg"]:
-                flash('⚠️ student image file is not jpg , jpeg or png.' , 'error')
-                return redirect(url_for('admin_dashboard'))
-            profile_pic_location = student_record['enrollment_no'] + file_extension
-            # Save the uploaded image file to the static folder
-            filename = os.path.join(app.config['UPLOAD_DIR'], profile_pic_location)
-            file.save(filename)
-            edit_student_update_db(student_record['enrollment_no'],username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location)
-            flash('✅ Student records successfully edited!' , 'success')                #success on edit student record
-            return redirect(url_for('admin_dashboard'))
+            updated_image(file , filename , form_data , en , app.config['UPLOAD_DIR'])
     return render_template('edit_student.html' , student_record = student_record)
 
 
 #? All the internal announcements will be endergoes from admin panel
+#? Modular Structure [✅ ROUTE 11 CHECKED]
 @app.route('/announcement', methods = ['POST', 'GET'])
 def announcement():
     """
     if admin wants to notify something either for students
     or stuffs will be operated by this function.
-    
     """
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))

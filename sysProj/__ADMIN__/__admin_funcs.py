@@ -5,8 +5,7 @@ from flask import url_for
 from flask import session
 from bson import ObjectId
 from caching import user_cache
-from functions import admin_login_db, count_students, count_teachers , add_student_db
-
+from functions import *
 
 class AdminFuncs:
     def __init__(self, cache , db_collection):
