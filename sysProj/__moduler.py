@@ -7,6 +7,7 @@ from caching import user_cache
 from graphical_analysis import *
 from support_funcs import *
 from __ADMIN__ import AdminFuncs
+from __TEACHER__ import  TeacherFuncs
 from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image
 
 class DataStore():
@@ -49,7 +50,8 @@ cache = Cache(app)
 
 #* initialization of the AdminFuncs class
 admin_funcs = AdminFuncs(cache , collection)
-
+#* initialization of the TeacherFuncs class
+teacher_funcs = TeacherFuncs(cache , collection)
 
 @app.route('/view_cache')
 def view_cache():
@@ -377,24 +379,14 @@ def announcement():
 # --------------------------------------------------
 
 #? teacher login route
+#? Modular Structure [✅ ROUTE 12 CHECKED]
 @app.route('/teacher_login', methods = ['POST', 'GET'])
 def teacher_login():
     if(request.method == 'POST'):
         enrollment_no = request.form.get('enrollment')
         username = request.form.get('username')
         password = request.form.get('password')
-
-        var1 = teacher_login_db(enrollment_no,username,password)
-
-        if var1:
-            session['username'] = username
-            session['role'] = 'teacher'
-            session['enrollment_no'] = enrollment_no
-            return redirect(url_for('teacher_dashboard'))
-        else:
-            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
-            return redirect(url_for('teacher_login'))    #if the username or password does not matches 
-
+        return teacher_funcs.login(enrollment_no , username , password)    #if the username or password does not matches 
     return render_template("teacher_login.html")
 
 #? teacher dashboard route
