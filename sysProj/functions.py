@@ -179,7 +179,7 @@ def announcement_db(recipient,message,set_time):
     # Acessing notifications Collection
     collection = db.notifications
     # Adding The data for notification database
-    current_time = datetime.utcnow()                                             # Using UTC time
+    current_time = datetime.utcnow() # Using UTC time
     # converting str type of set_time to datetime variable 
     deletion_time = datetime.strptime(set_time, "%Y-%m-%dT%H:%M") - timedelta(hours = 5 , minutes = 30)
     announcement_info ={
@@ -202,8 +202,8 @@ def student_announcement_db(ACADEMIC_YEAR):
     # Acessing notifications Collection
     collection = db.notifications
     info_list = []
-    current_time = datetime.utcnow()                            # Use UTC time
-    info1 = collection.find({"for":"Both all"})                     # For collecting the data of announcement for both(student , teacher)
+    current_time = datetime.utcnow() # Use UTC time
+    info1 = collection.find({"for":"Both all"}) # For collecting the data of announcement for both(student , teacher)
     for item in info1:                                          
         message = item['message']
         timestamp = item['timestamp']
@@ -222,7 +222,7 @@ def student_announcement_db(ACADEMIC_YEAR):
             time_past = f"{seconds} seconds ago"
         temp_lst = [message,time_past]
         info_list.append(temp_lst)
-    info2 = collection.find({"for":"Student all"})                     # For collecting the data of announcement foronly all year student
+    info2 = collection.find({"for":"Student all"}) # For collecting the data of announcement foronly all year student
     for item in info2:                                          
         message = item['message']
         timestamp = item['timestamp']

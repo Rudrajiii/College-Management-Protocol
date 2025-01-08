@@ -1,4 +1,5 @@
-# * All Required Packages 
+
+#? All Required Packages  
 from packages import *
 
 #? Local Module's
@@ -6,8 +7,11 @@ from db_config import *
 from caching import user_cache
 from graphical_analysis import *
 from support_funcs import *
+
+#? Core Module's
 from __ADMIN__ import AdminFuncs
 from __TEACHER__ import  TeacherFuncs
+from __STUDENT__ import StudentFuncs
 from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image
 
 class DataStore():
@@ -52,6 +56,8 @@ cache = Cache(app)
 admin_funcs = AdminFuncs(cache , collection)
 #* initialization of the TeacherFuncs class
 teacher_funcs = TeacherFuncs(cache , collection)
+#* initialization of the StudentFuncs class
+student_funcs = StudentFuncs(cache , students)
 
 @app.route('/view_cache')
 def view_cache():
@@ -390,31 +396,26 @@ def teacher_login():
     return render_template("teacher_login.html")
 
 #? teacher dashboard route
+#? Modular Structure [✅ ROUTE 13 CHECKED]
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
     if 'username' not in session or session['role'] != 'teacher':
         return redirect(url_for('teacher_login'))
     enrollment_no = session['enrollment_no']
-    teacher_details = collection.find_one({'enrollment_no':enrollment_no})
-    # print(teacher_details) #? -> Teacher Details
-    teacher_application = application.find_one({'enrollment_number': session['enrollment_no']})
-    if teacher_application:
-        status = teacher_application.get('status', 'None')
-    else:
-        status = 'None'  # Default if no application found
-    
-     # Fetch leave application history
-    history_records = list(history_collection.find({"enrollment_number": enrollment_no}).sort("timestamp", -1))
 
-    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
+    # Get teacher details, application status, and leave history
+    teacher_details, status, history_records = teacher_funcs.get_teacher_dashboard_info(enrollment_no)
+
+    # Pass the data to the template
+    return render_template('teacher_dashboard.html', username=session['username'], teacher_details=teacher_details, status=status, history=history_records)
 
 #? Teacher Profile route
+#? Modular Structure [✅ ROUTE 14 CHECKED]
 @app.route('/teacher_profile/<string:id>', methods=['GET'])
 def teacher_profile(id):
     # Ensure the user is an admin
     if 'username' not in session or session['role'] != 'admin':
         return redirect(url_for('admin_login'))
-    
     try:
         teacher_id = ObjectId(id)
     except Exception as e:
@@ -432,78 +433,40 @@ def teacher_profile(id):
 #* All student routes are listed down here 
 # -------------------------------------------------------
 #? Student login route
+#? Modular Structure [✅ ROUTE 15 CHECKED]
 @app.route('/student_login', methods = ['POST', 'GET'])
 def student_login():
-    if(request.method == 'POST'):
-        username = request.form.get('username')
-        password = request.form.get('password')
-        enrollment_no = request.form.get('enrollment')
-
-        var1 = student_login_db(enrollment_no,username,password)
-        if var1:
-            session['username'] = username
-            session['role'] = 'student'
-            session['enrollment_no'] = enrollment_no
-            return redirect(url_for('student_dashboard'))
-        else:
-            flash('Invalid username, enrollment number, or password. Please try again.', 'error')
-            return redirect(url_for('student_login'))
+    if request.method == 'POST':
+        return student_funcs.login(
+            request.form.get('enrollment'),
+            request.form.get('username'),
+            request.form.get('password')
+        )
     return render_template("student_login.html")
 
 #? student dashboard route
+#? Modular Structure [✅ ROUTE 16 CHECKED]
 @app.route('/student_dashboard')
 def student_dashboard():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    
-    delete_expired_documents()
-    # update_temporary_queue()
 
-    student_enrollment = session['enrollment_no']
-    student_details = students.find_one({"enrollment_no": student_enrollment})
-    
-    fetch_all_history = make_history()
-    docs = list(fetch_all_history)
+    student_data = student_funcs.get_student_dashboard_data(session['enrollment_no'])
 
-    teacher_infos = get_teacher_image()  # Assuming this returns a list of teacher information
-    teacher_info_map = {teacher['enrollment_no']: teacher for teacher in teacher_infos}
+    if not student_data:
+        return redirect(url_for('student_login'))
 
-    leave_entries = list(temporary_application_queue.find())
-    print("_______________________________\n\n")
-    print(leave_entries)
-    print("\n\n_______________________________")
-    for doc in leave_entries:
-        if doc['status'] == "Accepted":
-            teacher_enrollment_no = doc['enrollment_number']
-            if teacher_enrollment_no in teacher_info_map:
-                doc['image_url'] = teacher_info_map[teacher_enrollment_no]['profile_pic']
-                
-                # for leave in leave_entries:
-                #     if leave['enrollment_number'] == teacher_enrollment_no and leave['requested_gap'] > 0:
-                #         doc['requested_gap'] = leave['requested_gap']
-
-    ACADEMIC_YEAR = student_details['academic_year']
-    announcement = student_announcement_db(ACADEMIC_YEAR)
-    
-    return render_template('student_dashboard.html', username=session['username'],
-                           ENROLLMENT_NO=student_details['enrollment_no'],
-                           PASSWORD=student_details['password'],
-                           DOB=student_details['dob'],
-                           CONTACT=student_details['phone_no'],
-                           BRANCH=student_details['branch'],
-                           EMAIL_ID=student_details['email'],
-                           ADDRESS=student_details['current_address'],
-                           ACADEMIC_YEAR=student_details['academic_year'],
-                           announcement=announcement,
-                           docs=leave_entries)
+    return render_template('student_dashboard.html', **student_data)
 
 #? student profile route
+#! Modular Structure [✅ ROUTE 17 INCOMPLETE]
 @app.route('/student_profile')
 def student_profile():
     ...
 
 
-#? Route to check if Teacher exists or not 
+#? Route to check if Teacher exists or not
+# todo : It's a route for developers 
 @app.route('/get_staff/<staff_id>', methods=['GET'])
 def get_staff(staff_id):
     staff = collection.find_one({"_id": ObjectId(staff_id)})
