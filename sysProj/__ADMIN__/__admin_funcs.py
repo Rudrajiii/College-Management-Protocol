@@ -154,3 +154,4 @@ class AdminFuncs:
             return {"status": "success", "message": "✅ Student record successfully added!"}
         else:
             return {"status": "error", "message": "⚠️ Enrollment No. is already present in the database."}
+        

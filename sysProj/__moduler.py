@@ -12,7 +12,7 @@ from support_funcs import *
 from __ADMIN__ import AdminFuncs
 from __TEACHER__ import  TeacherFuncs
 from __STUDENT__ import StudentFuncs
-from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image
+from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image , __remove_teacher
 
 class DataStore():
     a = None
@@ -58,6 +58,7 @@ admin_funcs = AdminFuncs(cache , collection)
 teacher_funcs = TeacherFuncs(cache , collection)
 #* initialization of the StudentFuncs class
 student_funcs = StudentFuncs(cache , students)
+
 
 @app.route('/view_cache')
 def view_cache():
@@ -477,43 +478,23 @@ def get_staff(staff_id):
         return jsonify({"error": "Staff not found"}), 404
 
 #? work as delete data func to remove someone from DB
+#? Modular Structure [✅ ROUTE 18 CHECKED]
 @app.route('/delete_user/<string:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     """
     It ensures that it will also remove the images from
     actual root directory in where they were stored!!
-
     """
     if 'username' not in session or session['role'] != 'admin':
         return jsonify({"error": "Unauthorized access"}), 403
-
     try:
         user_id = ObjectId(user_id)
     except Exception as e:
         return jsonify({"error": "Invalid user ID"}), 400
-        # Fetch user details before deleting
-    user_details = collection.find_one({"_id": user_id})
-    result = collection.delete_one({"_id": user_id})
-    print(result)
-    # if details['profile_pic']:
-    #             user_profile_pic_path = os.path.join(app.root_path, details['profile_pic'][1:])  # Remove leading '/' from URL
-    #             if os.path.exists(user_profile_pic_path):
-    #                 os.remove(user_profile_pic_path)
-
-    if result.deleted_count == 1:
-        # Delete user profile pic if it exists
-        if user_details and 'profile_pic' in user_details:
-            profile_pic_path = user_details['profile_pic']
-            if profile_pic_path:
-                full_path = os.path.join(app.root_path, profile_pic_path[1:])  # Remove leading '/' from URL
-                if os.path.exists(full_path):
-                    os.remove(full_path)
-        return jsonify({"message": "User deleted successfully"}), 200
-    else:
-        return jsonify({"error": "User not found"}), 404
-
+    return __remove_teacher(app , collection , user_id)
 
 #? func to logout from respective dashboard's
+#? Modular Structure [✅ ROUTE 19 CHECKED]
 @app.route('/logout')
 def logout():
     """
@@ -527,6 +508,7 @@ def logout():
 
 #? still in development process
 #? making api endpoint for all statistical analysis
+# todo : temporary route for supplying data in charts
 @app.route("/access_data")
 def access_data():
     """

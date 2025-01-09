@@ -62,22 +62,46 @@ function createUserCard(data) {
     return card;
 }
 
+// function deleteUser(userId) {
+//     if (confirm("Are you sure you want to delete this staff?")) {
+//         fetch(`/delete_user/${userId}`, {
+//             method: 'DELETE'
+//         })
+//         .then(response => {
+//             if (response.ok) {
+//                 alert("User deleted successfully.");
+//                 location.reload();
+//             } else {
+//                 alert("Failed to delete user.1");
+//             }
+//         })
+//         .catch(error => {
+//             console.error("Error:", error);
+//             alert(`An error occurred. Please try again ${error}`);
+//         });
+//     }
+// }
+
+
 function deleteUser(userId) {
     if (confirm("Are you sure you want to delete this staff?")) {
         fetch(`/delete_user/${userId}`, {
             method: 'DELETE'
         })
         .then(response => {
-            if (response.ok) {
-                alert("User deleted successfully.");
-                location.reload();
-            } else {
-                alert("Failed to delete user.");
+            // Check if response is valid
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}`);
             }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message || "User deleted successfully.");
+            location.reload();
         })
         .catch(error => {
-            console.error("Error:", error);
-            alert(`An error occurred. Please try again ${error}`);
+            console.error("Error occurred:", error);
+            alert(`An error occurred: ${error.message || error}`);
         });
     }
 }
