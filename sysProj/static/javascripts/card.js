@@ -101,7 +101,6 @@ function deleteUser(userId) {
         })
         .catch(error => {
             console.error("Error occurred:", error);
-            alert(`An error occurred: ${error.message || error}`);
         });
     }
 }

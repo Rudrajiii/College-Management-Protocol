@@ -12,7 +12,9 @@ from support_funcs import *
 from __ADMIN__ import AdminFuncs
 from __TEACHER__ import  TeacherFuncs
 from __STUDENT__ import StudentFuncs
-from __Utils__ import prepare_staff_data , prepare_student_data , remove_student , updated_image , __remove_teacher
+
+#? Special Utility module for making things easy
+from __Utils__ import *
 
 class DataStore():
     a = None
@@ -491,7 +493,7 @@ def delete_user(user_id):
         user_id = ObjectId(user_id)
     except Exception as e:
         return jsonify({"error": "Invalid user ID"}), 400
-    return __remove_teacher(app , collection , user_id)
+    return remove_teacher(app , collection , user_id)
 
 #? func to logout from respective dashboard's
 #? Modular Structure [✅ ROUTE 19 CHECKED]

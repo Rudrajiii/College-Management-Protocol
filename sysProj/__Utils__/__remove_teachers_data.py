@@ -1,6 +1,6 @@
 import os
 from flask import *
-def __remove_teacher(app, collection, user_id):
+def remove_teacher(app, collection, user_id):
     try:
         user_details = collection.find_one({"_id": user_id})
         print("User details:", user_details)
