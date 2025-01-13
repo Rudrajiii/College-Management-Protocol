@@ -134,5 +134,41 @@ document.getElementById('toggleMode').addEventListener('change', function () {
     document.body.classList.toggle('light-mode', this.checked);
 });
 
+//fetching the table content for passing to backend
+
+document.getElementById('submitButton').addEventListener('click', () => {
+    const exam_name = document.getElementById('examName').value; 
+    const student_year = document.getElementById('studentYear').value; 
+    const student_branch = document.getElementById('studentBranch').value;
+    const table = document.getElementById('data-table');
+    const rows = table.querySelectorAll('tbody tr');
+    const tableData = Array.from(rows).map(row => {
+        const cells = row.querySelectorAll('td');
+        return {
+            subject: cells[0].textContent.trim(),
+            date: cells[1].textContent.trim(),
+            time: cells[2].textContent.trim(),
+        };
+    });
+    const exam_data = {"exam_name": exam_name , "student_year": student_year , "student_branch": student_branch , "schedule": tableData};
+
+    // Send data to Flask backend
+    fetch('/exam_scheduler', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data: exam_data })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from server:', data);
+        // Redirect to the admin dashboard
+        window.location.href = "/admin_dashboard";
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+
 
 

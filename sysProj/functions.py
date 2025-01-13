@@ -179,7 +179,7 @@ def announcement_db(recipient,message,set_time):
     # Acessing notifications Collection
     collection = db.notifications
     # Adding The data for notification database
-    current_time = datetime.utcnow() # Using UTC time
+    current_time = datetime.utcnow()                                             # Using UTC time
     # converting str type of set_time to datetime variable 
     deletion_time = datetime.strptime(set_time, "%Y-%m-%dT%H:%M") - timedelta(hours = 5 , minutes = 30)
     announcement_info ={
@@ -202,8 +202,8 @@ def student_announcement_db(ACADEMIC_YEAR):
     # Acessing notifications Collection
     collection = db.notifications
     info_list = []
-    current_time = datetime.utcnow() # Use UTC time
-    info1 = collection.find({"for":"Both all"}) # For collecting the data of announcement for both(student , teacher)
+    current_time = datetime.utcnow()                            # Use UTC time
+    info1 = collection.find({"for":"Both all"})                     # For collecting the data of announcement for both(student , teacher)
     for item in info1:                                          
         message = item['message']
         timestamp = item['timestamp']
@@ -222,7 +222,7 @@ def student_announcement_db(ACADEMIC_YEAR):
             time_past = f"{seconds} seconds ago"
         temp_lst = [message,time_past]
         info_list.append(temp_lst)
-    info2 = collection.find({"for":"Student all"}) # For collecting the data of announcement foronly all year student
+    info2 = collection.find({"for":"Student all"})                     # For collecting the data of announcement foronly all year student
     for item in info2:                                          
         message = item['message']
         timestamp = item['timestamp']
@@ -263,6 +263,49 @@ def student_announcement_db(ACADEMIC_YEAR):
         temp_lst = [message,time_past]
         info_list.append(temp_lst)
     return info_list
+
+
+
+# Edit start by Satyadeep on 27/12/24
+# Exam_scheduler DB connection through admin dashboard
+
+def exam_scheduler_db(exam_data):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing exam Collection
+    collection = db.exam
+    # Setting time for deletion of exam table
+    exam_table = exam_data.get('schedule')
+    last_date = exam_table[-1].get('date')
+    # converting str type of last_date to datetime variable 
+    deletion_time = datetime.strptime(last_date, "%Y-%m-%d") + timedelta(hours = 24)
+    #inserting data to database
+    data ={
+            "exam_name": exam_data.get('exam_name'),
+            "student_year": exam_data.get('student_year'),
+            "student_branch": exam_data.get('student_branch'),
+            "schedule": exam_data.get('schedule'),
+            "deleteAt": deletion_time          
+        }
+    collection.insert_one(data).inserted_id
+    collection.create_index(
+        [("deleteAt", pymongo.ASCENDING)],
+        expireAfterSeconds=0
+        )
+
+# Students dashboard panel exam DB for sorting specific exams
+def student_exam_db(student_year , branch):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing exam Collection
+    collection = db.exam
+    lst = []
+    exam_list = collection.find({"student_year":student_year , "student_branch":branch})
+    for i in exam_list:
+        lst.append(i)
+    return lst
 
 
 def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):
