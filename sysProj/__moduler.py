@@ -547,11 +547,8 @@ def view_all_notifications():
     
     # Calculate the requested gap in days
     fetch_all_history = make_history()
-    # print(list(fetch_all_history))
     docs = list(fetch_all_history)
-    print(docs)
-    # for doc in docs:
-    #     print(doc)
+
     for app in teacher_applications:
         start_time = app.get('start_time', '')
         end_time = app.get('end_time', '')
@@ -566,7 +563,6 @@ def view_all_notifications():
         else:
             app['requested_gap'] = 'Missing date'
 
-    # print(teacher_applications)
     return render_template("all_notifications.html" ,teacher_applications = teacher_applications , all_history = docs)
 
 # todo route to remove notification's
