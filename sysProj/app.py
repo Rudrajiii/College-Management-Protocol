@@ -536,6 +536,26 @@ def announcement():
             flash('✅ Message recorded successfully!' , 'success')
         return redirect(url_for('admin_dashboard'))
     
+
+# Edit started by satyadeep on 24/12/2024
+# Adding exam scheduler route  
+@app.route('/exam_scheduler', methods = ['POST', 'GET'])
+def exam_scheduler():
+    """
+    Admins adding exam schedule for 
+    students of different batches
+    """
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        exam_data = request.json.get('data', [])
+        # Process the table data as needed  
+        exam_scheduler_db(exam_data)
+        flash('✅ Exam table set successfully!' , 'success')
+        return jsonify({'message': 'Data received successfully', 'data': exam_data})
+
+    return render_template('exam_scheduler.html')
+
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
@@ -669,6 +689,10 @@ def student_dashboard():
                            ACADEMIC_YEAR=student_details['academic_year'],
                            announcement=announcement,
                            docs=leave_entries)
+
+
+
+
 
 #? student profile route
 @app.route('/student_profile')
@@ -998,11 +1022,22 @@ def timetable():
         return redirect(url_for('student_login'))
     return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
 
-@app.route("/exam" , methods=["GET", "POST"])
-def exam():
+
+
+#Student exam panel route
+@app.route('/exam/<student_year>/<branch>', methods = ['POST', 'GET'])
+def exam(student_year , branch):
+    """
+    Students exam schedule viewing 
+    route to check for their exams
+    """
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'])
+    
+    exam_list = student_exam_db(student_year , branch)
+    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'] , exam_list = exam_list)
+
+
 
 @app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
 def update_password(ENROLLMENT_NO):
