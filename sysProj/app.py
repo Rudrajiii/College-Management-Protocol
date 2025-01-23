@@ -677,6 +677,10 @@ def student_dashboard():
 
     ACADEMIC_YEAR = student_details['academic_year']
     announcement = student_announcement_db(ACADEMIC_YEAR)
+
+    #Session for academic year and branch
+    session['academic_year'] = ACADEMIC_YEAR
+    session['branch'] = student_details['branch']
     
     return render_template('student_dashboard.html', username=session['username'],
                            ENROLLMENT_NO=student_details['enrollment_no'],
@@ -1020,7 +1024,7 @@ def internal_server_error(e):
 def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
 
 
@@ -1057,7 +1061,7 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
 
 class AdminNamespace(Namespace):
