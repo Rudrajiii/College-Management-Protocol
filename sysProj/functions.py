@@ -130,25 +130,26 @@ def edit_student_get_db(enrollment_no):
         return students
     
 # Edit Student update data from database connection
-def edit_student_update_db(enrollment_no,username,password,email,branch,year,gender,phone,dob,parent_name,parent_no,address,profile_pic_location):
+def edit_student_update_db(enrollment_no,form_data,profile_pic_location):
     client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
     # Acessing project Database
     db = client['project']
     # Acessing students Collection
     collection = db.students
     # Student record in one dictionary
+    year = form_data['year']
     student_info = {
-        "password" : password ,
-        "username" : username ,
-        "email" : email ,
-        "branch" : branch ,
+        "password" : form_data['password'] ,
+        "username" : form_data['username'] ,
+        "email" : form_data['email'] ,
+        "branch" : form_data['branch'] ,
         "academic_year" : int(year) ,                                                 
-        "gender" : gender ,
-        "phone_no" : phone ,
-        "dob" : dob ,
-        "parent_name" : parent_name ,
-        "parent_no" : parent_no ,
-        "current_address" : address ,
+        "gender" : form_data['gender'] ,
+        "phone_no" : form_data['phone'] ,
+        "dob" : form_data['dob'] ,
+        "parent_name" : form_data['parent_name'] ,
+        "parent_no" : form_data['parent_no'] ,
+        "current_address" : form_data['address'] ,
         "profile_pic" : profile_pic_location
         }
     collection.update_one({"enrollment_no": enrollment_no} , {"$set": student_info})
@@ -262,6 +263,49 @@ def student_announcement_db(ACADEMIC_YEAR):
         temp_lst = [message,time_past]
         info_list.append(temp_lst)
     return info_list
+
+
+
+# Edit start by Satyadeep on 27/12/24
+# Exam_scheduler DB connection through admin dashboard
+
+def exam_scheduler_db(exam_data):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing exam Collection
+    collection = db.exam
+    # Setting time for deletion of exam table
+    exam_table = exam_data.get('schedule')
+    last_date = exam_table[-1].get('date')
+    # converting str type of last_date to datetime variable 
+    deletion_time = datetime.strptime(last_date, "%Y-%m-%d") + timedelta(hours = 24)
+    #inserting data to database
+    data ={
+            "exam_name": exam_data.get('exam_name'),
+            "student_year": exam_data.get('student_year'),
+            "student_branch": exam_data.get('student_branch'),
+            "schedule": exam_data.get('schedule'),
+            "deleteAt": deletion_time          
+        }
+    collection.insert_one(data).inserted_id
+    collection.create_index(
+        [("deleteAt", pymongo.ASCENDING)],
+        expireAfterSeconds=0
+        )
+
+# Students dashboard panel exam DB for sorting specific exams
+def student_exam_db(student_year , branch):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing exam Collection
+    collection = db.exam
+    lst = []
+    exam_list = collection.find({"student_year":student_year , "student_branch":branch})
+    for i in exam_list:
+        lst.append(i)
+    return lst
 
 
 def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):

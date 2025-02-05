@@ -536,6 +536,26 @@ def announcement():
             flash('✅ Message recorded successfully!' , 'success')
         return redirect(url_for('admin_dashboard'))
     
+
+# Edit started by satyadeep on 24/12/2024
+# Adding exam scheduler route  
+@app.route('/exam_scheduler', methods = ['POST', 'GET'])
+def exam_scheduler():
+    """
+    Admins adding exam schedule for 
+    students of different batches
+    """
+    if 'username' not in session or session['role'] != 'admin':
+        return redirect(url_for('admin_login'))
+    if(request.method == 'POST'):
+        exam_data = request.json.get('data', [])
+        # Process the table data as needed  
+        exam_scheduler_db(exam_data)
+        flash('✅ Exam table set successfully!' , 'success')
+        return jsonify({'message': 'Data received successfully', 'data': exam_data})
+
+    return render_template('exam_scheduler.html')
+
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
@@ -657,6 +677,10 @@ def student_dashboard():
 
     ACADEMIC_YEAR = student_details['academic_year']
     announcement = student_announcement_db(ACADEMIC_YEAR)
+
+    #Session for academic year and branch
+    session['academic_year'] = ACADEMIC_YEAR
+    session['branch'] = student_details['branch']
     
     return render_template('student_dashboard.html', username=session['username'],
                            ENROLLMENT_NO=student_details['enrollment_no'],
@@ -669,6 +693,10 @@ def student_dashboard():
                            ACADEMIC_YEAR=student_details['academic_year'],
                            announcement=announcement,
                            docs=leave_entries)
+
+
+
+
 
 #? student profile route
 @app.route('/student_profile')
@@ -996,13 +1024,24 @@ def internal_server_error(e):
 def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
-@app.route("/exam" , methods=["GET", "POST"])
-def exam():
+
+
+#Student exam panel route
+@app.route('/exam/<student_year>/<branch>', methods = ['POST', 'GET'])
+def exam(student_year , branch):
+    """
+    Students exam schedule viewing 
+    route to check for their exams
+    """
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'])
+    
+    exam_list = student_exam_db(student_year , branch)
+    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'] , exam_list = exam_list)
+
+
 
 @app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
 def update_password(ENROLLMENT_NO):
@@ -1022,7 +1061,7 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
 
 class AdminNamespace(Namespace):

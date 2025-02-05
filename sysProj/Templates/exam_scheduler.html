@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Scheduler</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="C:\Users\DELL\Desktop\projects\college website\sysProj\static\styles\exam_scheduler.css">
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/exam_scheduler.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/exam_scheduler.js') }}" defer></script>
 </head>
 <body>
     
@@ -21,9 +22,9 @@
 
     <!-- Main Input Section for Exam Name, Year, Branch -->
     <div class="main-input-container">
-        <input type="text" id="examName" placeholder="Enter Exam Name" required>
-        <input type="number" id="studentYear" placeholder="Enter Student Year" required>
-        <input type="text" id="studentBranch" placeholder="Enter Student Branch" required>
+            <input type="text" id="examName" name="examName" placeholder="Enter Exam Name" required>
+            <input type="number" id="studentYear" name="studentYear" placeholder="Enter Student Year" required>
+            <input type="text" id="studentBranch" name="studentBranch" placeholder="Enter Student Branch" required>
         <button onclick="setMainDetails()">Set Details</button>
     </div>
 
@@ -36,7 +37,7 @@
 
     <!-- Table Section -->
     <div class="table-container">
-        <table>
+        <table id="data-table">
             <thead>
                 <tr>
                 <th>Subject</th>
@@ -83,6 +84,5 @@
         
     </div>
 
-    <script src="C:\Users\DELL\Desktop\projects\college website\sysProj\static\javascripts\exam_scheduler.js"></script>
 </body>
 </html>
