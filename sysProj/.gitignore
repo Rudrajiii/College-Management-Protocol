@@ -7,3 +7,4 @@ pyvenv.cfg
 .env
 private.key
 payment_gateway.py
+/__pycache__
