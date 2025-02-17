@@ -16,51 +16,173 @@
     <script src="{{ url_for('static', filename='javascripts/teacher_dash.js') }}" defer></script>
 </head>
 <body>
-    <h1>Successful login by TEACHER {{username}} 😊</h1>
-    <h4>ENROLLMENT_NO : {{teacher_details['enrollment_no']}}</h4>
-    <h1>Leave Application</h1>
-    <form id="leaveApplicationForm" method="POST"  action="/submit_application" enctype="multipart/form-data">
-        <label for="">EN Number</label>
-        <input name="enrollment" type="text" value="{{teacher_details['enrollment_no']}}" placeholder="EN number">
-        <input name="email" type="hidden" value="{{teacher_details['email']}}" placeholder="EN number">
-        <br>
-        <label for="">Start date*</label>
-        <input type="datetime-local" name="start_time" id="start_time" placeholder="." required>
-        <br>
-        <label for="">End date*</label>
-        <input type="datetime-local" name="end_time" id="end_time" placeholder="." required>
-        <br>
-        <label for="">My Reason:</label>
-        <input name="reason" type="text" placeholder="enter your messege">
-        <br>
-        <span>Current-Application-Status : <span id="Status">{{status}}</span></span>
-        <br>
-        <input id="sumbit" type="submit" value="Apply">
-    </form>
-    <a href="/logout">Logout Me</a>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="../static/images/logo.png" alt="">
+            <h2>I<span class="danger">E</span>M</h2>
+        </div>
+        <div class="navbar">
+            <a href="/student_dashboard" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="/timetable" onclick="timeTableAll()">
+                <span class="material-icons-sharp">today</span>
+                <h3>Time Table</h3>
+            </a> 
+            <a href="/exam/{{ACADEMIC_YEAR}}/{{BRANCH}}">
+                <span class="material-icons-sharp">grid_view</span>
+                <h3>Examination</h3>
+            </a>
+            <a href="/update_password/{{ENROLLMENT_NO}}">
+                <span class="material-icons-sharp">password</span>
+                <h3>Change Password</h3>
+            </a>
+            <a href="/logout">
+                <span class="material-icons-sharp" onclick="">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+        
+    </header>
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                    <div class="profile-photo">
+                        <img src="{{teacher_details['profile_pic']}}" alt="">
+                    </div>
+                    <div class="info">
+                        <p>Hey, <b>{{username}}</b> </p>
+                        <small class="text-muted">EN - {{teacher_details['enrollment_no']}}</small>
+                    </div>
+                </div>
+                <div class="about">
+                    <h5>Username</h5>
+                    <p>{{teacher_details['username']}}</p>
+                    <h5>Email</h5>
+                    <p>{{teacher_details['email']}}</p>
+                    <h5>DOB</h5>
+                    <p>{{teacher_details['dob']}}</p>
+                    <h5>Contact</h5>
+                    <p>{{teacher_details['phone_no']}}</p>
+                    <h5>Subjects</h5>
+                    <p>{{teacher_details['bio']}}</p>
+                </div>
+            </div>
+        </aside>
 
-    <h2>Leave Application History</h2>
-<table style="border: 2px solid;">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>messege</th>
-            <th>Status</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for record in history %}
-        <tr>
-            <td>{{ record.name }}</td>
-            <td>{{ record.message}}</td>
-            <td>{{ record.status }} by Admin</td>
-            <td>{{ record.timestamp }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <main>
+            <h1>Attendance</h1>
+            <div class="subjects">
+                <div class="eg">
+                    <span class="material-icons-sharp">architecture</span>
+                    <h3>Engineering Graphics</h3>
+                    <h2>12/14</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>86%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="mth">
+                    <span class="material-icons-sharp">functions</span>
+                    <h3>Mathematical Engineering</h3>
+                    <h2>27/29</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>93%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="cs">
+                    <span class="material-icons-sharp">computer</span>
+                    <h3>Computer Architecture</h3>
+                    <h2>27/30</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>81%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="cg">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Database Management</h3>
+                    <h2>24/25</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>96%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="net">
+                    <span class="material-icons-sharp">router</span>
+                    <h3>Network Security</h3>
+                    <h2>25/27</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>92%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+            </div>
 
+            <div class="timetable" id="timetable">
+                <div>
+                    <span id="prevDay">&lt;</span>
+                    <h2>Today's Timetable</h2>
+                    <span id="nextDay">&gt;</span>
+                </div>
+                <span class="closeBtn" onclick="timeTableAll()">X</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Room No.</th>
+                            <th>Subject</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- <div class="right">
+            <div class="announcements">
+                <h2>Announcements</h2>
+                <div class="updates">
+                    {% for info in announcement %}
+                    <div class="message">
+                        <p><b>{{info[0]}}</b></p>
+                        <small class="text-muted">{{info[1]}}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="leaves">
+                <h2>Teachers on leave</h2>
+                {% for doc in docs %}
+                {% if doc['status'] == "Accepted" and doc['requested_gap'] >= 0 %}
+                <div class="teacher" id="teacher-{{ doc['_id'] }}" data-start-date="{{ doc['leave_start_date'] }}" data-duration="{{ doc['requested_gap'] }}">
+                    <div id="pp" class="profile-photo"><img id="pompom" src="{{doc['image_url']}}" alt="pp"></div>
+                    <div class="info">
+                        <h3>{{ doc['name'] }}</h3>
+                        <small class="text-muted">In leave for {{ doc['requested_gap'] }} day{% if doc['requested_gap'] != 1 %}s{% endif %}</small>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div> -->
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
 </body>
