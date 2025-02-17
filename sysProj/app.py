@@ -22,6 +22,8 @@ from flask_mail import Mail ,  Message # type: ignore
 import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 import uuid
+import pandas as pd
+import numpy as np
 
 
 #? Local Module's
@@ -677,6 +679,10 @@ def student_dashboard():
 
     ACADEMIC_YEAR = student_details['academic_year']
     announcement = student_announcement_db(ACADEMIC_YEAR)
+
+    #Session for academic year and branch
+    session['academic_year'] = ACADEMIC_YEAR
+    session['branch'] = student_details['branch']
     
     return render_template('student_dashboard.html', username=session['username'],
                            ENROLLMENT_NO=student_details['enrollment_no'],
@@ -1020,7 +1026,7 @@ def internal_server_error(e):
 def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
 
 
@@ -1057,7 +1063,7 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'] , ACADEMIC_YEAR = session['academic_year'] , BRANCH = session['branch'])
 
 
 class AdminNamespace(Namespace):
@@ -1081,6 +1087,34 @@ class TeacherNamespace(Namespace):
 
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
+
+@app.route('/convert_to_json/', methods=['POST'])
+def convert_xlsx_to_json():
+    try:
+        # Check if a file is provided
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # Read the Excel file into a Pandas DataFrame
+        df = pd.read_excel(file, engine='openpyxl')
+
+
+        df = df.replace([np.inf, -np.inf], np.nan)
+        df = df.fillna('')
+
+        # Convert DataFrame to JSON
+        json_data = df.to_dict(orient='records')
+
+        return jsonify(json_data)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)
