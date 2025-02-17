@@ -12,6 +12,8 @@
     <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/main_student_dashboard.css')}}">
     <script src="{{ url_for('static', filename='javascripts/timeTable.js') }}" defer></script>
     <script src="{{ url_for('static', filename='javascripts/app.js') }}" defer></script>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/scss/notification.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/teacher_dash.js') }}" defer></script>
 </head>
 <body>
     <header>
@@ -36,10 +38,6 @@
                 <span class="material-icons-sharp">password</span>
                 <h3>Change Password</h3>
             </a>
-            <a href="/payment/{{ID}}/{{ ENROLLMENT_NO }}">
-                <!-- <span class="material-icons-sharp">password</span> -->
-                <h3>Make Your Payment</h3>
-            </a>
             <a href="/logout">
                 <span class="material-icons-sharp" onclick="">logout</span>
                 <h3>Logout</h3>
@@ -59,26 +57,24 @@
             <div class="profile">
                 <div class="top">
                     <div class="profile-photo">
-                        <img src="../static/images/profile-1.jpg" alt="">
+                        <img src="{{teacher_details['profile_pic']}}" alt="">
                     </div>
                     <div class="info">
                         <p>Hey, <b>{{username}}</b> </p>
-                        <small class="text-muted">EN - {{ENROLLMENT_NO}}</small>
+                        <small class="text-muted">EN - {{teacher_details['enrollment_no']}}</small>
                     </div>
                 </div>
                 <div class="about">
-                    <h5>Branch</h5>
-                    <p>{{BRANCH}}</p>
-                    <h5>Academic Year</h5>
-                    <p>{{ACADEMIC_YEAR}} year</p>
-                    <h5>DOB</h5>
-                    <p>{{DOB}}</p>
-                    <h5>Contact</h5>
-                    <p>{{CONTACT}}</p>
+                    <h5>Username</h5>
+                    <p>{{teacher_details['username']}}</p>
                     <h5>Email</h5>
-                    <p>{{EMAIL_ID}}</p>
-                    <h5>Address</h5>
-                    <p>{{ADDRESS}}</p>
+                    <p>{{teacher_details['email']}}</p>
+                    <h5>DOB</h5>
+                    <p>{{teacher_details['dob']}}</p>
+                    <h5>Contact</h5>
+                    <p>{{teacher_details['phone_no']}}</p>
+                    <h5>Subjects</h5>
+                    <p>{{teacher_details['bio']}}</p>
                 </div>
             </div>
         </aside>
@@ -159,10 +155,9 @@
             </div>
         </main>
 
-        <div class="right">
+        <!-- <div class="right">
             <div class="announcements">
                 <h2>Announcements</h2>
-                <!-- Messages are storing here!! -->
                 <div class="updates">
                     {% for info in announcement %}
                     <div class="message">
@@ -186,7 +181,9 @@
                 {% endif %}
                 {% endfor %}
             </div>
-        </div>
+        </div> -->
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
 </body>
 </html>

@@ -16,6 +16,9 @@ from __STUDENT__ import StudentFuncs
 #? Special Utility module for making things easy
 from __Utils__ import *
 
+#? Payment Credentials
+from payment_gateway import APP_ID , SECRET_KEY
+
 class DataStore():
     a = None
     b = None
@@ -48,6 +51,8 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+#? Razorpay Client Initialization
+razorpay_client = razorpay.Client(auth=(APP_ID,SECRET_KEY)) 
 
 #? Configure Flask-Caching
 app.config['CACHE_TYPE'] = 'SimpleCache'
@@ -766,18 +771,21 @@ def internal_server_error(e):
 def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'])
+    student_info = students.find_one({"enrollment_no": session['enrollment_no']})  #Fetch student record #O(N) -> Costly
+    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
 @app.route("/exam" , methods=["GET", "POST"])
 def exam():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
-    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'])
+    student_info = students.find_one({"enrollment_no": session['enrollment_no']})  # Fetch student record #O(N) -> Costly
+    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
 @app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
 def update_password(ENROLLMENT_NO):
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
+    student_info = students.find_one({"enrollment_no": session['enrollment_no']})  # Fetch student record #O(N) -> Costly
     if request.method == 'POST':
         current_password = request.form.get('currentpass')
         new_password = request.form.get('newpass')
@@ -792,7 +800,7 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'])
+    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
 
 class AdminNamespace(Namespace):
@@ -816,6 +824,202 @@ class TeacherNamespace(Namespace):
 
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
+@app.route("/payment/<ID>/<ENROLLMENT_NO>", methods=['GET', 'POST'])
+def payment(ID, ENROLLMENT_NO):
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    
+    student_info = students.find_one({"enrollment_no": ENROLLMENT_NO})
+    student_id = str(student_info["_id"])
+    
+    if not student_info:
+        return "Student not found", 404
+    
+    current_date = datetime.now()
+    current_year = current_date.year
+    current_month = current_date.month
+    
+    academic_year = student_info.get("academic_year", 1)
+    admission_year = current_year - (academic_year - 1)
+    
+    semester_details = []
+    
+    for sem in range(2, 9):
+        # Calculate years to add based on semester number
+        years_to_add = (sem - 2) // 2
+        
+        # Determine month based on even/odd semester
+        if sem % 2 == 0:  # Even semesters (2,4,6,8)
+            due_month = "January"
+            due_month_num = 1
+        else:  # Odd semesters (3,5,7)
+            due_month = "July"
+            due_month_num = 7
+        
+        due_year = admission_year + years_to_add
+        
+        # Check if the semester due date has passed
+        # is_due_passed = (current_year > due_year) or \
+        #                (current_year == due_year and current_month > due_month_num)
+        # Fetch existing payment record from MongoDB
+        payment_record = payments.find_one({
+            "enrollment_no": ENROLLMENT_NO,
+            "semester": sem
+        })
+        # Determine payment status and button state
+        if payment_record:
+            status = "Paid"
+            fees_display = f"₹{payment_record['amount']} (Paid)"
+            button_state = "disabled"
+            button_text = "Payment Complete"
+            fine = "₹0.00"
+        else:
+            is_due_passed = (current_year > due_year) or (current_year == due_year and current_month > due_month_num)
+            status = "Pending"
+            fees_display = "₹85,000.00"
+            button_state = "enabled"
+            button_text = "Proceed to Pay"
+            fine = f"₹{(current_month - due_month_num) * 1000:.2f}" if is_due_passed else "₹0.00"
+        
+        semester_details.append({
+            "sem": f"{sem}th Sem",
+            "semester_fees": fees_display,
+            "hostel_charge": "-",
+            "due_on": f"{due_month} {due_year}",
+            "fine": fine,
+            "status": status,
+            "button_state": button_state,
+            "button_text": button_text
+        })
+    
+    return render_template(
+        "payment.html",
+        key_id=APP_ID,
+        ID=student_id,
+        ENROLLMENT_NO=session['enrollment_no'],
+        student=student_info,
+        semester_details=semester_details
+    )
+
+
+
+@app.route("/order", methods=['POST'])
+def order():
+    try:
+        data = request.get_json()
+        semester = data.get("semester", "").strip()
+
+        # Remove any non-numeric characters (like 'th', 'rd', 'nd', 'st')
+        formatted_sem = ''.join(filter(str.isdigit, semester))
+
+        if not formatted_sem:
+            return jsonify({"error": "Semester is required"}), 400
+
+        formatted_sem = int(formatted_sem) 
+
+        # Store semester in session
+        session["semester"] = formatted_sem
+        print(session["semester"])
+
+        amount = 800 * 100  # Convert ₹800 to paise (80000)
+        currency = "INR"
+
+        order_data = {
+            "amount": amount,
+            "currency": currency,
+            "payment_capture": 1
+        }
+        razorpay_order = razorpay_client.order.create(data=order_data)
+
+        return jsonify({
+            "order_id": razorpay_order.get("id"),
+            "amount": amount
+        })
+
+    except Exception as e:
+        print("Error creating order:", str(e))
+        return jsonify({"error": "Failed to create order", "details": str(e)}), 400
+
+
+
+
+@app.route("/receipt/<receipt_id>/<student_id>/<semester>", methods=['GET'])
+def receipt(receipt_id, student_id, semester):
+    payment_record = payments.find_one({"receipt_id": receipt_id})
+    if not payment_record:
+        return "Payment record not found", 404    
+    # Ensure the payment record matches the student_id and semester
+    if payment_record["student_id"] != student_id or payment_record["semester"] != int(semester):
+        return "Invalid payment record", 400
+
+    return render_template("payment_recipt.html", payment=payment_record)
+
+
+@app.route('/check', methods=['POST'])
+def check():
+    try:
+        payment_id = request.form.get("razorpay_payment_id")
+        order_id = request.form.get("razorpay_order_id")
+        signature = request.form.get("razorpay_signature")
+
+        if not payment_id or not order_id or not signature:
+            return jsonify({"error": "Missing payment details"}), 400
+
+        razorpay_client.utility.verify_payment_signature({
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
+        })
+
+        enrollment_no = session.get("enrollment_no")
+        student_info = students.find_one({"enrollment_no": enrollment_no})
+
+        if not student_info:
+            return jsonify({"error": "Student not found"}), 404
+
+        # Fetch student info from session
+        student_id = str(student_info["_id"])
+        enrollment_no = session.get("enrollment_no")
+        semester = session.get("semester")
+        amount = 85000  # Assuming fixed semester fee
+        fine = session.get("fine", "₹0.00")
+        timestamp = datetime.now()
+        year = timestamp.year
+        month = timestamp.month
+        day = timestamp.day
+        payment_date = f"{year}/{month}/{day}"
+        print(student_id,enrollment_no,semester,fine)
+
+        # Save payment details to MongoDB
+        # Generate a unique pay_id
+        receipt_id = str(ObjectId())
+
+        payments.insert_one({
+            "student_id": student_id,
+            "receipt_id":receipt_id,
+            "username" : student_info["username"],
+            "enrollment_no": enrollment_no,
+            "semester": semester,
+            "amount": amount,
+            "fine": fine,
+            "order_id": order_id,
+            "payment_id": payment_id,
+            "status": "Success",
+            "timestamp": payment_date
+        })        
+        receipt_url = f"/receipt/{receipt_id}/{student_id}/{semester}"
+        return jsonify({
+            "status": "success",
+            "message": "Payment successful",
+            "semester": semester,
+            "redirect_url": receipt_url
+        })
+
+    except Exception as e:
+        print("Signature Verification Failed:", str(e))
+        return jsonify({"error": "Signature Verification Failed", "details": str(e)}), 400
+
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)

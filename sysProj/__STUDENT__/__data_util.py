@@ -14,4 +14,5 @@ def format_student_dashboard_data(student_details, announcement, leave_entries):
         "ACADEMIC_YEAR": student_details['academic_year'],
         "announcement": announcement,
         "docs": leave_entries,
+        "ID": str(student_details['_id'])
     }

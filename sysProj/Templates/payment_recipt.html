@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <style>
+        /* Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        /* Variables */
+        :root {
+            --primary-color: #3949ab;
+            --primary-light: #e8eaf6;
+            --secondary-color: #283593;
+            --text-dark: #263238;
+            --text-light: #455a64;
+            --background-light: #f5f7fa;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            background-color: var(--background-light);
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+        
+        /* Main container */
+        .receipt-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            min-height: 100vh;
+            max-width: 1000px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Banner area */
+        .banner {
+            background-color: var(--primary-light);
+            text-align: center;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            color: var(--primary-color);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .banner span {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        /* Header section */
+        .header {
+            text-align: center;
+            padding: 0 20px 25px;
+            color: var(--text-dark);
+        }
+        
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .header h2 {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+        
+        .header h3 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+        
+        .header h3:last-child {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        /* Content area with three columns */
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0 20px;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        /* Left, middle, and right sections */
+        .left-section, 
+        .middle-section,
+        .right-section {
+            flex: 1;
+            min-width: 200px;
+            background-color: #F6F6F9;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(57, 73, 171, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Data rows */
+        .data-row {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .data-label {
+            font-weight: 500;
+            margin-bottom: 2px;
+            color: var(--primary-color);
+        }
+        
+        .data-value {
+            font-weight: 400;
+            opacity: 0.9;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        
+        .total-amount .data-label,
+        .total-amount .data-value {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        
+        /* Note section */
+        .note {
+            padding: 0 20px 20px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-light);
+            background-color: var(--card-bg);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .note strong {
+            color: var(--text-dark);
+        }
+        
+        /* Button container */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 20px 25px;
+        }
+        
+        /* Button styles */
+        button {
+            padding: 10px 35px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 3px 10px rgba(57, 73, 171, 0.2);
+        }
+        
+        button.back-btn {
+            background-color: #e0e0e0;
+            color: var(--text-dark);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(57, 73, 171, 0.3);
+        }
+        
+        button.back-btn:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .banner {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .receipt-container {
+                box-shadow: none;
+                border: none;
+            }
+            
+            .buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <!-- Banner area -->
+        <div class="banner">
+            <span>College Resource Planning</span>
+        </div>
+        
+        <!-- Header area -->
+        <div class="header">
+            <h2>Payment received for semester {{ payment.semester}}</h2>
+            <h3>Money Receipt | Receipt Id {{ payment.payment_id|default('21473/2024-25') }} | {{payment.timestamp}}</h3>
+        </div>
+        
+        <!-- Content area with three columns -->
+        <div class="content">
+            <!-- Left section -->
+            <div class="left-section">
+                <div class="data-row">
+                    <span class="data-label">Enrollment No</span>
+                    <span class="data-value">{{ payment.enrollment_no|default('') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Admission Fees</span>
+                    <span class="data-value">{{ payment.admission_fees|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Caution Money</span>
+                    <span class="data-value">{{ payment.caution_money|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Security Deposit(Hostel)</span>
+                    <span class="data-value">{{ payment.security_deposit|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Mode of Payment</span>
+                    <span class="data-value">{{ payment.security_deposit|default('Rs/-') }}</span>
+                </div>
+            </div>
+            
+            <!-- Middle section -->
+            <div class="middle-section">
+                <div class="data-row">
+                    <span class="data-label">University Development Charge</span>
+                    <span class="data-value">{{ payment.development_charge|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Fine</span>
+                    <span class="data-value">{{ payment.fine|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Payment Type</span>
+                    <span class="data-value">{{ payment.payment_type|default('Online') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Bank Name</span>
+                    <span class="data-value">{{ payment.bank_name|default('SBI') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Deposit Bank</span>
+                    <span class="data-value">{{ payment.bank_name|default('HDFC Bank') }}</span>
+                </div>
+            </div>
+            
+            <!-- Right section -->
+            <div class="right-section">
+                <div class="data-row">
+                    <span class="data-label">Name</span>
+                    <span class="data-value">{{ payment.username|default('') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Semester Fees</span>
+                    <span class="data-value">{{ payment.amount }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Hostel Charge</span>
+                    <span class="data-value">{{ payment.hostel_charge|default('0') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Bus/Mess Charge</span>
+                    <span class="data-value">{{ payment.mess_charge|default('0') }}</span>
+                </div>
+                <div class="data-row total-amount">
+                    <span class="data-label">Total Amount:</span>
+                    <span class="data-value">₹{{ payment.amount|default('') }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Note section -->
+        <div class="note">
+            <strong>N.B.:</strong> Received cheque subject to realisation. Admission is provisional, subject to registering this student with the affiliating university. Incase, university refuse to register the student our liability will be limited to refund of the full amount without interest.
+        </div>
+        
+        <!-- Buttons -->
+        <div class="buttons">
+            <button onclick="window.print()">Print</button>
+            <button class="back-btn" onclick="window.location.href='/dashboard'">Back</button>
+        </div>
+    </div>
+</body>
+</html>
