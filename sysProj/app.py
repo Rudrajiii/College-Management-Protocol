@@ -22,6 +22,8 @@ from flask_mail import Mail ,  Message # type: ignore
 import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 import uuid
+import pandas as pd
+import numpy as np
 
 
 #? Local Module's
@@ -620,6 +622,30 @@ def teacher_profile(id):
 
     return render_template('teacher_profile.html', teacher=teacher)
 
+# Edit started by satyadeep on 17/2/2025
+# Adding exam result setter route
+
+@app.route('/set_exam_result', methods = ['POST', 'GET'])
+def set_exam_result():
+    result = {
+            "branch": "CSE",
+            "sem": "4",
+            "exam_name":"END SEM",
+            "result": [
+                {"enr_no": "111", "name": "lol1" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "222", "name": "lol2" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "333", "name": "lol3" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "444", "name": "lol4" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "555", "name": "lol5" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "666", "name": "lol6" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "777", "name": "lol7" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
+                {"enr_no": "888", "name": "lol8" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90}
+            ]
+        }
+
+    return render_template("preview_result.html" , result = result)
+
+
 # -------------------------------------------------------
 #* Route fuction of student login
 #* All student routes are listed down here 
@@ -1085,6 +1111,33 @@ class TeacherNamespace(Namespace):
 
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
+@app.route('/convert_to_json/', methods=['POST'])
+def convert_xlsx_to_json():
+    try:
+        # Check if a file is provided
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # Read the Excel file into a Pandas DataFrame
+        df = pd.read_excel(file, engine='openpyxl')
+
+
+        df = df.replace([np.inf, -np.inf], np.nan)
+        df = df.fillna('')
+
+        # Convert DataFrame to JSON
+        json_data = df.to_dict(orient='records')
+
+        return jsonify(json_data)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)
