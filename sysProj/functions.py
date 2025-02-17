@@ -371,4 +371,5 @@ def add_leave_info(teacher_info):
     client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
     db = client['project']
     temporary_application_queue = db['temporary_application_queue']
-    temporary_application_queue.insert_one(teacher_info)    
+    temporary_application_queue.insert_one(teacher_info)
+

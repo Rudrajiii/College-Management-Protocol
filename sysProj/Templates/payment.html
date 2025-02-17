@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IEM - Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="shortcut icon" href="../static/images/logo.png">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/payment_page_ui.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/main_student_dashboard.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/app.js') }}" defer></script>
+
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+          <h2>U<span class="danger">M</span>S</h2>
+      </div>
+      <div class="navbar">
+          <a href="/student_dashboard">
+              <span class="material-icons-sharp">home</span>
+              <h3>Home</h3>
+          </a>
+          <a href="/timetable" onclick="timeTableAll()">
+              <span class="material-icons-sharp">today</span>
+              <h3>Time Table</h3>
+          </a> 
+          <a href="/exam">
+              <span class="material-icons-sharp">grid_view</span>
+              <h3>Examination</h3>
+          </a>
+          <a href="/update_password/{{ ENROLLMENT_NO }}">
+              <span class="material-icons-sharp">password</span>
+              <h3>Change Password</h3>
+          </a>
+          <a href="/payment/{{ID}}/{{ ENROLLMENT_NO }}" class="active">
+              <h3>Make Your Payment</h3>
+          </a>
+          <a href="/logout">
+              <span class="material-icons-sharp">logout</span>
+              <h3>Logout</h3>
+          </a>
+      </div>
+      <div id="profile-btn" style="display: none;">
+          <span class="material-icons-sharp">person</span>
+      </div>
+      <div class="theme-toggler">
+          <span class="material-icons-sharp active">light_mode</span>
+          <span class="material-icons-sharp">dark_mode</span>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard">
+      <div class="info-card">
+          <div class="notice-section">
+              For online payment-related queries, please mail to <a href="mailto:kartik.ghosh@iem.edu.in">kartik.ghosh@iem.edu.in</a>
+          </div>
+          <h2>Student Information</h2>
+          <div class="info-group">
+            <div class="info-group">
+              <label class="info-label">Name</label>
+              <div class="info-value">{{ student.username }}</div>
+          </div>
+          
+          <div class="info-group">
+              <label class="info-label">Mobile Number</label>
+              <div class="info-value">{{ student.phone_no }}</div>
+          </div>
+          
+          <div class="info-group">
+              <label class="info-label">Email</label>
+              <div class="info-value">{{ student.email }}</div>
+          </div>
+          
+          <div class="info-group">
+              <label class="info-label">Enrollment Number</label>
+              <div class="info-value">{{ student.enrollment_no }}</div>
+          </div>
+      </div>
+      </div>
+      <div class="table-card">
+        <table class="payment-table">
+            <thead>
+                <tr>
+                    <th>Sem</th>
+                    <th>Semester Fees</th>
+                    <th>Hostel Charge</th>
+                    <th>Due on</th>
+                    <th>Fine</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sem in semester_details %}
+                <tr>
+                    <td>{{ sem.sem }}</td>
+                    <td>{{ sem.semester_fees }}</td>
+                    <td>{{ sem.hostel_charge }}</td>
+                    <td>{{ sem.due_on }}</td>
+                    <td>{{ sem.fine }}</td>
+                    <td>
+                        {% if sem.status == "Paid" %}
+                            <span class="status-paid">Paid</span>
+                        {% else %}
+                            <span class="status-pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                      <button type="button" 
+        class="btn-pay {% if sem.button_state == 'disabled' %}disabled{% endif %}" 
+        {% if sem.button_state == 'disabled' %}disabled{% endif %}
+        data-sem="{{ sem['sem'].split()[0] }}" {{ sem['button_state'] }} >
+        {{ sem['button_text'] }}
+</button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll(".btn-pay").forEach(button => {
+    button.addEventListener("click", function () {
+    let semester = this.getAttribute("data-sem");      
+    fetch('/order', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ semester: semester })
+})
+.then(response => response.json())
+.then(order => {
+    if (order.error) {
+        console.error("Order Error:", order.error);
+        alert("Payment failed: " + order.error);
+        return;
+    }
+
+    const options = {
+        "key": "{{ key_id }}",  
+        "amount": order.amount,  
+        "currency": "INR",
+        "name":"IEM Kolkata",
+        "description":"Payment for Sem " + semester,
+        "order_id": order.order_id,
+        "handler": function(response) {
+            fetch('/check', {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Payment verification failed: " + data.error);
+                } else {
+                    // alert("Payment successful!");
+                    window.location.href = data.redirect_url;
+                }
+            })
+            .catch(error => console.error("Verification Error:", error));
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+})
+.catch(error => console.error("Fetch Error:", error));
+
+    });
+});
+
+  </script>
+  
+  </body>
+</html>
