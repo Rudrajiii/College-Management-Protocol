@@ -22,6 +22,8 @@ from flask_mail import Mail ,  Message # type: ignore
 import smtplib
 from flask_socketio import SocketIO, emit , send , Namespace #type: ignore
 import uuid
+import pandas as pd
+import numpy as np
 
 
 #? Local Module's
@@ -1085,6 +1087,34 @@ class TeacherNamespace(Namespace):
 
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
+
+@app.route('/convert_to_json/', methods=['POST'])
+def convert_xlsx_to_json():
+    try:
+        # Check if a file is provided
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # Read the Excel file into a Pandas DataFrame
+        df = pd.read_excel(file, engine='openpyxl')
+
+
+        df = df.replace([np.inf, -np.inf], np.nan)
+        df = df.fillna('')
+
+        # Convert DataFrame to JSON
+        json_data = df.to_dict(orient='records')
+
+        return jsonify(json_data)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)
