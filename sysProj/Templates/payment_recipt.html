@@ -30,8 +30,8 @@
         }
         
         html, body {
-            height: 100%;
             width: 100%;
+            height: 100%;
             background-color: var(--background-light);
         }
         
@@ -60,7 +60,7 @@
         .banner {
             background-color: var(--primary-light);
             text-align: center;
-            padding: 15px;
+            padding: 7px;
             margin: 20px;
             border-radius: 8px;
             color: var(--primary-color);
@@ -68,15 +68,23 @@
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between; /* Distribute space between logos and text */
             gap: 15px;
         }
-        
+
         .banner span {
             font-size: 1.1rem;
             font-weight: 600;
+            flex-grow: 1; /* Allow the text to take up remaining space */
+            text-align: center; /* Center the text */
         }
-        
+
+        .banner-logo {
+            height: 50px; /* Adjust the height of the logo */
+            width: auto; /* Maintain aspect ratio */
+            object-fit: contain; /* Ensure the logo fits within the height */
+            border-radius: 8px;
+        }
         /* Header section */
         .header {
             text-align: center;
@@ -250,7 +258,9 @@
     <div class="receipt-container">
         <!-- Banner area -->
         <div class="banner">
+            <img src="https://i0.wp.com/media.iem.edu.in/uploads/sites/7/2020/10/cropped-logo-2.png?fit=400,200&ssl=1" alt="IEM_LOGO" class="banner-logo">
             <span>College Resource Planning</span>
+            <img src="https://i0.wp.com/media.iem.edu.in/uploads/sites/7/2020/10/cropped-logo-2.png?fit=400,200&ssl=1" alt="IEM_LOGO" class="banner-logo">
         </div>
         
         <!-- Header area -->
@@ -341,8 +351,8 @@
         
         <!-- Buttons -->
         <div class="buttons">
-            <button onclick="window.print()">Print</button>
-            <button class="back-btn" onclick="window.location.href='/dashboard'">Back</button>
+            <button type="button" onclick="window.print()">Print</button>
+            <button type="button" class="back-btn"><a style="text-decoration: none; color: black;" href="{{payment_dashboard_url}}">Back</a></button>
         </div>
     </div>
 </body>

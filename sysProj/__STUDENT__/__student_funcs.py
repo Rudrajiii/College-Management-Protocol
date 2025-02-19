@@ -43,6 +43,7 @@ class StudentFuncs:
         #todo Just to debug bruh ..
         print("\n\n_______________________________")
         print(leave_entries)
+        # print(student_details)
         print("_______________________________\n\n")
 
         for doc in leave_entries:

@@ -460,7 +460,6 @@ def student_dashboard():
         return redirect(url_for('student_login'))
 
     student_data = student_funcs.get_student_dashboard_data(session['enrollment_no'])
-
     if not student_data:
         return redirect(url_for('student_login'))
 
@@ -772,14 +771,14 @@ def timetable():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
     student_info = students.find_one({"enrollment_no": session['enrollment_no']})  #Fetch student record #O(N) -> Costly
-    return render_template("timetable.html",ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
+    return render_template("timetable.html",ACADEMIC_YEAR=student_info['academic_year'] , BRANCH=student_info['branch'],ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
-@app.route("/exam" , methods=["GET", "POST"])
-def exam():
+@app.route("/exam/<ACADEMIC_YEAR>/<BRANCH>" , methods=["GET", "POST"])
+def exam(ACADEMIC_YEAR,BRANCH):
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
     student_info = students.find_one({"enrollment_no": session['enrollment_no']})  # Fetch student record #O(N) -> Costly
-    return render_template("exam.html" , ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
+    return render_template("exam.html" ,ACADEMIC_YEAR=student_info['academic_year'] , BRANCH=student_info['branch'], ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
 @app.route("/update_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
 def update_password(ENROLLMENT_NO):
@@ -800,7 +799,7 @@ def update_password(ENROLLMENT_NO):
                 return f'''<h1>Please input correct old password</h1>'''
             else:
                 return f'''<h1>Password Successfully changed</h1>'''
-    return render_template("password.html" , ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
+    return render_template("password.html" ,ACADEMIC_YEAR=student_info['academic_year'] , BRANCH=student_info['branch'], ENROLLMENT_NO = session['enrollment_no'] , ID=str(student_info["_id"]))
 
 
 class AdminNamespace(Namespace):
@@ -899,7 +898,9 @@ def payment(ID, ENROLLMENT_NO):
         ID=student_id,
         ENROLLMENT_NO=session['enrollment_no'],
         student=student_info,
-        semester_details=semester_details
+        semester_details=semester_details,
+        ACADEMIC_YEAR=student_info['academic_year'],
+        BRANCH=student_info['branch']
     )
 
 
@@ -952,8 +953,49 @@ def receipt(receipt_id, student_id, semester):
     # Ensure the payment record matches the student_id and semester
     if payment_record["student_id"] != student_id or payment_record["semester"] != int(semester):
         return "Invalid payment record", 400
+    
+    payment_dashboard_url = f'/payment/{payment_record["student_id"]}/{session["enrollment_no"]}'
 
-    return render_template("payment_recipt.html", payment=payment_record)
+    return render_template("payment_recipt.html", payment=payment_record , payment_dashboard_url=payment_dashboard_url)
+
+
+@app.route('/make-receipt-url', methods=['GET'])
+def make_receipt_url():
+    semester = request.args.get("semester", "").strip()
+
+    # Remove any non-numeric characters (like 'th', 'rd', 'nd', 'st')
+    formatted_sem = ''.join(filter(str.isdigit, semester))
+
+    if not formatted_sem:
+        return jsonify({"error": "Semester is required"}), 400  # Explicit error response
+
+    formatted_sem = int(formatted_sem)
+    enrollment_no = session.get("enrollment_no")
+    
+    if not enrollment_no:
+        return jsonify({"error": "Unautherised , User not logged in"}), 401  # Return if session data is missing
+
+    student_info = students.find_one({"enrollment_no": enrollment_no})
+    
+    if not student_info:
+        return jsonify({"error": "Student not found"}), 404
+
+    student_id = str(student_info["_id"])
+    receipt_details = payments.find_one({
+        "student_id": student_id,
+        "semester": formatted_sem
+    })
+
+    if not receipt_details:
+        return jsonify({"error": "Receipt not found"}), 404
+
+    receipt_id = receipt_details.get('receipt_id')
+    if not receipt_id:
+        return jsonify({"error": "Invalid receipt data"}), 500
+
+    generated_receipt_url = f'/receipt/{receipt_id}/{student_id}/{formatted_sem}'
+
+    return jsonify({"url": generated_receipt_url})  
 
 
 @app.route('/check', methods=['POST'])

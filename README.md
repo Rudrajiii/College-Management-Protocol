@@ -1,54 +1,68 @@
-# College Management Ecosystem -2.0
+# College Management Eco-system
 -----------------------------------
-## Overview 
-This project is a web-based student management system designed to streamline various administrative tasks for a college. It leverages a combination of HTML, CSS, JavaScript, Flask, and MongoDB to provide a robust and interactive user experience.
 
-## Features
-- **Student Registration**: Allows students to register with their personal details.
-- **Student Management**: Admins can view, edit, and delete student records.
-- **Authentication**: Secure login system for both students,teachers and admins.
-- **Dashboard**: Provides an overview of student,teacher and admin statistics and other relevant data.
-- **Responsive Design**: Ensures usability across different devices and screen sizes.
+## Why This Software ?
+> [!NOTE]  
+> This is for managing the whole eco-system of a college starting from managing the
+> students / teachers through a admin in a single place within a centralized system
+> also benefitial for handling serveral kind of stats of students / teachers /etc
 
-## Technologies Used
-- **HTML**: For structuring the web pages.
-- **CSS**: For styling the web pages.
-- **JavaScript**: For client-side scripting and interactivity.
-- **Flask**: As the web framework for building the backend.
-- **MongoDB**: As the database for storing student records.
+## About This Project 
+This project is a web-based student management system designed to streamline various administrative tasks for a college. It leverages a combination of modern day web frameworks 
+like **"Flask"**
 
-## Installation
+## Technologies Used 💻
 
-### Prerequisites
-- Python 3.x
-- Flask
-- MongoDB
-- Node.js (for managing JavaScript dependencies, if any)
+### **Backend**
+- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flask/flask-original.svg" alt="Flask" width="20"/> **Python (Flask)**: Main Backend Framework of this project.
 
-### Setup
+### **Database**
+- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" alt="MongoDB" width="20"/> **MongoDB**: Free instance of MongoDB Cluster (512MB).
 
-1. **Clone the Repository**
-    ```bash
-    git clone https://github.com/Rickyy-Sam07/student_management_app2.0.git
-    cd student-management-website
-    ```
+### **Frontend**
+- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="JavaScript" width="20"/> **JavaScript**: For client-side scripting and interactivity.
+- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/sass/sass-original.svg" alt="SCSS" width="20"/> **SCSS & CSS**: For styling the HTML pages.
+- <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg" alt="HTML" width="20"/> **HTML & Jinja Templating**: For dynamic data rendering / rendering page content.
 
-2. **Create a Virtual Environment**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate   # On Windows, use `venv\Scripts\activate`
-    ```
+### Prerequisites 📚
+> [!IMPORTANT] 
+> - Python 3.10.* <= 3.11.* <= 3.12.*
+> - Flask
+> - MongoDB
+> - JavaScript , Scss , Bootstrap For Frontend
 
-3. **Set Up MongoDB**
-    - Ensure MongoDB is installed and running.
-    - Update the MongoDB connection string in the Flask app configuration if necessary.
+## Setup & Installation ⚙️
 
-4. **Run the Application**
-    ```bash
-    flask run
-    ```
-5. **Access the Application**
-    Open your web browser and go to `http://127.0.0.1:5000`.
+> [!TIP]
+> First Fork this repo to make a local copy of this software.
+### [1] clone the repo to get the source code:
+```bash
+git clone https://github.com/Rudrajiii/College-Management-Protocol.git
+``` 
+### [2] navigate to the directory:
+```bash
+cd College-Management-Protocol
+```
+### [3] create a virtual environment:
+```bash
+python -m venv sysProj
+```
+### [4] navigate to the newly created virtual environment directory:
+```bash
+cd sysProj
+```
+### [5] activate the environment:
+```bash
+.\Scripts\activate
+```
+### [6] install all the dependencies:
+```bash
+pip install -r requirements.txt
+```
+### [7] run the server:
+```bash
+python app.py
+```
 
 ## Project Structure
 **Features**

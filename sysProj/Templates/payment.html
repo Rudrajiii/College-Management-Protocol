@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="../static/images/logo.png">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/payment_page_ui.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/main_student_dashboard.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/payment.js') }}" defer></script>
     <script src="{{ url_for('static', filename='javascripts/app.js') }}" defer></script>
 
   </head>
@@ -27,7 +28,7 @@
               <span class="material-icons-sharp">today</span>
               <h3>Time Table</h3>
           </a> 
-          <a href="/exam">
+          <a href="/exam/{{ACADEMIC_YEAR}}/{{BRANCH}}">
               <span class="material-icons-sharp">grid_view</span>
               <h3>Examination</h3>
           </a>
@@ -92,6 +93,7 @@
                     <th>Fine</th>
                     <th>Status</th>
                     <th>Action</th>
+                    <th>Receipt</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,14 +112,14 @@
                         {% endif %}
                     </td>
                     <td>
-                      <button type="button" 
-        class="btn-pay {% if sem.button_state == 'disabled' %}disabled{% endif %}" 
-        {% if sem.button_state == 'disabled' %}disabled{% endif %}
-        data-sem="{{ sem['sem'].split()[0] }}" {{ sem['button_state'] }} >
-        {{ sem['button_text'] }}
-</button>
-
+                        <button type="button" 
+                            class="btn-pay {% if sem.button_state == 'disabled' %}disabled{% endif %}" 
+                            {% if sem.button_state == 'disabled' %}disabled{% endif %}
+                            data-sem="{{ sem['sem'].split()[0] }}" {{ sem['button_state'] }} >
+                            {{ sem['button_text'] }}
+                        </button>
                     </td>
+                    <td><a href="" id="receipt-viewer" data-sem="{{ sem['sem'].split()[0] }}">👁️</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

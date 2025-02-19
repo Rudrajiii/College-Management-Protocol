@@ -59,8 +59,7 @@
             <div class="profile">
                 <div class="top">
                     <div class="profile-photo">
-                        <img src="../static/images/profile-1.jpg" alt="">
-                    </div>
+                        <img src="{{ url_for('static', filename='Uploads/' ~ (profile_pic if profile_pic and profile_pic != '' else 'kayi.png')) }}" alt="Profile Picture">                    </div>
                     <div class="info">
                         <p>Hey, <b>{{username}}</b> </p>
                         <small class="text-muted">EN - {{ENROLLMENT_NO}}</small>
