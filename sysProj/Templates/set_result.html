@@ -1,0 +1,178 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="set_result" method="post" action="/set_exam_result" enctype="multipart/form-data">
+        <h3>Enter Branch</h3>
+            <input type="text" name="branch" id="branch" required />
+        <h3>Enter SEM</h3>
+            <input type="text" name="sem" id="sem" required /> 
+        <h3>Enter Exam Name</h3>
+            <input type="text" name="exam_name" id="exam_name" required />
+        <br>
+        <h3>Select Result Excel file</h3>
+            <input type="file" id="fileInput" required accept=".xls,.xlsx">
+        <button type="button" onclick="uploadFile()">Upload</button>
+
+
+    </form>
+    <script>
+        function uploadFile() {
+
+            const branch = document.getElementById('branch').value; 
+            const sem = document.getElementById('sem').value; 
+            const exam_name = document.getElementById('exam_name').value;
+
+            let fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length === 0) {
+                document.getElementById("status").innerText = "Please select a file!";
+                return;
+            }
+
+            let file = fileInput.files[0];  // Get the selected file
+            let formData = new FormData();
+
+            formData.append("branch", branch);
+            formData.append("sem", sem);
+            formData.append("exam_name", exam_name);
+
+            formData.append("file", file);  // Append file to FormData
+
+            fetch("/get_result_file", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data.result_data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Preview</title>
+</head>
+<body>
+    <form id="set_result" method="post" enctype="multipart/form-data">
+        <h3>Enter Branch</h3>
+        <input type="text" name="branch" id="branch" required />
+        <h3>Enter SEM</h3>
+        <input type="text" name="sem" id="sem" required /> 
+        <h3>Enter Exam Name</h3>
+        <input type="text" name="exam_name" id="exam_name" required />
+        <br>
+        <h3>Select Result Excel file</h3>
+        <input type="file" id="fileInput" required accept=".xls,.xlsx,.xlsm,.xlsb">
+    </form>
+    
+    <h1 id="heading">  </h1>
+
+    <h3>Excel Preview:</h3>
+    <div id="preview"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+      
+
+    <script>
+
+
+
+
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const fileInput = this;
+            const preview = document.getElementById('preview');
+            const file = fileInput.files[0];
+
+
+              
+       const branch = document.getElementById('branch').value
+       const sem = document.getElementById('sem').value
+       const exam_name = document.getElementById('exam_name').value
+
+       document.getElementById('heading').textContent = ` ${exam_name} ${sem} ${branch}  ` ;
+
+
+
+            if (!file) {
+                preview.innerHTML = "<p>No file selected.</p>";
+                return;
+            }
+
+            // Validate file extension
+            const allowedExtensions = [".xls", ".xlsx", ".xlsm", ".xlsb"];
+            const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("Invalid file type! Please upload an Excel file (.xls, .xlsx, .xlsm, .xlsb).");
+                fileInput.value = ""; // Reset file input
+                preview.innerHTML = ""; // Clear preview
+                return;
+            }
+
+            // Read file using FileReader
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                // Get the first sheet
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                if (rows.length === 0) {
+                    preview.innerHTML = "<p>No data found in the file.</p>";
+                    return;
+                }
+
+                // Create HTML table
+                let table = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+                rows.forEach((row, rowIndex) => {
+                    table += "<tr>";
+                    row.forEach(cell => {
+                        if (rowIndex === 0) {
+                            table += `<th style="padding: 5px; background: lightgray;">${cell || ""}</th>`;
+                        } else {
+                            table += `<td style="padding: 5px;">${cell || ""}</td>`;
+                        }
+                    });
+                    table += "</tr>";
+                });
+
+                table += "</table>";
+                preview.innerHTML = table;
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>

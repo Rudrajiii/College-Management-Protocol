@@ -6,6 +6,7 @@ from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
+from miscellaneous_functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
@@ -627,23 +628,39 @@ def teacher_profile(id):
 
 @app.route('/set_exam_result', methods = ['POST', 'GET'])
 def set_exam_result():
-    result = {
-            "branch": "CSE",
-            "sem": "4",
-            "exam_name":"END SEM",
-            "result": [
-                {"enr_no": "111", "name": "lol1" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "222", "name": "lol2" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "333", "name": "lol3" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "444", "name": "lol4" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "555", "name": "lol5" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "666", "name": "lol6" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "777", "name": "lol7" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90},
-                {"enr_no": "888", "name": "lol8" , "maths": 100 , "science": 100 , "COE": 90 , "AIML": 90}
-            ]
-        }
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+    
+    return render_template("set_result.html")
 
-    return render_template("preview_result.html" , result = result)
+
+# Only post route to handle file upload
+@app.route('/get_result_file', methods=['POST'])
+def get_result_file():
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+
+    branch = request.form.get('branch')
+    sem = request.form.get('sem')
+    exam_name = request.form.get('exam_name')
+
+    
+    file = request.files.get("file")  # ✅ Use .get() to avoid KeyError
+    if not file:
+        return jsonify({"success": False, "message": "No file provided"}), 400
+        
+    
+    result = convert_xlsx_to_json(file)
+    json_data = {}
+    json_data['branch'] = branch
+    json_data['sem'] = sem
+    json_data['exam_name'] = exam_name
+    json_data['result'] = result
+
+    print(json_data)
+    
+    return jsonify({"success": True, "message": f"Received file: {file.filename}" , "result_data": json_data})
+    
 
 
 # -------------------------------------------------------
@@ -1112,32 +1129,32 @@ class TeacherNamespace(Namespace):
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
 
-@app.route('/convert_to_json/', methods=['POST'])
-def convert_xlsx_to_json():
-    try:
-        # Check if a file is provided
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file part'}), 400
+# @app.route('/convert_to_json/', methods=['POST'])
+# def convert_xlsx_to_json():
+#     try:
+#         # Check if a file is provided
+#         if 'file' not in request.files:
+#             return jsonify({'error': 'No file part'}), 400
 
-        file = request.files['file']
+#         file = request.files['file']
 
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
+#         if file.filename == '':
+#             return jsonify({'error': 'No selected file'}), 400
 
-        # Read the Excel file into a Pandas DataFrame
-        df = pd.read_excel(file, engine='openpyxl')
+#         # Read the Excel file into a Pandas DataFrame
+#         df = pd.read_excel(file, engine='openpyxl')
 
 
-        df = df.replace([np.inf, -np.inf], np.nan)
-        df = df.fillna('')
+#         df = df.replace([np.inf, -np.inf], np.nan)
+#         df = df.fillna('')
 
-        # Convert DataFrame to JSON
-        json_data = df.to_dict(orient='records')
+#         # Convert DataFrame to JSON
+#         json_data = df.to_dict(orient='records')
 
-        return jsonify(json_data)
+#         return jsonify(json_data)
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)
