@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="set_result" method="post" action="/set_exam_result" enctype="multipart/form-data">
+        <h3>Enter Branch</h3>
+            <input type="text" name="branch" id="branch" required />
+        <h3>Enter SEM</h3>
+            <input type="text" name="sem" id="sem" required /> 
+        <h3>Enter Exam Name</h3>
+            <input type="text" name="exam_name" id="exam_name" required />
+        <br>
+        <h3>Select Result Excel file</h3>
+            <input type="file" id="fileInput" required accept=".xls,.xlsx">
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <script>
+        function uploadFile() {
+
+            const branch = document.getElementById('branch').value; 
+            const sem = document.getElementById('sem').value; 
+            const exam_name = document.getElementById('exam_name').value;
+
+            let fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length === 0) {
+                document.getElementById("status").innerText = "Please select a file!";
+                return;
+            }
+
+            let file = fileInput.files[0];  // Get the selected file
+            let formData = new FormData();
+
+            formData.append("branch", branch);
+            formData.append("sem", sem);
+            formData.append("exam_name", exam_name);
+
+            formData.append("file", file);  // Append file to FormData
+
+            fetch("/get_result_file", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data.result_data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
