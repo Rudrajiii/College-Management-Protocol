@@ -602,7 +602,7 @@ def teacher_dashboard():
      # Fetch leave application history
     history_records = list(history_collection.find({"enrollment_number": enrollment_no}).sort("timestamp", -1))
 
-    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
+    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records,ENROLLMENT_NO=enrollment_no)
 
 #? Teacher Profile route
 @app.route('/teacher_profile/<string:id>', methods=['GET'])
@@ -1128,6 +1128,26 @@ class TeacherNamespace(Namespace):
 
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
+
+@app.route("/update_teacher_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
+def update_teacher_password(ENROLLMENT_NO):
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+    if request.method == 'POST':
+        current_password = request.form.get('currentpass')
+        new_password = request.form.get('newpass')
+        confirm_password = request.form.get('confirmpass')
+        if new_password != confirm_password:
+            return f'''<h1>Confirm password and new password does not match</h1>'''
+        else:
+            x = change_teacher_pass_db(ENROLLMENT_NO,current_password,confirm_password)
+            print(x)
+            # If x = 0 , means currentpassword is wrongly put else change password is success
+            if x == 0:
+                return f'''<h1>Please input correct old password</h1>'''
+            else:
+                return f'''<h1>Password Successfully changed</h1>'''
+    return render_template("teacher_password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
 # @app.route('/convert_to_json/', methods=['POST'])
 # def convert_xlsx_to_json():

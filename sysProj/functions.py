@@ -373,3 +373,16 @@ def add_leave_info(teacher_info):
     temporary_application_queue = db['temporary_application_queue']
     temporary_application_queue.insert_one(teacher_info)
 
+
+def change_teacher_pass_db(ENROLLMENT_NO,current_password,confirm_password):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing students Collection
+    collection = db.teachers
+    teachers = collection.find_one({"enrollment_no": ENROLLMENT_NO})
+    if current_password != teachers['password']:
+        return 0
+    else:
+        collection.update_one({"enrollment_no": ENROLLMENT_NO} , {"$set": {'password': confirm_password}})
+        return 1
