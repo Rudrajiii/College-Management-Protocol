@@ -307,6 +307,18 @@ def student_exam_db(student_year , branch):
         lst.append(i)
     return lst
 
+# Edit start by Satyadeep on 21/2/25
+# set_exam DB connection through teacher dashboard
+
+def set_exam_db(exam_data):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing result Collection
+    collection = db.result
+    #inserting data to database
+    collection.insert_one(exam_data).inserted_id
+
 
 def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):
     try:
