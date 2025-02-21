@@ -630,37 +630,14 @@ def teacher_profile(id):
 def set_exam_result():
     if 'username' not in session or session['role'] != 'teacher':
         return redirect(url_for('teacher_login'))
-    
+    if(request.method == 'POST'):
+        result_data = request.json.get('data', [])
+        # Process the table data as needed  
+        set_exam_db(result_data)
+        #flash('✅ Result data set successfully!' , 'success')
+        return jsonify({'message': 'Data received successfully' , 'url' : '/teacher_dashboard'})
     return render_template("set_result.html")
 
-
-# Only post route to handle file upload
-@app.route('/get_result_file', methods=['POST'])
-def get_result_file():
-    if 'username' not in session or session['role'] != 'teacher':
-        return redirect(url_for('teacher_login'))
-
-    branch = request.form.get('branch')
-    sem = request.form.get('sem')
-    exam_name = request.form.get('exam_name')
-
-    
-    file = request.files.get("file")  # ✅ Use .get() to avoid KeyError
-    if not file:
-        return jsonify({"success": False, "message": "No file provided"}), 400
-        
-    
-    result = convert_xlsx_to_json(file)
-    json_data = {}
-    json_data['branch'] = branch
-    json_data['sem'] = sem
-    json_data['exam_name'] = exam_name
-    json_data['result'] = result
-
-    print(json_data)
-    
-    return jsonify({"success": True, "message": f"Received file: {file.filename}" , "result_data": json_data})
-    
 
 
 # -------------------------------------------------------
@@ -1149,32 +1126,6 @@ def update_teacher_password(ENROLLMENT_NO):
                 return f'''<h1>Password Successfully changed</h1>'''
     return render_template("teacher_password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
-# @app.route('/convert_to_json/', methods=['POST'])
-# def convert_xlsx_to_json():
-#     try:
-#         # Check if a file is provided
-#         if 'file' not in request.files:
-#             return jsonify({'error': 'No file part'}), 400
-
-#         file = request.files['file']
-
-#         if file.filename == '':
-#             return jsonify({'error': 'No selected file'}), 400
-
-#         # Read the Excel file into a Pandas DataFrame
-#         df = pd.read_excel(file, engine='openpyxl')
-
-
-#         df = df.replace([np.inf, -np.inf], np.nan)
-#         df = df.fillna('')
-
-#         # Convert DataFrame to JSON
-#         json_data = df.to_dict(orient='records')
-
-#         return jsonify(json_data)
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)
