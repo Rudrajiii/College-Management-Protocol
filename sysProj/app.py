@@ -6,7 +6,6 @@ from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
-from miscellaneous_functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
@@ -633,9 +632,12 @@ def set_exam_result():
     if(request.method == 'POST'):
         result_data = request.json.get('data', [])
         # Process the table data as needed  
-        set_exam_db(result_data)
-        #flash('✅ Result data set successfully!' , 'success')
-        return jsonify({'message': 'Data received successfully' , 'url' : '/teacher_dashboard'})
+        response_from_db = set_exam_db(result_data)
+        if response_from_db == 0:
+            return jsonify({'message': 'This Data is already uploaded in database' , 'url' : '/set_exam_result'})
+        else:
+            #flash('✅ Result data set successfully!' , 'success')
+            return jsonify({'message': 'Data received successfully' , 'url' : '/teacher_dashboard'})
     return render_template("set_result.html")
 
 
@@ -716,6 +718,30 @@ def student_dashboard():
 
 
 
+#Student result viewing route
+@app.route('/view_result/<enrollment_no>/<branch>', methods = ['POST', 'GET'])
+def view_result(enrollment_no , branch):
+    """
+    Students result
+    viewing route
+    """
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    
+    return render_template("result.html")
+
+#Fetching the data of result
+@app.route('/get_result_data')
+def get_result_data():
+    """
+    Students result
+    fetching route
+    """
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    
+    data = student_result_db(session["enrollment_no"] , session["branch"])
+    return jsonify(data)
 
 
 #? student profile route

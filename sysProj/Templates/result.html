@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Selection</title>
+</head>
+<body>
+    <h2>Select Semester and Exam</h2>
+    <form id="selectionForm">
+        <label for="examSelect">Select Exam:</label>
+        <select id="examSelect" name="exam">
+            <option value="">--Select--</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Marksheet</h2>
+    <table border="1" id="marksheetTable">
+        <thead>
+            <tr id="tableHeaders"></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        let allData = [];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/get_result_data")
+                .then(response => response.json())
+                .then(data => {
+                    allData = data;
+                    let select = document.getElementById("examSelect");
+                    let groupedData = {};
+
+                    data.forEach(entry => {
+                        if (!groupedData[entry.sem]) {
+                            groupedData[entry.sem] = [];
+                        }
+                        groupedData[entry.sem].push(entry.exam_name);
+                    });
+
+                    for (let sem in groupedData) {
+                        let optgroup = document.createElement("optgroup");
+                        optgroup.label = "Semester " + sem;
+                        groupedData[sem].forEach(exam => {
+                            let option = document.createElement("option");
+                            option.value = sem + "|" + exam;
+                            option.textContent = exam;
+                            optgroup.appendChild(option);
+                        });
+                        select.appendChild(optgroup);
+                    }
+                });
+
+            document.getElementById("selectionForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                let selectedValue = document.getElementById("examSelect").value;
+                if (!selectedValue) return;
+
+                let [sem, exam] = selectedValue.split("|");
+                let selectedData = allData.find(item => item.sem === sem && item.exam_name === exam);
+
+                let thead = document.getElementById("tableHeaders");
+                let tbody = document.getElementById("marksheetTable").querySelector("tbody");
+                thead.innerHTML = "";
+                tbody.innerHTML = "";
+
+                if (selectedData && selectedData.table_data.length > 0) {
+                    let subjects = Object.keys(selectedData.table_data[0]).filter(key => key !== "enr_no" && key !== "name");
+                    subjects.forEach(subject => {
+                        let th = document.createElement("th");
+                        th.textContent = subject;
+                        thead.appendChild(th);
+                    });
+
+                    selectedData.table_data.forEach(row => {
+                        let tr = document.createElement("tr");
+                        subjects.forEach(subject => {
+                            let td = document.createElement("td");
+                            td.textContent = row[subject];
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
