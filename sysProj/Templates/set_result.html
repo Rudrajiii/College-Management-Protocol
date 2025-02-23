@@ -138,8 +138,8 @@
 
 
 
-
-<!DOCTYPE html>
+<!-- 
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -165,6 +165,131 @@
     <div id="preview"></div>
 
     <button id="uploadButton" style="margin-top: 20px;">Upload Data</button>
+
+ -->
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+<!-- 
+
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Excel Preview</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #f5f5ff;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                height: 100vh;
+            }
+            .sidebar {
+                width: 250px;
+                background: #4f46e5;
+                color: white;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .sidebar button, .sidebar input {
+                width: 90%;
+                margin: 10px 0;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .sidebar button {
+                background: #3730a3;
+                color: white;
+                cursor: pointer;
+            }
+            .main-content {
+                flex: 1;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            #preview-container {
+                width: 100%;
+                max-width: 800px;
+                overflow-x: auto;
+                background: white;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background: #4f46e5;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="sidebar">
+            <input type="text" id="branch" placeholder="Enter Branch">
+            <input type="text" id="sem" placeholder="Enter SEM">
+            <input type="text" id="exam_name" placeholder="Enter Exam Name">
+            <input type="file" id="fileInput" accept=".xls,.xlsx,.xlsm,.xlsb">
+            <button id="uploadButton">Upload Excel</button>
+        </div>
+        <div class="main-content">
+            <h2 id="heading">No data available</h2>
+            <div id="preview-container">
+                <p id="no-data">No data available</p>
+                <div id="preview"></div>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+
+
+
+
+
+
+ -->
+
+
+
+ 
+<!-- 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -285,4 +410,309 @@
         });
     </script>
 </body>
-</html>
+</html> 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Excel Preview</title>
+     <style>
+         body {
+             font-family: 'Arial', sans-serif;
+             background-color: #f5f5f5;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 100vh;
+             margin: 0;
+         }
+ 
+         .card {
+             display: flex;
+             background-color: #ffffff;
+             border-radius: 12px;
+             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+             width: 1200px; /* Increased width */
+             height: 700px; /* Increased height */
+             overflow: hidden;
+         }
+ 
+         .form-section {
+             flex: 1;
+             padding: 20px;
+             background-color: #f9f9f9;
+             border-right: 1px solid #e0e0e0;
+         }
+ 
+         .form-section h3 {
+             color: #6a1b9a; /* Purplish color */
+             margin-bottom: 10px;
+             font-size: 14px;
+         }
+ 
+         .form-section input[type="text"],
+         .form-section input[type="file"] {
+             width: 100%;
+             padding: 8px;
+             margin-bottom: 15px;
+             border: 1px solid #ddd;
+             border-radius: 6px;
+             font-size: 12px;
+         }
+ 
+         .preview-section {
+             flex: 2; /* Increased space for preview */
+             padding: 20px;
+             overflow-y: auto;
+         }
+ 
+         .preview-section h3 {
+             color: #6a1b9a;
+             margin-bottom: 15px;
+             font-size: 16px;
+         }
+ 
+         #preview table {
+             width: 100%;
+             border-collapse: collapse;
+             font-size: 12px;
+         }
+ 
+         #preview th,
+         #preview td {
+             padding: 8px;
+             border: 1px solid #ddd;
+             text-align: left;
+         }
+ 
+         #preview th {
+             background-color: #6a1b9a;
+             color: white;
+         }
+ 
+         #uploadButton {
+             background-color: #6a1b9a;
+             color: white;
+             border: none;
+             padding: 10px 20px;
+             border-radius: 6px;
+             cursor: pointer;
+             font-size: 14px;
+             margin-top: 20px;
+             width: 100%;
+         }
+ 
+         #uploadButton:hover {
+             background-color: #7c4dff;
+         }
+ 
+         #heading {
+             color: #6a1b9a;
+             font-size: 18px;
+             margin-bottom: 20px;
+             text-align: center;
+         }
+     </style>
+ </head>
+ <body>
+     <div class="card">
+         <!-- Left Section: Form -->
+         <div class="form-section">
+             <form id="set_result" method="post" enctype="multipart/form-data">
+                 <h3>Enter Branch</h3>
+                 <input type="text" name="branch" id="branch" required />
+                 <h3>Enter SEM</h3>
+                 <input type="text" name="sem" id="sem" required />
+                 <h3>Enter Exam Name</h3>
+                 <input type="text" name="exam_name" id="exam_name" required />
+                 <br>
+                 <h3>Select Result Excel file</h3>
+                 <input type="file" id="fileInput" required accept=".xls,.xlsx,.xlsm,.xlsb">
+             </form>
+             <button id="uploadButton">Push Result</button>
+         </div>
+ 
+         <!-- Right Section: Preview -->
+         <div class="preview-section">
+             <h1 id="heading"></h1>
+             <h3>Excel Preview:</h3>
+             <div id="preview"></div>
+         </div>
+     </div>
+ 
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+     <script>
+         let jsonData = {}; // Store JSON data for upload
+ 
+         document.getElementById('fileInput').addEventListener('change', function () {
+             const fileInput = this;
+             const preview = document.getElementById('preview');
+             const file = fileInput.files[0];
+ 
+             // Get form data
+             const branch = document.getElementById('branch').value;
+             const sem = document.getElementById('sem').value;
+             const exam_name = document.getElementById('exam_name').value;
+ 
+             document.getElementById('heading').textContent = `${exam_name} ${sem} ${branch}`;
+ 
+             if (!file) {
+                 preview.innerHTML = "<p>No file selected.</p>";
+                 return;
+             }
+ 
+             // Validate file extension
+             const allowedExtensions = [".xls", ".xlsx", ".xlsm", ".xlsb"];
+             const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+ 
+             if (!allowedExtensions.includes(fileExtension)) {
+                 alert("Invalid file type! Please upload an Excel file (.xls, .xlsx, .xlsm, .xlsb).");
+                 fileInput.value = ""; // Reset file input
+                 preview.innerHTML = ""; // Clear preview
+                 return;
+             }
+ 
+             // Read file using FileReader
+             const reader = new FileReader();
+             reader.onload = function (e) {
+                 const data = new Uint8Array(e.target.result);
+                 const workbook = XLSX.read(data, { type: 'array' });
+ 
+                 // Get the first sheet
+                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                 const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+ 
+                 if (rows.length === 0) {
+                     preview.innerHTML = "<p>No data found in the file.</p>";
+                     return;
+                 }
+ 
+                 // Extract headers (first row)
+                 const headers = rows[0];
+ 
+                 jsonData = {
+                     branch: branch,
+                     sem: sem,
+                     exam_name: exam_name,
+                     table_data: []
+                 };
+ 
+                 // Create HTML table
+                 let table = '<table>';
+                 rows.forEach((row, rowIndex) => {
+                     table += "<tr>";
+                     let rowData = {};
+ 
+                     row.forEach((cell, cellIndex) => {
+                         if (rowIndex === 0) {
+                             table += `<th>${cell || ""}</th>`;
+                         } else {
+                             table += `<td>${cell || ""}</td>`;
+                             rowData[headers[cellIndex]] = cell || ""; // Map cell to correct column
+                         }
+                     });
+ 
+                     table += "</tr>";
+ 
+                     if (rowIndex !== 0) {
+                         jsonData.table_data.push(rowData);
+                     }
+                 });
+ 
+                 table += "</table>";
+                 preview.innerHTML = table;
+ 
+                 // Log JSON data to console in proper format
+                 console.log("Excel Data in JSON format:", JSON.stringify(jsonData, null, 4));
+             };
+ 
+             reader.readAsArrayBuffer(file);
+         });
+ 
+         // Upload button click event
+        document.getElementById('uploadButton').addEventListener('click', function () {
+            if (Object.keys(jsonData).length === 0) {
+                alert("No data to upload!");
+                return;
+            }
+
+            // Send data to backend
+            fetch('/set_exam_result', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({data: jsonData})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error)
+                }
+                else{
+                alert(data.message)
+                console.log("Server Response:", data);
+                // Redirect to the admin dashboard
+                window.location.href = data.url;
+                }
+            })
+            .catch(error => console.error("Upload Error:", error));
+        });
+     </script>
+ </body>
+ </html>
