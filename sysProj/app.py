@@ -720,7 +720,7 @@ def student_dashboard():
 
 #Student result viewing route
 @app.route('/view_result/<enrollment_no>/<branch>', methods = ['POST', 'GET'])
-def view_result(enrollment_no , branch):
+def view_result():
     """
     Students result
     viewing route
