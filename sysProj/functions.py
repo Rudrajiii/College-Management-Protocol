@@ -307,6 +307,61 @@ def student_exam_db(student_year , branch):
         lst.append(i)
     return lst
 
+# Edit start by Satyadeep on 21/2/25
+# set_exam DB connection through teacher dashboard to set exam result of students
+
+def set_exam_db(exam_data):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing result Collection
+    collection = db.result
+    # fetching current year
+    current_year = datetime.now().year
+    sem = exam_data["sem"]
+    branch = exam_data["branch"]
+    exam_name = exam_data["exam_name"]
+    #Finding for redundant data if possible
+    duplicate_data = ""
+    duplicate_data = collection.find_one({"branch": branch , "sem": sem , "exam_name": exam_name , "current_year": current_year})
+    if duplicate_data == None:
+        for data in exam_data["table_data"]:
+            enr_number = data["enr_no"]
+            enr_number = str(enr_number)
+            data["enr_no"] = enr_number
+
+        #inserting data to database
+        exam_data["current_year"] = current_year
+        collection.insert_one(exam_data).inserted_id
+        return 1
+    else:
+        #Duplicate data exist
+        return 0
+
+
+# Students dashboard panel result DB for sorting specific results of a particular student
+def student_result_db(enrollment_no , branch):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing result Collection
+    collection = db.result
+    pipeline = [
+    {"$match": {"branch": branch}},  # Match the branch first
+    {"$addFields": {  # Filter the table_data array
+        "table_data": {
+            "$filter": {
+                "input": "$table_data",
+                "as": "item",
+                "cond": {"$eq": ["$$item.enr_no", enrollment_no]}
+            }
+        }
+    }},
+    {"$project": {"_id": 0}}  # Remove _id field
+    ]
+    result_list = list(collection.aggregate(pipeline))
+    return result_list
+
 
 def teacher_application_record(enrollment_no , name , reason ,start_time, end_time , status , response):
     try:
@@ -373,3 +428,16 @@ def add_leave_info(teacher_info):
     temporary_application_queue = db['temporary_application_queue']
     temporary_application_queue.insert_one(teacher_info)
 
+
+def change_teacher_pass_db(ENROLLMENT_NO,current_password,confirm_password):
+    client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
+    # Acessing project Database
+    db = client['project']
+    # Acessing students Collection
+    collection = db.teachers
+    teachers = collection.find_one({"enrollment_no": ENROLLMENT_NO})
+    if current_password != teachers['password']:
+        return 0
+    else:
+        collection.update_one({"enrollment_no": ENROLLMENT_NO} , {"$set": {'password': confirm_password}})
+        return 1
