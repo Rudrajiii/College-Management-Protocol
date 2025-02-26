@@ -559,6 +559,23 @@ def exam_scheduler():
 
     return render_template('exam_scheduler.html')
 
+#edited by sambhranta on 20/2:
+@app.route('/api/exam_scheduler', methods=['GET'])
+def get_exam_data():
+    '''
+    Fetch exam data from the database as JSON
+    '''
+    if 'username' not in session or session['role'] != 'admin':
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    db = client["project"]
+    collection = db.exam_scheduler
+    data = list(collection.find({}, {"_id": 0}))  # Fetch all documents without the _id field
+    print("Test passed")
+    return jsonify({"exam_data": data})
+
+        
+
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
