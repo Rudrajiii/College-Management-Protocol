@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Chatbot Icon -->
+    <div class="chatbot-icon" id="chatbot-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Chatbot Icon">
+    </div>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbot-container" >
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <span class="chat-title">Chat Support</span>
+                <span class="chat-subtitle">We're here to help!</span>
+            </div>
+            <button class="close-btn" id="close-btn">&times;</button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chat-messages">
+            <div class="bot-message">
+                <p>Hello! How can we assist you today?</p>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..."  >
+            <button id="send-btn">&#10148;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

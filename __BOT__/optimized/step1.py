@@ -10,12 +10,12 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 
-# Extract dataset
+
 zip_file_path = 'archive.zip'
 with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
     zip_ref.extractall('extracted')
 
-# Load and preprocess intents dataset
+
 with open('extracted/intents.json') as file:
     data = json.load(file)
 
@@ -26,14 +26,14 @@ for intent in data['intents']:
         texts.append(text)
         intents.append(intent['intent'])
 
-# Tokenize texts
+
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(texts)
 encoded_texts = tokenizer.texts_to_sequences(texts)
 max_len = max([len(x) for x in encoded_texts])
 padded_texts = pad_sequences(encoded_texts, maxlen=max_len, padding='post')
 
-# Encode intents
+
 le = LabelEncoder()
 encoded_intents = le.fit_transform(intents)
 num_intents = len(le.classes_)

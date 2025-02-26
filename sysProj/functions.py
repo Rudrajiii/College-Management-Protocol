@@ -14,7 +14,7 @@ def admin_login_db(enrollment_no,username,password):
         return 0
     else:
         return 1
-    
+     
 
 # Teacher Login database connection
 def teacher_login_db(enrollment_no,username,password):
@@ -293,7 +293,7 @@ def exam_scheduler_db(exam_data):
         [("deleteAt", pymongo.ASCENDING)],
         expireAfterSeconds=0
         )
-
+    
 # Students dashboard panel exam DB for sorting specific exams
 def student_exam_db(student_year , branch):
     client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")

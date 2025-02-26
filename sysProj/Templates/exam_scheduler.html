@@ -5,84 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Scheduler</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/exam_scheduler.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/exam_scheduler.css') }}">
     <script src="{{ url_for('static', filename='javascripts/exam_scheduler.js') }}" defer></script>
 </head>
 <body>
-    
-    <div class="toggle-container">
-        <label class="toggle-switch">
-            <input type="checkbox" id="toggleMode" />
-            <span class="slider"></span>
-        </label>
-    </div>
-    
+    <div class="page-container">
+        <!-- Header Section -->
+        <header class="header" aria-label="Application Header">
+            <div class="header-content">
+                <h1>Exam Scheduler</h1>
+                <p>Powered by developers.</p>
+            </div>
+        </header>
 
-    <h1>Exam Scheduler</h1>
+        <!-- Main Content -->
+        <main class="container">
+            <!-- Left Section for Inputs and Headings -->
+            <section class="left-section" aria-label="Exam Details Section">
+                <h2>Exam Details</h2>
+                <div class="main-input-container">
+                    <!-- Dropdown for Exam Name -->
+                    <select id="examName" name="examName" required aria-label="Select Exam Name">
+                        <option value="" disabled selected>Select Exam Name</option>
+                        <option value="Midterm Exams">Midterm Exams</option>
+                        <option value="Final Exams">Final Exams</option>
+                        <option value="Semester Exams">Semester Exams</option>
+                        <option value="Practical Exams">Practical Exams</option>
+                        <option value="Custom">Custom (Enter Manually)</option>
+                    </select>
+                    <input type="text" id="customExamName" name="customExamName" placeholder="Enter Custom Exam Name" style="display: none;" aria-label="Custom Exam Name">
+                    <input type="number" id="studentYear" name="studentYear" placeholder="Enter Student Year" required aria-label="Student Year">
+                    <input type="text" id="studentBranch" name="studentBranch" placeholder="Enter Student Branch" required aria-label="Student Branch">
+                    <input type="text" id="studentvenue" name="studentvenue" placeholder="Enter Exam Venue" required aria-label="Exam Venue">
+                    <button onclick="setMainDetails()" aria-label="Set Exam Details">Set Details</button>
+                    <button id="editDetailsBtn" style="display: none;" onclick="enableEdit()" aria-label="Edit Exam Details">Edit Details</button>
+                    <button id="loadDataBtn" onclick="loadData()" aria-label="Load Data">Load Data</button>
+                    <p style="color: red">Note: For any exam-related queries, contact satyajeet@iem.edu.in | +91 92XXXXXXX</p>
+                </div>
+                <div id="examHeader" style="display: none;">
+                    <h3 id="examTitle"></h3>
+                </div>
+            </section>
 
-    <!-- Main Input Section for Exam Name, Year, Branch -->
-    <div class="main-input-container">
-            <input type="text" id="examName" name="examName" placeholder="Enter Exam Name" required>
-            <input type="number" id="studentYear" name="studentYear" placeholder="Enter Student Year" required>
-            <input type="text" id="studentBranch" name="studentBranch" placeholder="Enter Student Branch" required>
-        <button onclick="setMainDetails()">Set Details</button>
-    </div>
+            <!-- Right Section for Table and Buttons -->
+            <section class="right-section" aria-label="Exam Schedule Section">
+                <h2>Exam Schedule</h2>
+                <div id="examDetailsDisplay" style="display: none;">
+                    <!-- Exam details will be dynamically inserted here -->
+                </div>
+                <div class="table-container">
+                    <table id="data-table" aria-label="Exam Schedule Table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Subject Code</th>
+                                <th>Exam Date</th>
+                                <th>Exam Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="examTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #888;">No Data Inserted</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
+                <!-- Quote at the Bottom of the Exam Schedule Div -->
+                <div class="quote-container">
+                    <p id="dynamicQuote">"Success is the sum of small efforts, repeated day in and day out."</p>
+                </div>
+            
+                <div class="button-container">
+                    <button id="openModalBtn" onclick="openModal()" aria-label="Add Exam Data">Add Data</button>
+                    <button id="previewButton" class="preview-btn" onclick="previewSchedule()" aria-label="Preview Schedule">Preview</button>
+                    <button id="submitButton" class="submit-btn" style="display: none;" onclick="submitAllData()" aria-label="Submit Data">Submit</button>
+                </div>
+            </section>
+        </main>
 
-    <!-- Header for Exam Name -->
-    <!-- Header for Exam Name (Centered) -->
-<div id="examHeader" style="display: none;">
-    <h2 id="examTitle"></h2>
-</div>
-
-
-    <!-- Table Section -->
-    <div class="table-container">
-        <table id="data-table">
-            <thead>
-                <tr>
-                <th>Subject</th>
-                <th>Exam Date</th>
-                <th>Exam Time</th>
-                <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="examTableBody">
-                <tr>
-                    <td colspan="7" style="text-align: center; color: #888;">No Data Inserted</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Buttons Under Table -->
-    <div class="button-container">
-        <button id="openModalBtn" onclick="openModal()">Add Data</button>
-        <button id="submitButton" onclick="submitAllData()">Submit</button>
-    </div>
-
+        <!-- Footer Section -->
+        <footer class="footer" aria-label="Application Footer">
+            <div class="footer-content">
+                <p>&copy; All rights reserved to IEM developers.</p>
+                <div class="social-links">
+                    <a href="https://github.com/Rudrajiii/College-Management-Protocol.git" target="_blank" aria-label="GitHub">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" width="24" height="24">
+                        GitHub
+                    </a>
+                    <a href="https://leetcode.com" target="_blank" aria-label="LeetCode">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png" alt="LeetCode" width="24" height="24">
+                        LeetCode
+                    </a>
+                    <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+                        <img src="https://cdn-icons-png.flaticon.com/128/15707/15707749.png" alt="Instagram" width="24" height="24">
+                        Instagram
+                    </a>
+                </div>
+            </div>
+        </footer>
+        
     <!-- Modal for Input Form -->
-    <div id="modal" class="modal">
+    <div id="modal" class="modal" aria-label="Exam Details Modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModal()" aria-label="Close Modal">&times;</span>
             <h2 id="modalTitle">Add Exam Details</h2>
             <form id="modalForm">
                 <label for="modalSubject">Exam Subject Name</label>
-                <input type="text" id="modalSubject" placeholder="Enter Subject" required>
+                <input type="text" id="modalSubject" placeholder="Enter Subject" required aria-label="Subject Name">
+
+                <label for="modalSubjectCode">Exam Subject Code</label>
+                <input type="text" id="modalSubjectCode" placeholder="Enter Subject Code" required aria-label="Subject Code">
 
                 <label for="modalExamDate">Exam Date</label>
-                <input type="date" id="modalExamDate" required>
+                <input type="date" id="modalExamDate" required aria-label="Exam Date">
 
                 <label for="modalStartTime">Exam Start Time</label>
-                <input type="time" id="modalStartTime" required>
+                <input type="time" id="modalStartTime" required aria-label="Start Time">
 
                 <label for="modalEndTime">Exam End Time</label>
-                <input type="time" id="modalEndTime" required>
+                <input type="time" id="modalEndTime" required aria-label="End Time">
 
-                <button type="button" class="submit-btn" onclick="submitData()">Submit</button>
+                <button type="button" class="submit-btn" onclick="submitData()" aria-label="Submit Exam Details">Submit</button>
             </form>
         </div>
-        
     </div>
 
+    <!-- Pop-up Card for Success Message -->
+    <div id="successPopup" class="success-popup" aria-label="Success Message">
+        <span>Submitted Successfully!</span>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal" aria-label="Preview Schedule Modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePreviewModal()" aria-label="Close Preview Modal">&times;</span>
+            <h2>Preview Schedule</h2>
+            <div id="previewTableContainer"></div>
+            <div class="preview-button-container">
+                <button class="print-btn" onclick="printPreview()" aria-label="Print Schedule">Print Schedule</button>
+               <!-- <button class="submit-btn" onclick="submitAllData()" aria-label="Submit Schedule">Submit</button>-->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

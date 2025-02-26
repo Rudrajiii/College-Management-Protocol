@@ -1,11 +1,12 @@
 from flask import render_template , jsonify , abort # type: ignore
-from data import get_data , Enrollment_logs
+from data import get_data , Enrollment_logs # type: ignore
 from resizeimage import resizeimage  # type: ignore
 from pymongo import MongoClient # type: ignore
 from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
+from miscellaneous_functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
@@ -557,6 +558,23 @@ def exam_scheduler():
         return jsonify({'message': 'Data received successfully', 'data': exam_data})
 
     return render_template('exam_scheduler.html')
+
+#edited by sambhranta on 20/2:
+@app.route('/api/exam_scheduler', methods=['GET'])
+def get_exam_data():
+    '''
+    Fetch exam data from the database as JSON
+    '''
+    if 'username' not in session or session['role'] != 'admin':
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    db = client["project"]
+    collection = db.exam_scheduler
+    data = list(collection.find({}, {"_id": 0}))  # Fetch all documents without the _id field
+    print("Test passed")
+    return jsonify({"exam_data": data})
+
+        
 
 # --------------------------------------------------
 #* Route function of teacher login
