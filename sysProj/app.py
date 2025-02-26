@@ -1,12 +1,12 @@
 from flask import render_template , jsonify , abort # type: ignore
-from data import get_data , Enrollment_logs
+from data import get_data , Enrollment_logs # type: ignore
 from resizeimage import resizeimage  # type: ignore
 from pymongo import MongoClient # type: ignore
 from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
-from functions import *
-from miscellaneous_functions import *
+from functions import *# type: ignore
+from miscellaneous_functions import *# type: ignore
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
