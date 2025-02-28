@@ -1,5 +1,5 @@
 from flask import render_template , jsonify , abort # type: ignore
-from data import get_data , Enrollment_logs
+from data import get_data , Enrollment_logs # type: ignore
 from resizeimage import resizeimage  # type: ignore
 from pymongo import MongoClient # type: ignore
 from flask_caching import Cache # type: ignore
@@ -559,6 +559,23 @@ def exam_scheduler():
 
     return render_template('exam_scheduler.html')
 
+#edited by sambhranta on 20/2:
+@app.route('/api/exam_scheduler', methods=['GET'])
+def get_exam_data():
+    '''
+    Fetch exam data from the database as JSON
+    '''
+    if 'username' not in session or session['role'] != 'admin':
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    db = client["project"]
+    collection = db.exam_scheduler
+    data = list(collection.find({}, {"_id": 0}))  # Fetch all documents without the _id field
+    print("Test passed")
+    return jsonify({"exam_data": data})
+
+        
+
 # --------------------------------------------------
 #* Route function of teacher login
 #* all teacher login route is listed down here
@@ -602,7 +619,7 @@ def teacher_dashboard():
      # Fetch leave application history
     history_records = list(history_collection.find({"enrollment_number": enrollment_no}).sort("timestamp", -1))
 
-    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records)
+    return render_template('teacher_dashboard.html', username=session['username'] , teacher_details=teacher_details , status=status , history=history_records,ENROLLMENT_NO=enrollment_no)
 
 #? Teacher Profile route
 @app.route('/teacher_profile/<string:id>', methods=['GET'])
@@ -630,37 +647,17 @@ def teacher_profile(id):
 def set_exam_result():
     if 'username' not in session or session['role'] != 'teacher':
         return redirect(url_for('teacher_login'))
-    
+    if(request.method == 'POST'):
+        result_data = request.json.get('data', [])
+        # Process the table data as needed  
+        response_from_db = set_exam_db(result_data)
+        if response_from_db == 0:
+            return jsonify({'message': 'This Data is already uploaded in database' , 'url' : '/set_exam_result'})
+        else:
+            #flash('✅ Result data set successfully!' , 'success')
+            return jsonify({'message': 'Data received successfully' , 'url' : '/teacher_dashboard'})
     return render_template("set_result.html")
 
-
-# Only post route to handle file upload
-@app.route('/get_result_file', methods=['POST'])
-def get_result_file():
-    if 'username' not in session or session['role'] != 'teacher':
-        return redirect(url_for('teacher_login'))
-
-    branch = request.form.get('branch')
-    sem = request.form.get('sem')
-    exam_name = request.form.get('exam_name')
-
-    
-    file = request.files.get("file")  # ✅ Use .get() to avoid KeyError
-    if not file:
-        return jsonify({"success": False, "message": "No file provided"}), 400
-        
-    
-    result = convert_xlsx_to_json(file)
-    json_data = {}
-    json_data['branch'] = branch
-    json_data['sem'] = sem
-    json_data['exam_name'] = exam_name
-    json_data['result'] = result
-
-    print(json_data)
-    
-    return jsonify({"success": True, "message": f"Received file: {file.filename}" , "result_data": json_data})
-    
 
 
 # -------------------------------------------------------
@@ -739,6 +736,30 @@ def student_dashboard():
 
 
 
+#Student result viewing route
+@app.route('/view_result/<enrollment_no>/<branch>', methods = ['POST', 'GET'])
+def view_result():
+    """
+    Students result
+    viewing route
+    """
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    
+    return render_template("result.html")
+
+#Fetching the data of result
+@app.route('/get_result_data')
+def get_result_data():
+    """
+    Students result
+    fetching route
+    """
+    if 'username' not in session or session['role'] != 'student':
+        return redirect(url_for('student_login'))
+    
+    data = student_result_db(session["enrollment_no"] , session["branch"])
+    return jsonify(data)
 
 
 #? student profile route
@@ -1129,32 +1150,26 @@ class TeacherNamespace(Namespace):
 socketio.on_namespace(AdminNamespace('/admin_dashboard'))
 socketio.on_namespace(TeacherNamespace('/teacher_dashboard'))
 
-# @app.route('/convert_to_json/', methods=['POST'])
-# def convert_xlsx_to_json():
-#     try:
-#         # Check if a file is provided
-#         if 'file' not in request.files:
-#             return jsonify({'error': 'No file part'}), 400
+@app.route("/update_teacher_password/<ENROLLMENT_NO>" , methods=["GET","POST"])
+def update_teacher_password(ENROLLMENT_NO):
+    if 'username' not in session or session['role'] != 'teacher':
+        return redirect(url_for('teacher_login'))
+    if request.method == 'POST':
+        current_password = request.form.get('currentpass')
+        new_password = request.form.get('newpass')
+        confirm_password = request.form.get('confirmpass')
+        if new_password != confirm_password:
+            return f'''<h1>Confirm password and new password does not match</h1>'''
+        else:
+            x = change_teacher_pass_db(ENROLLMENT_NO,current_password,confirm_password)
+            print(x)
+            # If x = 0 , means currentpassword is wrongly put else change password is success
+            if x == 0:
+                return f'''<h1>Please input correct old password</h1>'''
+            else:
+                return f'''<h1>Password Successfully changed</h1>'''
+    return render_template("teacher_password.html" , ENROLLMENT_NO = session['enrollment_no'])
 
-#         file = request.files['file']
-
-#         if file.filename == '':
-#             return jsonify({'error': 'No selected file'}), 400
-
-#         # Read the Excel file into a Pandas DataFrame
-#         df = pd.read_excel(file, engine='openpyxl')
-
-
-#         df = df.replace([np.inf, -np.inf], np.nan)
-#         df = df.fillna('')
-
-#         # Convert DataFrame to JSON
-#         json_data = df.to_dict(orient='records')
-
-#         return jsonify(json_data)
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     socketio.run(app , debug = True)

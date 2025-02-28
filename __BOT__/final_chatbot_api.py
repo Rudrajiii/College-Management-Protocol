@@ -201,14 +201,18 @@ def chatbot(request: ChatRequest):
         return {"response": "Enter admin username and password as 'username,password'."}
 
     # Handle admin login
-    if "," in user_input:
-        username, password = user_input.split(",", 1)
-        admin = admin_collection.find_one({"username": username, "password": password})
-        if admin:
-            admin_sessions[username] = True  # Mark admin as logged in
-            return {"response": "Login successful. ."}
+    if user_input.startswith("./dev "):  # Admin credentials are expected after "./dev "
+        credentials = user_input[len("./dev "):].strip()  # Extract credentials
+        if "," in credentials:
+            username, password = credentials.split(",", 1)
+            admin = admin_collection.find_one({"username": username, "password": password})
+            if admin:
+                admin_sessions[username] = True  # Mark admin as logged in
+                return {"response": "Login successful. You are now in admin mode."}
+            else:
+                return {"response": "Invalid admin credentials. Try again."}
         else:
-            return {"response": "Invalid admin credentials. Try again."}
+            return {"response": "Invalid format. Use 'username,password'."}
 
     # Check if logged in as admin and fetch prompts
     if user_input.lower() == "view prompts":
@@ -216,7 +220,7 @@ def chatbot(request: ChatRequest):
             if admin_sessions.get(username, False):
                 prompts = list(prompts_collection.find({}, {"_id": 0, "prompt": 1}))
                 return {"response": prompts}
-        return {"response": "You must log in as an admin ."}
+        return {"response": "You must log in as an admin to view prompts."}
 
     # Regular chatbot handling
     CONFIDENCE_THRESHOLD = 0.99555
@@ -259,7 +263,7 @@ def get_prompts(username: str, password: str):
 
 
 # Expose FastAPI with ngrok
-ngrok.set_auth_token("2qfmcYifn6s6LPsgpSyj4GH1eM1_2F3NQNuZ7KUqjsEjHTwH")  # Replace with your ngrok auth token
+ngrok.set_auth_token("")  # Replace with your ngrok auth token
 public_url = ngrok.connect(8000)
 print(f"Public URL: {public_url}")
 
