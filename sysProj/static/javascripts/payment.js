@@ -21,3 +21,4 @@ document.querySelectorAll("#receipt-viewer").forEach(btn => {
         .catch(error => console.error(error));
     })
 });
+
