@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marksheet Selection</title>
+    <style>                                                                                                                                                                         
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+            display: none; /* Initially hide the table */
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        #sgpaContainer {
+            display: none; /* Hide initially */
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <h2>Select Semester and Exam</h2>
@@ -16,13 +39,24 @@
     </form>
 
     <h2>Marksheet</h2>
-    <table border="1" id="marksheetTable">
+    <table id="resultsTable">
         <thead>
-            <tr id="tableHeaders"></tr>
+            <tr>
+                <th>Subject Code</th>
+                <th>Subject Name</th>
+                <th>Marks</th>
+                <th>Letter Grade</th>
+                <th>Points</th>
+            </tr>
         </thead>
         <tbody></tbody>
     </table>
 
+    <div id="sgpaContainer">
+        <p>SGPA: <span id="sgpa"></span></p>
+        <p>Status: <span id="status"></span></p>
+    </div>
+    
     <script>
         let allData = [];
 
@@ -62,31 +96,59 @@
                 let [sem, exam] = selectedValue.split("|");
                 let selectedData = allData.find(item => item.sem === sem && item.exam_name === exam);
 
-                let thead = document.getElementById("tableHeaders");
-                let tbody = document.getElementById("marksheetTable").querySelector("tbody");
-                thead.innerHTML = "";
+                let table = document.getElementById("resultsTable");
+                let tbody = table.querySelector("tbody");
+                let sgpaContainer = document.getElementById("sgpaContainer");
+                let sgpaDisplay = document.getElementById("sgpa");
+                let statusDisplay = document.getElementById("status");
+
                 tbody.innerHTML = "";
+                let totalPoints = 0;
+                let subjectCount = 0;
 
                 if (selectedData && selectedData.table_data.length > 0) {
-                    let subjects = Object.keys(selectedData.table_data[0]).filter(key => key !== "enr_no" && key !== "name");
-                    subjects.forEach(subject => {
-                        let th = document.createElement("th");
-                        th.textContent = subject;
-                        thead.appendChild(th);
+                    table.style.display = "table"; // Show the table when data is available
+                    sgpaContainer.style.display = "block"; // Show SGPA section
+
+                    selectedData.table_data.forEach(student => {
+                        Object.keys(student).forEach(key => {
+                            if (key !== 'enr_no' && key !== 'name') {
+                                const row = document.createElement("tr");
+                                const subjectCode = key.split('-')[1];
+                                const subjectname = key.split('-')[0];
+                                const marks = student[key];
+
+                                let grade, points;
+                                if (marks > 90) grade = 'O';
+                                else if (marks > 80) grade = 'A';
+                                else if (marks > 70) grade = 'B';
+                                else if (marks > 60) grade = 'C';
+                                else if (marks > 50) grade = 'D';
+                                else grade = 'F';
+
+                                points = Math.ceil(marks / 10);
+                                totalPoints += points;
+                                subjectCount++;
+
+                                row.innerHTML = `
+                                    <td>${subjectCode}</td>
+                                    <td>${subjectname}</td>
+                                    <td>${marks}</td>
+                                    <td>${grade}</td>
+                                    <td>${points}</td>
+                                `;
+                                tbody.appendChild(row);
+                            }
+                        });
                     });
 
-                    selectedData.table_data.forEach(row => {
-                        let tr = document.createElement("tr");
-                        subjects.forEach(subject => {
-                            let td = document.createElement("td");
-                            td.textContent = row[subject];
-                            tr.appendChild(td);
-                        });
-                        tbody.appendChild(tr);
-                    });
+                    let sgpa = (totalPoints / subjectCount).toFixed(2);
+                    sgpaDisplay.textContent = sgpa;
+                    statusDisplay.textContent = sgpa > 5 ? "PASS" : "FAIL";
                 }
             });
         });
     </script>
 </body>
 </html>
+
