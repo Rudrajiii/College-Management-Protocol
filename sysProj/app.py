@@ -6,7 +6,6 @@ from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
-from miscellaneous_functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
@@ -738,7 +737,7 @@ def student_dashboard():
 
 #Student result viewing route
 @app.route('/view_result/<enrollment_no>/<branch>', methods = ['POST', 'GET'])
-def view_result():
+def view_result(enrollment_no , branch):
     """
     Students result
     viewing route
@@ -746,7 +745,7 @@ def view_result():
     if 'username' not in session or session['role'] != 'student':
         return redirect(url_for('student_login'))
     
-    return render_template("result.html")
+    return render_template("result.html" , enrollment_no = enrollment_no , branch = branch)
 
 #Fetching the data of result
 @app.route('/get_result_data')
