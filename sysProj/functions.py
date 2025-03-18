@@ -340,26 +340,32 @@ def set_exam_db(exam_data):
 
 
 # Students dashboard panel result DB for sorting specific results of a particular student
-def student_result_db(enrollment_no , branch):
+def student_result_db(enrollment_no, branch):
     client = pymongo.MongoClient("mongodb+srv://sambhranta1123:SbGgIK3dZBn9uc2r@cluster0.jjcc5or.mongodb.net/")
-    # Acessing project Database
+    
+    # Accessing project Database
     db = client['project']
-    # Acessing result Collection
+    
+    # Accessing result Collection
     collection = db.result
+
     pipeline = [
-    {"$match": {"branch": branch}},  # Match the branch first
-    {"$addFields": {  # Filter the table_data array
-        "table_data": {
-            "$filter": {
-                "input": "$table_data",
-                "as": "item",
-                "cond": {"$eq": ["$$item.enr_no", enrollment_no]}
+        {"$match": {"branch": branch}},  # Match the branch first
+        {"$addFields": {  # Filter the table_data array
+            "table_data": {
+                "$filter": {
+                    "input": "$table_data",
+                    "as": "item",
+                    "cond": {"$eq": ["$$item.enr_no", enrollment_no]}
+                }
             }
-        }
-    }},
-    {"$project": {"_id": 0}}  # Remove _id field
+        }},
+        {"$match": {"table_data": {"$ne": []}}},  # Remove documents with empty table_data
+        {"$project": {"_id": 0}}  # Remove _id field
     ]
+
     result_list = list(collection.aggregate(pipeline))
+    print(result_list)
     return result_list
 
 
