@@ -13,6 +13,7 @@ def format_student_dashboard_data(student_details, announcement, leave_entries):
         "ADDRESS": student_details['current_address'],
         "ACADEMIC_YEAR": student_details['academic_year'],
         "announcement": announcement,
+        "profile_pic": student_details['profile_pic'],
         "docs": leave_entries,
         "ID": str(student_details['_id'])
     }

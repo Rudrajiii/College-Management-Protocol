@@ -1,10 +1,10 @@
 /* General Styles */
-body {
+/* body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-}
+} */
 
 /* Chatbot Icon */
 .chatbot-icon {
@@ -35,7 +35,8 @@ body {
     right: 20px;
     width: 350px;
     height: 500px; /* Fixed height for the chatbot container */
-    background-image: linear-gradient(black, rgb(4, 4, 68));
+    /* background-image: linear-gradient(black, rgb(4, 4, 68)); */
+    background-image: linear-gradient(rgb(94, 90, 90), rgb(187, 187, 191));
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     display: none;

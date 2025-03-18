@@ -6,7 +6,7 @@ from flask_caching import Cache # type: ignore
 from flask import request # type: ignore
 from PIL import Image # type: ignore
 from functions import *
-from miscellaneous_functions import *
+# from miscellaneous_functions import *
 from flask_cors import CORS # type: ignore
 from flask import * # type: ignore
 import random 
@@ -732,6 +732,7 @@ def student_dashboard():
                            ADDRESS=student_details['current_address'],
                            ACADEMIC_YEAR=student_details['academic_year'],
                            announcement=announcement,
+                           profile_pic=student_details['profile_pic'],
                            docs=leave_entries)
 
 

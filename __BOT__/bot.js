@@ -1,4 +1,3 @@
-
 const chatbotIcon = document.getElementById('chatbot-icon');
 const chatbotContainer = document.getElementById('chatbot-container');
 const closeBtn = document.getElementById('close-btn');
@@ -26,7 +25,7 @@ async function sendMessage() {
 
     // API integration with interface
     try {
-        const response = await fetch('https://e8ab-2409-40e0-2b-64f4-e531-7cb0-cdea-6620.ngrok-free.app/chatbot', {
+        const response = await fetch('https://chatbotv5-s12s.onrender.com/chatbot', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
