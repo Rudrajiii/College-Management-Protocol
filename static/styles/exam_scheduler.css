@@ -1,0 +1,472 @@
+/* General Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+}
+
+/* Page Container */
+.page-container {
+    flex: 1; /* Allow the container to grow and push the footer to the bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Section */
+.header {
+    background-color: #6A1B9A; /* Deep purple */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.header p {
+    margin: 10px 0 0;
+    font-size: 1.2em;
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    flex: 1; /* Allow the container to grow and push the footer to the bottom */
+}
+
+/* Left Section */
+.left-section {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Section */
+.right-section {
+    flex: 2;
+    min-width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Input Section */
+.main-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.main-input-container input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-input-container button {
+    padding: 10px;
+    background-color: #7B1FA2; /* Medium purple */
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-input-container button:hover {
+    background-color: #4A148C; /* Darker purple */
+}
+
+/* Table Section */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    color: #333;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #7B1FA2; /* Medium purple */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Action Buttons (Delete and Edit) */
+button.action-btn {
+    margin: 2px;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+button.delete-btn {
+    background-color: #E74C3C;
+}
+
+button.delete-btn:hover {
+    background-color: #C0392B;
+}
+
+button.edit-btn {
+    background-color: #9C27B0; /* Light purple */
+}
+
+button.edit-btn:hover {
+    background-color: #7B1FA2; /* Medium purple */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 110%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button.submit-btn {
+    background-color: #7B1FA2; /* Medium purple */
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.submit-btn:hover {
+    background-color: #4A148C; /* Darker purple */
+}
+
+/* Button Container Styles */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#openModalBtn {
+    background-color: #9C27B0; /* Light purple */
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#openModalBtn:hover {
+    background-color: #7B1FA2; /* Medium purple */
+}
+
+#submitButton {
+    background-color: #7B1FA2; /* Medium purple */
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#submitButton:hover {
+    background-color: #4A148C; /* Darker purple */
+}
+
+#examTitle {
+    color: #7B1FA2; /* Medium purple */
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Success Pop-up Card */
+.success-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: -100px; /* Start off-screen */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green color */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: slideUp 0.5s ease-out forwards, slideDown 0.5s ease-out 3s forwards;
+}
+
+@keyframes slideUp {
+    from {
+        bottom: -100px;
+    }
+    to {
+        bottom: 20px;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        bottom: 20px;
+    }
+    to {
+        bottom: -100px;
+    }
+}
+
+/* Quote Container */
+.quote-container {
+    margin-top: 20px;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+}
+
+/* Footer Section */
+.footer {
+    background-color: #4A148C; /* Darker purple */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto; /* Push the footer to the bottom */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer .social-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer .social-links a:hover {
+    color: #b06e27; /* Light purple */
+}
+
+/* Preview Button */
+.preview-btn {
+    background-color: #9C27B0; /* Light purple */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-btn:hover {
+    background-color: #7B1FA2; /* Medium purple */
+}
+
+/* Print Button */
+.print-btn {
+    background-color: #7B1FA2; /* Medium purple */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.print-btn:hover {
+    background-color: #4A148C; /* Darker purple */
+}
+
+/* Preview Modal */
+#previewModal .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 10% auto;
+}
+
+#previewModal h2 {
+    margin-top: 0;
+    color: #7B1FA2; /* Medium purple */
+}
+
+#previewTableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#previewTableContainer th, #previewTableContainer td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#previewTableContainer th {
+    background-color: #7B1FA2; /* Medium purple */
+    color: white;
+}
+
+#previewTableContainer tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.preview-button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #previewTableContainer, #previewTableContainer * {
+        visibility: visible;
+    }
+
+    #previewTableContainer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .quote-container {
+        visibility: visible;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .preview-button-container, .button-container, .header, .footer, .modal, .success-popup {
+        display: none;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        width: 100%;
+    }
+}
+
+/* Dropdown Styles */
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Edit Button Styles */
+#editDetailsBtn {
+    background-color: #9C27B0; /* Light purple */
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+#editDetailsBtn:hover {
+    background-color: #7B1FA2; /* Medium purple */
+}
+
+#examDetailsDisplay {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: none; /* Hidden by default */
+}
+
+#examDetailsDisplay p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #333;
+}
