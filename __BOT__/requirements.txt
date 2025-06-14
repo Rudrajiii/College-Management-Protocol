@@ -1,0 +1,14 @@
+numpy
+pandas
+tensorflow
+scikit-learn
+pyngrok
+nest-asyncio
+fastapi
+uvicorn
+pydantic
+groq
+transformers
+datasets
+accelerate
+pymongo

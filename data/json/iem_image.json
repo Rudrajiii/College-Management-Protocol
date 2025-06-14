@@ -1,0 +1,48 @@
+{
+    "background_background": "slideshow",
+    "background_slideshow_gallery": [
+      {
+        "id": 47,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.48.07-AM.jpeg"
+      },
+      {
+        "id": 46,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.48.06-AM.jpeg"
+      },
+      {
+        "id": 45,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.48.00-AM.jpeg"
+      },
+      {
+        "id": 44,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.47.36-AM.jpeg"
+      },
+      {
+        "id": 43,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.47.32-AM.jpeg"
+      },
+      {
+        "id": 42,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.47.23-AM.jpeg"
+      },
+      {
+        "id": 41,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.47.20-AM.jpeg"
+      },
+      {
+        "id": 40,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.47.18-AM.jpeg"
+      },
+      {
+        "id": 48,
+        "url": "https://alumni.iem.edu.in/wp-content/uploads/2021/09/WhatsApp-Image-2021-09-03-at-10.53.07-AM.jpeg"
+      }
+    ],
+    "background_slideshow_slide_transition": "slide_left",
+    "background_slideshow_ken_burns": "yes",
+    "background_slideshow_loop": "yes",
+    "background_slideshow_slide_duration": 5000,
+    "background_slideshow_transition_duration": 500,
+    "background_slideshow_ken_burns_zoom_direction": "in"
+  }
+  

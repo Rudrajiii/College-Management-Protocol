@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Student</title>
+    <script src="{{ url_for('static', filename='javascripts/manage_notification.js') }}" defer></script>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/manage_student.css')}}">
+</head>
+<body>
+    <div class="card">
+        <h1>Manage Student</h1>
+        <p style="text-align: center; background: #D4EDDA; padding: .6rem; border-radius: .5rem; width: 160px; margin: auto;"><a id="dash" style="text-decoration: none; color: #155724;" href="/admin_dashboard">Move to dashboard</a></p>
+        <!-- Displaying Flash Messages -->
+        <div id="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="inner-card">
+            <div class="manageform">
+                <form id="manageForm" method="post" action="/manage_student" enctype="multipart/form-data">
+                    <input class="fr1" type="text" id="enrollment" name="enrollment" placeholder="Enrollment ID" required />
+                    <div class="fr3">
+                        <button id="edit-student" type="submit" class="edit" name="button" value="edit">Edit</button>
+                    </div>
+                    <div class="fr2">
+                        <button id="remove-student" type="submit" class="remove" value="remove" name="button">Remove</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

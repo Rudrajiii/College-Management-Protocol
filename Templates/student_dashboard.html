@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+    <!-- <link rel="shortcut icon" href="./images/logo.png"> -->
+    <link rel="shortcut icon" href="../static/images/logo.png" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='styles/main_student_dashboard.css')}}"
+    />
+    <script
+      src="{{ url_for('static', filename='javascripts/timeTable.js') }}"
+      defer
+    ></script>
+    <script
+      src="{{ url_for('static', filename='javascripts/app.js') }}"
+      defer
+    ></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo" title="University Management System">
+        <img src="../static/images/logo.png" alt="" />
+        <h2>I<span class="danger">E</span>M</h2>
+      </div>
+      <div class="navbar">
+        <a href="/student_dashboard" class="active">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <a href="/timetable" onclick="timeTableAll()">
+          <span class="material-icons-sharp">today</span>
+          <h3>Time Table</h3>
+        </a>
+        <a href="/exam/{{ACADEMIC_YEAR}}/{{BRANCH}}">
+          <span class="material-icons-sharp">grid_view</span>
+          <h3>Examination</h3>
+        </a>
+        <a href="/view_result/{{ENROLLMENT_NO}}/{{BRANCH}}">
+          <span class="material-icons-sharp">grid_view</span>
+          <h3>Result</h3>
+        </a>
+        <a href="/update_password/{{ENROLLMENT_NO}}">
+          <span class="material-icons-sharp">password</span>
+          <h3>Change Password</h3>
+        </a>
+        <a href="/payment/{{ID}}/{{ ENROLLMENT_NO }}">
+          <!-- <span class="material-icons-sharp">password</span> -->
+          <h3>Make Your Payment</h3>
+        </a>
+        <a href="/logout">
+          <span class="material-icons-sharp" onclick="">logout</span>
+          <h3>Logout</h3>
+        </a>
+      </div>
+      <div id="profile-btn">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <div class="theme-toggler">
+        <span class="material-icons-sharp active">light_mode</span>
+        <span class="material-icons-sharp">dark_mode</span>
+      </div>
+    </header>
+    <div class="container">
+      <aside>
+        <div class="profile">
+          <div class="top">
+            <div class="profile-photo">
+              <img
+                src="{{ url_for('static', filename='Uploads/' ~ (profile_pic if profile_pic and profile_pic != '' else 'kayi.png')) }}"
+                alt="Profile Picture"
+              />
+            </div>
+            <div class="info">
+              <p>Hey, <b>{{username}}</b></p>
+              <small class="text-muted">EN - {{ENROLLMENT_NO}}</small>
+            </div>
+          </div>
+          <div class="about">
+            <h5>Branch</h5>
+            <p>{{BRANCH}}</p>
+            <h5>Academic Year</h5>
+            <p>{{ACADEMIC_YEAR}} year</p>
+            <h5>DOB</h5>
+            <p>{{DOB}}</p>
+            <h5>Contact</h5>
+            <p>{{CONTACT}}</p>
+            <h5>Email</h5>
+            <p>{{EMAIL_ID}}</p>
+            <h5>Address</h5>
+            <p>{{ADDRESS}}</p>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <h1>Attendance</h1>
+        <div class="subjects">
+          <div class="eg">
+            <span class="material-icons-sharp">architecture</span>
+            <h3>Engineering Graphics</h3>
+            <h2>12/14</h2>
+            <div class="progress">
+              <svg><circle cx="38" cy="38" r="36"></circle></svg>
+              <div class="number"><p>86%</p></div>
+            </div>
+            <small class="text-muted">Last 24 Hours</small>
+          </div>
+          <div class="mth">
+            <span class="material-icons-sharp">functions</span>
+            <h3>Mathematical Engineering</h3>
+            <h2>27/29</h2>
+            <div class="progress">
+              <svg><circle cx="38" cy="38" r="36"></circle></svg>
+              <div class="number"><p>93%</p></div>
+            </div>
+            <small class="text-muted">Last 24 Hours</small>
+          </div>
+          <div class="cs">
+            <span class="material-icons-sharp">computer</span>
+            <h3>Computer Architecture</h3>
+            <h2>27/30</h2>
+            <div class="progress">
+              <svg><circle cx="38" cy="38" r="36"></circle></svg>
+              <div class="number"><p>81%</p></div>
+            </div>
+            <small class="text-muted">Last 24 Hours</small>
+          </div>
+          <div class="cg">
+            <span class="material-icons-sharp">dns</span>
+            <h3>Database Management</h3>
+            <h2>24/25</h2>
+            <div class="progress">
+              <svg><circle cx="38" cy="38" r="36"></circle></svg>
+              <div class="number"><p>96%</p></div>
+            </div>
+            <small class="text-muted">Last 24 Hours</small>
+          </div>
+          <div class="net">
+            <span class="material-icons-sharp">router</span>
+            <h3>Network Security</h3>
+            <h2>25/27</h2>
+            <div class="progress">
+              <svg><circle cx="38" cy="38" r="36"></circle></svg>
+              <div class="number"><p>92%</p></div>
+            </div>
+            <small class="text-muted">Last 24 Hours</small>
+          </div>
+        </div>
+
+        <div class="timetable" id="timetable">
+          <div>
+            <span id="prevDay">&lt;</span>
+            <h2>Today's Timetable</h2>
+            <span id="nextDay">&gt;</span>
+          </div>
+          <span class="closeBtn" onclick="timeTableAll()">X</span>
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Room No.</th>
+                <th>Subject</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </main>
+
+      <div class="right">
+        <div class="announcements">
+          <h2>Announcements</h2>
+          <!-- Messages are storing here!! -->
+          {% if not announcement %}
+          <div class="message no-announcement">
+            <p>No announcements available at the moment.</p>
+          </div>
+          {% else %}
+          <div class="updates">
+            {% for info in announcement %}
+            <div class="message">
+              <p><b>{{info[0]}}</b></p>
+              <small class="text-muted">{{info[1]}}</small>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        <div class="leaves">
+          <h2>Teachers on leave</h2>
+          {% if not docs %}
+            <div class="message no-leave">
+                <p>No teachers are currently on leave.</p>
+            </div>
+          {% else %}
+          {% for doc in docs %} {% if doc['status'] == "Accepted" and
+          doc['requested_gap'] >= 0 %}
+          <div
+            class="teacher"
+            id="teacher-{{ doc['_id'] }}"
+            data-start-date="{{ doc['leave_start_date'] }}"
+            data-duration="{{ doc['requested_gap'] }}"
+          >
+            <div id="pp" class="profile-photo">
+              <img id="pompom" src="{{doc['image_url']}}" alt="pp" />
+            </div>
+            <div class="info">
+              <h3>{{ doc['name'] }}</h3>
+              <small class="text-muted"
+                >In leave for {{ doc['requested_gap'] }} day{% if
+                doc['requested_gap'] != 1 %}s{% endif %}</small
+              >
+            </div>
+          </div>
+          {% endif %} {% endfor %} {% endif %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

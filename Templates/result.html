@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Selection</title>
+    <style>                                                                                                                                                                         
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+            display: none; /* Initially hide the table */
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        #sgpaContainer {
+            display: none; /* Hide initially */
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Select Semester and Exam</h2>
+    <form id="selectionForm">
+        <label for="examSelect">Select Exam:</label>
+        <select id="examSelect" name="exam">
+            <option value="">--Select--</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Marksheet</h2>
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Subject Code</th>
+                <th>Subject Name</th>
+                <th>Marks</th>
+                <th>Letter Grade</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="sgpaContainer">
+        <p>SGPA: <span id="sgpa"></span></p>
+        <p>Status: <span id="status"></span></p>
+    </div>
+    
+    <script>
+        let allData = [];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/get_result_data")
+                .then(response => response.json())
+                .then(data => {
+                    allData = data;
+                    let select = document.getElementById("examSelect");
+                    let groupedData = {};
+
+                    data.forEach(entry => {
+                        if (!groupedData[entry.sem]) {
+                            groupedData[entry.sem] = [];
+                        }
+                        groupedData[entry.sem].push(entry.exam_name);
+                    });
+
+                    for (let sem in groupedData) {
+                        let optgroup = document.createElement("optgroup");
+                        optgroup.label = "Semester " + sem;
+                        groupedData[sem].forEach(exam => {
+                            let option = document.createElement("option");
+                            option.value = sem + "|" + exam;
+                            option.textContent = exam;
+                            optgroup.appendChild(option);
+                        });
+                        select.appendChild(optgroup);
+                    }
+                });
+
+            document.getElementById("selectionForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                let selectedValue = document.getElementById("examSelect").value;
+                if (!selectedValue) return;
+
+                let [sem, exam] = selectedValue.split("|");
+                let selectedData = allData.find(item => item.sem === sem && item.exam_name === exam);
+
+                let table = document.getElementById("resultsTable");
+                let tbody = table.querySelector("tbody");
+                let sgpaContainer = document.getElementById("sgpaContainer");
+                let sgpaDisplay = document.getElementById("sgpa");
+                let statusDisplay = document.getElementById("status");
+
+                tbody.innerHTML = "";
+                let totalPoints = 0;
+                let subjectCount = 0;
+
+                if (selectedData && selectedData.table_data.length > 0) {
+                    table.style.display = "table"; // Show the table when data is available
+                    sgpaContainer.style.display = "block"; // Show SGPA section
+
+                    selectedData.table_data.forEach(student => {
+                        Object.keys(student).forEach(key => {
+                            if (key !== 'enr_no' && key !== 'name') {
+                                const row = document.createElement("tr");
+                                const subjectCode = key.split('-')[1];
+                                const subjectname = key.split('-')[0];
+                                const marks = student[key];
+
+                                let grade, points;
+                                if (marks > 90) grade = 'O';
+                                else if (marks > 80) grade = 'A';
+                                else if (marks > 70) grade = 'B';
+                                else if (marks > 60) grade = 'C';
+                                else if (marks > 50) grade = 'D';
+                                else grade = 'F';
+
+                                points = Math.ceil(marks / 10);
+                                totalPoints += points;
+                                subjectCount++;
+
+                                row.innerHTML = `
+                                    <td>${subjectCode}</td>
+                                    <td>${subjectname}</td>
+                                    <td>${marks}</td>
+                                    <td>${grade}</td>
+                                    <td>${points}</td>
+                                `;
+                                tbody.appendChild(row);
+                            }
+                        });
+                    });
+
+                    let sgpa = (totalPoints / subjectCount).toFixed(2);
+                    sgpaDisplay.textContent = sgpa;
+                    statusDisplay.textContent = sgpa > 5 ? "PASS" : "FAIL";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

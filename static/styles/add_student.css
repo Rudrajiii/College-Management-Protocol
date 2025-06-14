@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bitter:ital,wght@0,100..900;1,100..900&family=Holtwood+One+SC&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Protest+Strike&display=swap');
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Protest Strike", sans-serif !important;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: .7px;
+}
+
+body {
+    background-color: white;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    
+}
+
+.card {
+    max-width: 900px;
+    width: 90%;
+    background-color: rgb(236, 234, 234);
+    border-radius: 10px;
+    box-shadow: 7px 7px 15px #45566754,
+    -8px -8px 15px rgb(81 101 121 / 35%),
+    inset -5px -4px 13px 0px rgb(81 101 121 / 35%),
+    inset 6px 7px 12px 0px rgb(255 255 255 / 94%);
+    padding: 20px;
+    color: #6B686A;
+    box-sizing: border-box;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-column, .right-column {
+    width: 48%; 
+}
+
+.card h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #6B686A;
+}
+
+.card h3 {
+    margin: 10px 0 5px;
+    font-size: 14px;
+    color: #6B686A;
+}
+
+.card input,
+.card button,
+.card select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+    background-color: #6B686A;
+    color: white;
+}
+
+.card button {
+    background-color: #2ecc71;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.card button i {
+    margin-right: 5px;
+}
+
+.case {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.case span {
+    margin-left: 10px;
+    color: gray;
+}
+
+.phone-error {
+    color: #f44336;
+    font-size: 13px;
+    display: none;
+}
+
+
+@media (max-width: 600px) {
+    .form-container {
+        flex-direction: column;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+    }
+}

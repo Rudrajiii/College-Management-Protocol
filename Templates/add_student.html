@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Add UI</title>
+    <link rel="stylesheet"  type="text/css" href="{{url_for('static', filename='styles/add_student.css')}}">
+    <script src="{{ url_for('static', filename='javascripts/add_student.js') }}" defer></script>
+</head>
+<body>
+    <div class="card">
+        <h1>Student Registration</h1>
+        <h3 style="text-align: center; margin: auto;  background: rgba(162, 160, 160, 0.584); width: 160px; padding: .6rem; border-radius: .5rem;"><a style="color: rgba(97, 94, 94, 0.885); text-decoration: none;" href="/admin_dashboard">Go to dashboard</a></h3>
+        <form id="studentForm" method="post" action="/add_student" enctype="multipart/form-data">
+            <div class="form-container">
+                <div class="left-column">
+                    <h3>Enrollment number</h3>
+                    <input type="text" name="enrollment" required />
+
+                    <h3>Student Username</h3>
+                    <input type="text" name="username" required />
+
+                    <h3>Password</h3>
+                    <input type="password" name="password" id="password" required />
+                    <p class="case" id="lowercase">Must contain a lowercase letter <span></span></p>
+                    <p class="case" id="uppercase">Must contain an uppercase letter <span></span></p>
+                    <p class="case" id="digit">Must contain a digit <span></span></p>
+                    <p class="case" id="special">Must contain a special character (@ or $) <span></span></p>
+
+                    <h3>Student Year</h3>
+                    <select name="year">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <h3>Gender</h3>
+                    <select name="gender">
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <h3>Phone Code</h3>
+                    <input type="text" name="phone" id="phone" pattern="\d{10}" title="Please enter a valid 10-digit phone number" required />
+                    <p id="phoneError" style="display:none; color:red;">Phone number must be exactly 10 digits</p>
+                </div>
+
+                <div class="right-column">
+                    <h3>Student Email</h3>
+                    <input type="email" name="email" required />
+
+                    <h3>Enter Branch</h3>
+                    <input type="text" name="branch" required />
+
+                    <h3>DOB</h3>
+                    <input type="date" name="dob" required />
+
+                    <h3>Parent's Name</h3>
+                    <input type="text" name="parent_name" required />
+
+                    <h3>Parent's No.</h3>
+                    <input type="text" name="parent_no" id="phone1" pattern="\d{10}" title="Please enter a valid 10-digit phone number" required />
+                    <p id="phoneError1" style="display:none; color:red;">Phone number must be exactly 10 digits</p>
+                    
+                    <h3>Address</h3>
+                    <input type="text" name="address" required />
+                    
+                    <h3>Select Student profile pic</h3>
+                    <input type="file" name="profile_pic" required accept=".jpg, .jpeg, .png" />
+                </div>
+            </div>
+            <button type="submit" style="gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="upload-icon" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                </svg>
+                Upload
+            </button>
+            
+        </form>
+    </div>
+</body>
+</html>
